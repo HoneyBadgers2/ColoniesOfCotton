@@ -1,0 +1,1481 @@
+{
+    "players":[
+        {
+            "id": 0,
+            "game_session_id": null,
+            "user_number_label": "BOARD_DEFAULT_PLAYER_ZERO",
+            "display_name": null,
+            "turn_order": 0,
+            "turn_counter": 0,
+            "is_active_player": false,
+            "has_played_development_card": false,
+            "player_points": 0,
+            "owns_road": 0,
+            "owns_settlement": 0,
+            "owns_city": 0,
+            "played_card_knight": 0,
+            "played_card_road": 0,
+            "played_card_monopoly": 0,
+            "played_card_plenty": 0,
+            "played_card_victory": 0,
+            "has_longest_road": false,
+            "has_biggest_army": false,
+            "card_brick": 19,
+            "card_grain": 19,
+            "card_lumber": 19,
+            "card_ore": 19,
+            "card_wool": 19,
+            "card_knight": 14,
+            "card_road": 2,
+            "card_monopoly": 2,
+            "card_plenty": 2,
+            "card_victory": 5
+        },
+        {
+            "id": 1,
+            "game_session_id": null,
+            "user_number_label": "Player1",
+            "display_name": null,
+            "turn_order": null,
+            "turn_counter": 0,
+            "is_active_player": false,
+            "has_played_development_card": false,
+            "player_points": 0,
+            "owns_road": 0,
+            "owns_settlement": 0,
+            "owns_city": 0,
+            "played_card_knight": 0,
+            "played_card_road": 0,
+            "played_card_monopoly": 0,
+            "played_card_plenty": 0,
+            "played_card_victory": 0,
+            "has_longest_road": false,
+            "has_biggest_army": false,
+            "card_brick": 0,
+            "card_grain": 0,
+            "card_lumber": 0,
+            "card_ore": 0,
+            "card_wool": 0,
+            "card_knight": 0,
+            "card_road": 0,
+            "card_monopoly": 0,
+            "card_plenty": 0,
+            "card_victory": 0
+        },
+        {
+            "id": 2,
+            "game_session_id": null,
+            "user_number_label": "Player2",
+            "display_name": null,
+            "turn_order": null,
+            "turn_counter": 0,
+            "is_active_player": false,
+            "has_played_development_card": false,
+            "player_points": 0,
+            "owns_road": 0,
+            "owns_settlement": 0,
+            "owns_city": 0,
+            "played_card_knight": 0,
+            "played_card_road": 0,
+            "played_card_monopoly": 0,
+            "played_card_plenty": 0,
+            "played_card_victory": 0,
+            "has_longest_road": false,
+            "has_biggest_army": false,
+            "card_brick": 0,
+            "card_grain": 0,
+            "card_lumber": 0,
+            "card_ore": 0,
+            "card_wool": 0,
+            "card_knight": 0,
+            "card_road": 0,
+            "card_monopoly": 0,
+            "card_plenty": 0,
+            "card_victory": 0
+        },
+        {
+            "id": 3,
+            "game_session_id": null,
+            "user_number_label": "Player3",
+            "display_name": null,
+            "turn_order": null,
+            "turn_counter": 0,
+            "is_active_player": false,
+            "has_played_development_card": false,
+            "player_points": 0,
+            "owns_road": 0,
+            "owns_settlement": 0,
+            "owns_city": 0,
+            "played_card_knight": 0,
+            "played_card_road": 0,
+            "played_card_monopoly": 0,
+            "played_card_plenty": 0,
+            "played_card_victory": 0,
+            "has_longest_road": false,
+            "has_biggest_army": false,
+            "card_brick": 0,
+            "card_grain": 0,
+            "card_lumber": 0,
+            "card_ore": 0,
+            "card_wool": 0,
+            "card_knight": 0,
+            "card_road": 0,
+            "card_monopoly": 0,
+            "card_plenty": 0,
+            "card_victory": 0
+        },
+        {
+            "id": 4,
+            "game_session_id": null,
+            "user_number_label": "Player4",
+            "display_name": null,
+            "turn_order": null,
+            "turn_counter": 0,
+            "is_active_player": false,
+            "has_played_development_card": false,
+            "player_points": 0,
+            "owns_road": 0,
+            "owns_settlement": 0,
+            "owns_city": 0,
+            "played_card_knight": 0,
+            "played_card_road": 0,
+            "played_card_monopoly": 0,
+            "played_card_plenty": 0,
+            "played_card_victory": 0,
+            "has_longest_road": false,
+            "has_biggest_army": false,
+            "card_brick": 0,
+            "card_grain": 0,
+            "card_lumber": 0,
+            "card_ore": 0,
+            "card_wool": 0,
+            "card_knight": 0,
+            "card_road": 0,
+            "card_monopoly": 0,
+            "card_plenty": 0,
+            "card_victory": 0
+        }
+    ],
+    "tiles":[
+        {
+            "id": 0,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": null,
+            "has_robber": false,
+            "connecting_road_slots": null,
+            "connecting_house_slots": null,
+            "connecting_tiles": null
+        },
+        {
+            "id": 1,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [1, 2, 3, 4, 5, 6],
+            "connecting_house_slots": [1, 2, 3, 4, 5, 6],
+            "connecting_tiles": [2, 3, 4, 5, 6, 7]
+        },
+        {
+            "id": 2,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [1, 7, 8, 9, 10, 11],
+            "connecting_house_slots": [1, 2, 7, 8, 9, 10],
+            "connecting_tiles": [1, 3, 7, 8, 9, 19]
+        },
+        {
+            "id": 3,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [2, 11, 12, 13, 14, 15],
+            "connecting_house_slots": [2, 3, 10, 11, 12, 13],
+            "connecting_tiles": [1, 2, 4, 9, 10, 11]
+        },
+        {
+            "id": 4,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [3, 15, 16, 17, 18, 19],
+            "connecting_house_slots": [3, 4, 13, 14, 15, 16],
+            "connecting_tiles": [1, 3, 5, 11, 12, 13]
+        },
+        {
+            "id": 5,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [4, 19, 20, 21, 22, 23],
+            "connecting_house_slots": [4, 5, 16, 17, 18, 19],
+            "connecting_tiles": [1, 4, 6, 13, 14, 15]
+        },
+        {
+            "id": 6,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [5, 23, 24, 25, 26, 27],
+            "connecting_house_slots": [5, 6, 19, 20, 21, 22],
+            "connecting_tiles": [1, 5, 7, 15, 16, 17]
+        },
+        {
+            "id": 7,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [6, 27, 28, 29, 30, 7],
+            "connecting_house_slots": [1, 6, 22, 23, 24, 7],
+            "connecting_tiles": [1, 2, 6, 17, 18, 19]
+        },
+        {
+            "id": 8,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [9, 34, 35, 36, 37, 38],
+            "connecting_house_slots": [8, 9, 26, 27, 28, 29],
+            "connecting_tiles": [2, 9, 19, null, null, null]
+        },
+        {
+            "id": 9,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [10, 12, 41, 40, 39, 38],
+            "connecting_house_slots": [9, 10, 11, 29, 30, 31],
+            "connecting_tiles": [2, 3, 8, 10, null, null]
+        },
+        {
+            "id": 10,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [13, 41, 42, 43, 44, 45],
+            "connecting_house_slots": [11, 12, 34, 33, 32, 31],
+            "connecting_tiles": [3, 9, 11, null, null, null]
+        },
+        {
+            "id": 11,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [14, 45, 46, 47, 48, 16],
+            "connecting_house_slots": [12, 13, 14, 36, 35, 34],
+            "connecting_tiles": [3, 4, 10, 12, null, null]
+        },
+        {
+            "id": 12,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [17, 48, 49, 50, 51, 52],
+            "connecting_house_slots": [14, 15, 36, 37, 38, 39],
+            "connecting_tiles": [4, 11, 13, null, null, null]
+        },
+        {
+            "id": 13,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [18, 20, 55, 54, 53, 52],
+            "connecting_house_slots": [15, 16, 17, 39, 40, 41],
+            "connecting_tiles": [4, 5, 12, 14, null, null]
+        },
+        {
+            "id": 14,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [21, 55, 56, 57, 58, 59],
+            "connecting_house_slots": [17, 18, 41, 42, 43, 44],
+            "connecting_tiles": [5, 13, 15, null, null, null]
+        },
+        {
+            "id": 15,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [59, 60, 61, 62, 22, 24],
+            "connecting_house_slots": [18, 19, 20, 44, 45, 46],
+            "connecting_tiles": [5, 6, 14, 16, null, null]
+        },
+        {
+            "id": 16,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [62, 63, 64, 65, 66, 25],
+            "connecting_house_slots": [46, 47, 48, 49, 20, 21],
+            "connecting_tiles": [6, 15, 17, null, null, null]
+        },
+        {
+            "id": 17,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [66, 67, 68, 69, 26, 28],
+            "connecting_house_slots": [21, 22, 23, 49, 50, 51],
+            "connecting_tiles": [6, 7, 16, 18, null, null]
+        },
+        {
+            "id": 18,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [29, 31, 69, 70, 71, 72],
+            "connecting_house_slots": [23, 24, 51, 52, 53, 54],
+            "connecting_tiles": [7, 17, 19, null, null, null]
+        },
+        {
+            "id": 19,
+            "game_session_id": null,
+            "terrain": null,
+            "dice_trigger_value": 0,
+            "has_robber": false,
+            "connecting_road_slots": [8, 30, 31, 32, 33, 34],
+            "connecting_house_slots": [7, 8, 24, 54, 25, 26],
+            "connecting_tiles": [2, 7, 8, 18, null, null]
+        }
+    ],
+    "settlements":[
+        {
+            "id": 0,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": null,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": null,
+            "connecting_road_slots": null
+        },
+        {
+            "id": 1,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [2, 6, 7],
+            "connecting_road_slots": [1, 6, 7]
+        },
+        {
+            "id": 2,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [10, 3, 1],
+            "connecting_road_slots": [1, 2, 11]
+        },
+        {
+            "id": 3,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [2, 4, 13],
+            "connecting_road_slots": [2, 3, 15]
+        },
+        {
+            "id": 4,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [3, 16, 5],
+            "connecting_road_slots": [3, 4, 19]
+        },
+        {
+            "id": 5,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [4, 19, 6],
+            "connecting_road_slots": [4, 5, 23]
+        },
+        {
+            "id": 6,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [5, 1, 22],
+            "connecting_road_slots": [5, 6, 27]
+        },
+        {
+            "id": 7,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [1, 8, 24],
+            "connecting_road_slots": [7, 8, 30]
+        },
+        {
+            "id": 8,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [7, 9, 26],
+            "connecting_road_slots": [8, 9, 34]
+        },
+        {
+            "id": 9,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [8, 10, 29],
+            "connecting_road_slots": [9, 10, 38]
+        },
+        {
+            "id": 10,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [2, 9, 11],
+            "connecting_road_slots": [10, 11, 12]
+        },
+        {
+            "id": 11,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [10, 31, 12],
+            "connecting_road_slots": [12, 13, 41]
+        },
+        {
+            "id": 12,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [11, 13, 34],
+            "connecting_road_slots": [13, 14, 45]
+        },
+        {
+            "id": 13,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [3, 12, 14],
+            "connecting_road_slots": [14, 15, 16]
+        },
+        {
+            "id": 14,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [13, 15, 36],
+            "connecting_road_slots": [16, 17, 48]
+        },
+        {
+            "id": 15,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [14, 16, 39],
+            "connecting_road_slots": [17, 18, 52]
+        },
+        {
+            "id": 16,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [17, 4, 15],
+            "connecting_road_slots": [19, 18, 20]
+        },
+        {
+            "id": 17,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [16, 18, 41],
+            "connecting_road_slots": [20, 21, 55]
+        },
+        {
+            "id": 18,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [17, 19, 44],
+            "connecting_road_slots": [21, 22, 59]
+        },
+        {
+            "id": 19,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [18, 20, 5],
+            "connecting_road_slots": [22, 23, 24]
+        },
+        {
+            "id": 20,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [21, 19, 46],
+            "connecting_road_slots": [62, 24, 25]
+        },
+        {
+            "id": 21,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [20, 22, 49],
+            "connecting_road_slots": [25, 26, 66]
+        },
+        {
+            "id": 22,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [21, 6, 23],
+            "connecting_road_slots": [26, 27, 28]
+        },
+        {
+            "id": 23,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [22, 24, 51],
+            "connecting_road_slots": [28, 29, 69]
+        },
+        {
+            "id": 24,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [23, 7, 54],
+            "connecting_road_slots": [29, 30, 31]
+        },
+        {
+            "id": 25,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 5,
+            "port_input_type": "lumber",
+            "port_input_value": 2,
+            "adj_house_slots": [54, 26, null],
+            "connecting_road_slots": [32, 33, null]
+        },
+        {
+            "id": 26,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [8, 25, 27],
+            "connecting_road_slots": [33, 34, 35]
+        },
+        {
+            "id": 27,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 6,
+            "port_input_type": "any_type",
+            "port_input_value": 3,
+            "adj_house_slots": [26, 28, null],
+            "connecting_road_slots": [35, 36, null]
+        },
+        {
+            "id": 28,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 6,
+            "port_input_type": "any_type",
+            "port_input_value": 3,
+            "adj_house_slots": [27, 29, null],
+            "connecting_road_slots": [36, 37, null]
+        },
+        {
+            "id": 29,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [28, 30, 9],
+            "connecting_road_slots": [37, 38, 39]
+        },
+        {
+            "id": 30,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 7,
+            "port_input_type": "grain",
+            "port_input_value": 2,
+            "adj_house_slots": [29, 31, null],
+            "connecting_road_slots": [39, 40, null]
+        },
+        {
+            "id": 31,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 7,
+            "port_input_type": "grain",
+            "port_input_value": 2,
+            "adj_house_slots": [30, 32, 11],
+            "connecting_road_slots": [40, 41, 42]
+        },
+        {
+            "id": 32,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [31, 33, null],
+            "connecting_road_slots": [42, 43, null]
+        },
+        {
+            "id": 33,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [32, 34, null],
+            "connecting_road_slots": [43, 44, null]
+        },
+        {
+            "id": 34,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 8,
+            "port_input_type": "ore",
+            "port_input_value": 2,
+            "adj_house_slots": [33, 35, 12],
+            "connecting_road_slots": [44, 45, 46]
+        },
+        {
+            "id": 35,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 8,
+            "port_input_type": "ore",
+            "port_input_value": 2,
+            "adj_house_slots": [34, 36, null],
+            "connecting_road_slots": [46, 47, null]
+        },
+        {
+            "id": 36,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [35, 37, 14],
+            "connecting_road_slots": [47, 48, 49]
+        },
+        {
+            "id": 37,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 9,
+            "port_input_type": "any_type",
+            "port_input_value": 3,
+            "adj_house_slots": [36, 38, null],
+            "connecting_road_slots": [49, 50, null]
+        },
+        {
+            "id": 38,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 9,
+            "port_input_type": "any_type",
+            "port_input_value": 3,
+            "adj_house_slots": [37, 39, null],
+            "connecting_road_slots": [50, 51, null]
+        },
+        {
+            "id": 39,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [38, 40, 15],
+            "connecting_road_slots": [51, 52, 53]
+        },
+        {
+            "id": 40,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 1,
+            "port_input_type": "wool",
+            "port_input_value": 2,
+            "adj_house_slots": [39, 41, null],
+            "connecting_road_slots": [53, 54, null]
+        },
+        {
+            "id": 41,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 1,
+            "port_input_type": "wool",
+            "port_input_value": 2,
+            "adj_house_slots": [40, 42, 17],
+            "connecting_road_slots": [54, 55, 56]
+        },
+        {
+            "id": 42,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [41, 43, null],
+            "connecting_road_slots": [56, 57, null]
+        },
+        {
+            "id": 43,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [42, 44, null],
+            "connecting_road_slots": [57, 58, null]
+        },
+        {
+            "id": 44,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 2,
+            "port_input_type": "any_type",
+            "port_input_value": 3,
+            "adj_house_slots": [43, 45, 18],
+            "connecting_road_slots": [58, 59, 60]
+        },
+        {
+            "id": 45,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 2,
+            "port_input_type": "any_type",
+            "port_input_value": 3,
+            "adj_house_slots": [44, 46, null],
+            "connecting_road_slots": [60, 61, null]
+        },
+        {
+            "id": 46,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [45, 47, 20],
+            "connecting_road_slots": [61, 62, 63]
+        },
+        {
+            "id": 47,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 3,
+            "port_input_type": "any_type",
+            "port_input_value": 3,
+            "adj_house_slots": [46, 48, null],
+            "connecting_road_slots": [63, 64, null]
+        },
+        {
+            "id": 48,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 3,
+            "port_input_type": "any_type",
+            "port_input_value": 3,
+            "adj_house_slots": [47, 49, null],
+            "connecting_road_slots": [64, 65, null]
+        },
+        {
+            "id": 49,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [48, 50, 21],
+            "connecting_road_slots": [65, 66, 67]
+        },
+        {
+            "id": 50,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 4,
+            "port_input_type": "brick",
+            "port_input_value": 2,
+            "adj_house_slots": [49, 51, null],
+            "connecting_road_slots": [67, 68, null]
+        },
+        {
+            "id": 51,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 4,
+            "port_input_type": "brick",
+            "port_input_value": 2,
+            "adj_house_slots": [50, 52, 23],
+            "connecting_road_slots": [68, 69, 70]
+        },
+        {
+            "id": 52,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [51, 53, null],
+            "connecting_road_slots": [70, 71, null]
+        },
+        {
+            "id": 53,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": null,
+            "port_input_type": null,
+            "port_input_value": null,
+            "adj_house_slots": [52, 54, null],
+            "connecting_road_slots": [71, 72, null]
+        },
+        {
+            "id": 54,
+            "game_session_id": null,
+            "owner": null,
+            "house_type": 0,
+            "port_id": 5,
+            "port_input_type": "lumber",
+            "port_input_value": 2,
+            "adj_house_slots": [53, 24, 25],
+            "connecting_road_slots": [31, 32, 72]
+        }
+    ],
+    "roads":[
+        {
+            "id": 0,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": null,
+            "adj_road_slots": null
+        },
+        {
+            "id": 1,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [1, 2],
+            "adj_road_slots": [2, 6, 7, 11]
+        }, 
+        {
+            "id": 2,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [2, 3],
+            "adj_road_slots": [1, 3, 11, 15]
+        },
+        {
+            "id": 3,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [3, 4],
+            "adj_road_slots": [2, 4, 15, 19]
+        },
+        {
+            "id": 4,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [4, 5],
+            "adj_road_slots": [3, 5, 19, 23]
+        },
+        {
+            "id": 5,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [5, 6],
+            "adj_road_slots": [4, 6, 23, 27]
+        },
+        {
+            "id": 6,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [1, 6],
+            "adj_road_slots": [1, 5, 7, 27]
+        },
+        {
+            "id": 7,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [1, 7],
+            "adj_road_slots": [1, 6, 8, 30]
+        },
+        {
+            "id": 8,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [7, 8],
+            "adj_road_slots": [7, 9, 30, 34]
+        },
+        {
+            "id": 9,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [8, 9],
+            "adj_road_slots": [8, 10, 34, 38]
+        },
+        {
+            "id": 10,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [9, 10],
+            "adj_road_slots": [9, 11, 12, 38]
+        },
+        {
+            "id": 11,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [2, 10],
+            "adj_road_slots": [1, 2, 10, 12]
+        },
+        {
+            "id": 12,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [10, 11],
+            "adj_road_slots": [10, 11, 13, 41]
+        },
+        {
+            "id": 13,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [11, 12],
+            "adj_road_slots": [12, 14, 41, 45]
+        },
+        {
+            "id": 14,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [12, 13],
+            "adj_road_slots": [13, 15, 16, 45]
+        },
+        {
+            "id": 15,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [3, 13],
+            "adj_road_slots": [2, 3, 14, 16]
+        },
+        {
+            "id": 16,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [13, 14],
+            "adj_road_slots": [14, 15, 17, 48]
+        },
+        {
+            "id": 17,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [14, 15],
+            "adj_road_slots": [16, 18, 48, 52]
+        },
+        {
+            "id": 18,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [15, 16],
+            "adj_road_slots": [17, 19, 20, 52]
+        },
+        {
+            "id": 19,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [4, 16],
+            "adj_road_slots": [3, 4, 18, 20]
+        },
+        {
+            "id": 20,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [16, 17],
+            "adj_road_slots": [18, 19, 21, 55]
+        },
+        {
+            "id": 21,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [17, 18],
+            "adj_road_slots": [20, 22, 55, 59]
+        },
+        {
+            "id": 22,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [18, 19],
+            "adj_road_slots": [21, 23, 24, 59]
+        },
+        {
+            "id": 23,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [5, 19],
+            "adj_road_slots": [4, 5, 22, 24]
+        },
+        {
+            "id": 24,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [19, 20],
+            "adj_road_slots": [22, 23, 25, 62]
+        },
+        {
+            "id": 25,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [20, 21],
+            "adj_road_slots": [24, 26, 62, 66]
+        },
+        {
+            "id": 26,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [21, 22],
+            "adj_road_slots": [25, 27, 28, 66]
+        },
+        {
+            "id": 27,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [6, 22],
+            "adj_road_slots": [5, 6, 26, 28]
+        },
+        {
+            "id": 28,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [22, 23],
+            "adj_road_slots": [26, 27, 29, 69]
+        },
+        {
+            "id": 29,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [23, 24],
+            "adj_road_slots": [28, 30, 31, 69]
+        },
+        {
+            "id": 30,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [7, 24],
+            "adj_road_slots": [7, 8, 29, 31]
+        },
+        {
+            "id": 31,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [24, 54],
+            "adj_road_slots": [29, 30, 32, 72]
+        },
+        {
+            "id": 32,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [54, 25],
+            "adj_road_slots": [31, 33, 72, null]
+        },
+        {
+            "id": 33,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [25, 26],
+            "adj_road_slots": [32, 34, 35, null]
+        },
+        {
+            "id": 34,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [8, 26],
+            "adj_road_slots": [8, 9, 33, 35]
+        },
+        {
+            "id": 35,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [26, 27],
+            "adj_road_slots": [33, 34, 36, null]
+        },
+        {
+            "id": 36,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [27, 28],
+            "adj_road_slots": [35, 38, null, null]
+        },
+        {
+            "id": 37,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [28, 29],
+            "adj_road_slots": [36, 38, 39, null]
+        },
+        {
+            "id": 38,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [9, 29],
+            "adj_road_slots": [9, 10, 37, 39]
+        },
+        {
+            "id": 39,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [29, 30],
+            "adj_road_slots": [37, 38, 40, null]
+        },
+        {
+            "id": 40,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [30, 31],
+            "adj_road_slots": [39, 41, 42, null]
+        },
+        {
+            "id": 41,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [11, 31],
+            "adj_road_slots": [12, 23, 40, 42]
+        },
+        {
+            "id": 42,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [31, 32],
+            "adj_road_slots": [40, 41, 43, null]
+        },
+        {
+            "id": 43,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [32, 33],
+            "adj_road_slots": [42, 44, null, null]
+        },
+        {
+            "id": 44,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [33, 34],
+            "adj_road_slots": [43, 45, 46, null]
+        },
+        {
+            "id": 45,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [12, 34],
+            "adj_road_slots": [13, 14, 44, 46]
+        },
+        {
+            "id": 46,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [34, 35],
+            "adj_road_slots": [44, 45, 47, null]
+        },
+        {
+            "id": 47,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [35, 36],
+            "adj_road_slots": [46, 48, 49, null]
+        },
+        {
+            "id": 48,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [14, 36],
+            "adj_road_slots": [16, 17, 47, 49]
+        },
+        {
+            "id": 49,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [36, 37],
+            "adj_road_slots": [47, 48, 50, null]
+        },
+        {
+            "id": 50,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [37, 38],
+            "adj_road_slots": [49, 51, null, null]
+        },
+        {
+            "id": 51,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [38, 39],
+            "adj_road_slots": [50, 52, 53, null]
+        },
+        {
+            "id": 52,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [15, 39],
+            "adj_road_slots": [17, 18, 51, 53]
+        },
+        {
+            "id": 53,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [39, 40],
+            "adj_road_slots": [51, 52, 54, null]
+        },
+        {
+            "id": 54,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [40, 41],
+            "adj_road_slots": [53, 55, 56, null]
+        },
+        {
+            "id": 55,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [17, 41],
+            "adj_road_slots": [20, 21, 54, 56]
+        },
+        {
+            "id": 56,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [41, 42],
+            "adj_road_slots": [54, 55, 57, null]
+        },
+        {
+            "id": 57,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [42, 43],
+            "adj_road_slots": [56, 58, null, null]
+        },
+        {
+            "id": 58,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [43, 44],
+            "adj_road_slots": [57, 59, 60, null]
+        },
+        {
+            "id": 59,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [18, 44],
+            "adj_road_slots": [21, 22, 58, 60]
+        },
+        {
+            "id": 60,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [44, 45],
+            "adj_road_slots": [58, 59, 61, null]
+        },
+        {
+            "id": 61,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [45, 46],
+            "adj_road_slots": [60, 62, 63, null]
+        },
+        {
+            "id": 62,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [20, 46],
+            "adj_road_slots": [24, 25, 61, 63]
+        },
+        {
+            "id": 63,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [46, 47],
+            "adj_road_slots": [61, 62, 64, null]
+        },
+        {
+            "id": 64,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [47, 48],
+            "adj_road_slots": [63, 65, null, null]
+        },
+        {
+            "id": 65,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [48, 49],
+            "adj_road_slots": [64, 66, 67, null]
+        },
+        {
+            "id": 66,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [21, 49],
+            "adj_road_slots": [25, 26, 65, 67]
+        },
+        {
+            "id": 67,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [49, 50],
+            "adj_road_slots": [65, 66, 68, null]
+        },
+        {
+            "id": 68,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [50, 51],
+            "adj_road_slots": [67, 69, 70, null]
+        },
+        {
+            "id": 69,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [23, 51],
+            "adj_road_slots": [28, 29, 68, 70]
+        },
+        {
+            "id": 70,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [51, 52],
+            "adj_road_slots": [68, 69, 71, null]
+        },
+        {
+            "id": 71,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [52, 53],
+            "adj_road_slots": [70, 72, null, null]
+        },
+        {
+            "id": 72,
+            "game_session_id": null,
+            "owner": null,
+            "connecting_house_slots": [53, 54],
+            "adj_road_slots": [31, 32, 71, null]
+        }
+    ]}
+
