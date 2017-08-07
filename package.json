@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tkyoon91/ColoniesOfCotton.git"
+    "url": "git+https://github.com/HoneyBadgers2/ColoniesOfCotton.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/tkyoon91/ColoniesOfCotton/issues"
+    "url": "https://github.com/HoneyBadgers2/ColoniesOfCotton/issues"
   },
-  "homepage": "https://github.com/tkyoon91/ColoniesOfCotton#readme",
+  "homepage": "https://github.com/HoneyBadgers2/ColoniesOfCotton#readme",
   "dependencies": {
     "axios": "^0.16.2",
     "babel-core": "^6.25.0",
