@@ -8,21 +8,35 @@ class Game extends React.Component {
   constructor(props) {
     super(props)
     this.state = { // dummy data
-      identity: "Player1",
+      identity: 1,
       players: ['BOARD', 'Player1', 'Player2', 'Player3', 'Player4'],
       tiles: [0, 1, 2, 3, 4, 5],
       settlements: ['mycity'],
       roads: ['myroad'],
-      messages: []
+      messages: [],
+      active: false,
     }
 
     this.buy = this.buy.bind(this);
     this.handleSubmitMessage = this.handleSubmitMessage.bind(this);
     this.diceRoll = this.diceRoll.bind(this);
+    this.endTurn = this.endTurn.bind(this);
   }
 
   buy(item) {
     console.log('Game: ', this.state.player[0], ' wants to buy: ', item);
+  }
+
+  endTurn() {
+    let nextPlayer;
+    if(this.state.identity !== 4){
+      nextPlayer = this.state.identity + 1;
+    } else {
+      nextPlayer = 1;
+    }
+    this.setState({active: false});
+    console.log('nextPlayer is', nextPlayer);
+    this.socket.emit('endTurn', nextPlayer);
   }
 
   diceRoll(){
@@ -35,7 +49,6 @@ class Game extends React.Component {
   componentDidMount() {
     console.log('Game: component mounted.');
     this.socket = io('/');
-
 
     this.socket.on('start', body => {
       console.log('start trigger heard');
@@ -54,6 +67,14 @@ class Game extends React.Component {
 
     this.socket.on('diceRoll', total => {
       console.log('Player rolled a', total);
+    })
+
+    this.socket.on('endTurn', active => {
+      console.log('hearing END TURN', active);
+      if(active === this.state.identity){
+        this.setState({active: true});
+        console.log('ITS YOUR TURN!!!!!!!!!!');
+      }
     })
   }
 
@@ -125,8 +146,8 @@ class Game extends React.Component {
 
   render() {
     return(<div>
-    <h2>Now in-game (game.jsx Componen)t</h2>
-    <Playerinterface gamestate={this.state} diceRoll={this.diceRoll} buymethod={this.buy}/>
+    <h2>Now in-game (game.jsx Component)</h2>
+    {this.state.active ? <Playerinterface gamestate={this.state} diceRoll={this.diceRoll} buymethod={this.buy} endTurn={this.endTurn}/> : null}
     <Messagelog  messages={this.state.messages} handleSubmitMessage={this.handleSubmitMessage}/>
     <Boardview gamestate={this.state} />
 

@@ -41,6 +41,7 @@ class Playerinteface extends React.Component {
         <button type="button" id="buycity" onClick={this.buy}>Buy City</button>
         <button type="button" id="buydevcard" onClick={this.buy}>Buy Development Card</button>
         <button type="button" onClick={this.props.diceRoll}>Roll Dice</button>
+        <button type="button" onClick={this.props.endTurn}>End Turn</button>
       </div>
     )
   }
