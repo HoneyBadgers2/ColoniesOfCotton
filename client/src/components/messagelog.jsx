@@ -16,11 +16,11 @@ class Messagelog extends React.Component {
   render() {
     return (
       <div>
-        <h3>Message Log</h3>
-        <div>some messages here</div>
-        <div>some messages here</div>
-        <div>some messages here</div>
-        <div>some messages here</div>
+        <h2> MESSAGE LOG </h2>
+        {this.props.messages.map(message =>{
+          return (<div>{message}</div>)
+        })}
+        <input type='text' placeholder="Write a message!" onKeyUp={this.props.handleSubmitMessage}/>
       </div>
     )
   }
