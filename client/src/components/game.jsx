@@ -201,6 +201,112 @@ class Game extends React.Component {
 
 
 
+
+
+
+
+
+  calculateScore() {
+    let score = this.state.player[this.state.identity].played_card_victory + this.state.player[this.state.identity].owns_settlement.length + (2 * this.state.player[this.state.identity].owns_city.length);
+
+    if (this.state.player[this.state.identity].has_longest_road) {
+      score = score + 2;
+    }
+      
+    if (this.state.player[this.state.identity].has_biggest_army) {
+      score = score + 2;
+    }
+
+    if (score >= 10) {
+      console.log('Player ' + this.state.identity + ' has reached 10 points!');
+      // endGame(); // need to write this function
+    }
+    
+    // return the score visible to others
+    return score - player.card_victory;
+  }
+
+
+
+  canBuyRoad() {
+    let possibleRoads = findPossibleRoads();
+
+    // check if affordable && piece available && there is a valid spot available
+    if (this.state.player[this.state.identity].card_brick >= 1 && 
+      this.state.player[this.state.identity].card_lumber >= 1 && 
+      this.state.player[this.state.identity].owns_road.length < 14 && 
+      possibleRoads.length > 0) {
+        return true;
+      }
+      return false;
+  }
+
+  canBuySettlement() {
+    let possibleSettlements = findPossibleSettlements();
+
+    // check if affordable && piece available && there is a valid spot available
+    if (this.state.player[this.state.identity].card_brick >= 1 && 
+      this.state.player[this.state.identity].card_lumber >= 1 && 
+      this.state.player[this.state.identity].card_grain >= 1 && 
+      this.state.player[this.state.identity].card_wool >= 1 && 
+      this.state.player[this.state.identity].owns_settlement.length < 5 && 
+      possibleSettlements.length > 0) {
+        return true;
+      }
+      return false;
+  }
+
+  canBuyCity() {
+    return (this.state.player[this.state.identity].card_ore >= 3 && 
+      this.state.player[this.state.identity].card_grain >= 2 && 
+      this.state.player[this.state.identity].owns_city.length < 4 && 
+      this.state.player[this.state.identity].owns_settlement.length > 0);
+  }
+
+  canBuyDevelopmentCard() {
+    return (this.state.player[this.state.identity].card_ore >= 1 && 
+      this.state.player[this.state.identity].card_grain >= 1 && 
+      this.state.player[this.state.identity].card_wool >= 1);
+  }
+
+  canOfferTrade() {
+    return (this.state.player[this.state.identity].card_brick >= 1 || 
+      this.state.player[this.state.identity].card_lumber >= 1 || 
+      this.state.player[this.state.identity].card_grain >= 1 || 
+      this.state.player[this.state.identity].card_wool >= 1 || 
+      this.state.player[this.state.identity].card_ore >= 1);
+  }
+
+  canPlayCardKnight() {
+    return (!this.state.player[this.state.identity].has_played_development_card && this.state.player[this.state.identity].card_knight >= 1);
+  }
+
+  canPlayCardRoad() {
+    return (!this.state.player[this.state.identity].has_played_development_card && this.state.player[this.state.identity].card_road >= 1);
+  }
+
+  canPlayCardMonopoly() {
+    return (!this.state.player[this.state.identity].has_played_development_card && this.state.player[this.state.identity].card_monopoly >= 1);
+  }
+
+  canPlayCardPlenty() {
+    return (!this.state.player[this.state.identity].has_played_development_card && this.state.player[this.state.identity].card_plenty >= 1);
+  }
+
+  canPlayCardVictory() {
+    return (this.state.player[this.state.identity].card_victory >= 1);
+  }
+
+  // canCancelAction() {
+  //   return this.state.player[this.state.identity].isInMenu ? true : false;
+  // }
+
+  // canRollDice() {
+  //   return this.state.player[this.state.identity].hasRolled ? false : true;
+  // }
+
+
+
 /////////////////////////// END HELPER FUNCTIONS ///////////////////////////
 
   componentDidMount() {
