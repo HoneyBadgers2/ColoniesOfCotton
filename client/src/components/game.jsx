@@ -15,7 +15,8 @@ class Game extends React.Component {
       roads: [],
       messages: [],
       active: false,
-      turn: 0
+      turn: 0,
+      robber: true,
     }
 
     this.buy = this.buy.bind(this);
@@ -23,6 +24,7 @@ class Game extends React.Component {
     this.diceRoll = this.diceRoll.bind(this);
     this.endTurn = this.endTurn.bind(this);
     this.rollForFirst = this.rollForFirst.bind(this);
+    this.robber = this.robber.bind(this);
   }
   
   rollForFirst(){
@@ -60,6 +62,39 @@ class Game extends React.Component {
     obj.player = this.state.identity;
     obj.total = total;
     this.socket.emit('diceRoll', obj);
+  }
+
+  robber(event){
+    if(this.state.robber){
+      let target = this.state.players[event.target.id];
+      let available = [];
+      if(target.card_brick){
+        available.push('card_brick');
+      }
+
+      if(target.card_wool){
+        available.push('card_wool');
+      }
+
+      if(target.card_lumber){
+        available.push('card_lumber');
+      }
+
+      if(target.card_grain){
+        available.push('card_grain');
+      }
+
+      if(target.card_ore){
+        available.push('card_ore');
+      }
+
+      let RNG = Math.floor(Math.random() * available.length);
+      let resource = available[RNG];
+      console.log('resource stolen is', resource);
+      target[resource] --;
+      this.state.players[this.state.identity][resource] ++;
+      this.setState({robber: false});
+    }
   }
 
 
@@ -219,6 +254,8 @@ class Game extends React.Component {
 
 
 
+
+
   canBuyRoad() {
     let possibleRoads = findPossibleRoads();
 
@@ -368,6 +405,9 @@ class Game extends React.Component {
     return(<div>
     <h2>Now in-game (game.jsx Component)</h2>
     <button onClick={this.rollForFirst}>ROLL FOR FIRST</button>
+    <button id="2" onClick={this.robber}>Player 2</button>
+    <button id="3" onClick={this.robber}>Player 3</button>
+    <button id="4" onClick={this.robber}>Player 4</button>
     {this.state.active ? <Playerinterface gamestate={this.state} diceRoll={this.diceRoll} buymethod={this.buy} endTurn={this.endTurn}/> : null}
     <Messagelog  messages={this.state.messages} handleSubmitMessage={this.handleSubmitMessage}/>
     <Boardview gamestate={this.state} />
