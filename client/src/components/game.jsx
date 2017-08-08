@@ -17,6 +17,18 @@ class Game extends React.Component {
       active: false,
       turn: 0,
       robber: true,
+      ableToBuyRoad: false,
+      ableToBuySettlement: false,
+      ableToBuyCity: false,
+      ableToBuyDevelopmentCard: false,
+      ableToOfferTrade: false,
+      ableToPlayCardKnight: false,
+      ableToPlayCardRoad: false,
+      ableToPlayCardMonopoly: false,
+      ableToPlayCardPlenty: false,
+      ableToPlayCardVictory: false,
+      ableToCancelAction: false,
+      hasRolled: false
     }
 
     this.buy = this.buy.bind(this);
@@ -395,6 +407,22 @@ class Game extends React.Component {
     this.socket.on('robber', player => {
       console.log('You need to move the robber');
     })
+
+
+
+    this.setState({
+      ableToBuyRoad: canBuyRoad(),
+      ableToBuySettlement: canBuySettlement(),
+      ableToBuyCity: canBuyCity(),
+      ableToBuyDevelopmentCard: canBuyDevelopmentCard(),
+      ableToOfferTrade: canOfferTrade(),
+      ableToPlayCardKnight: canPlayCardKnight(),
+      ableToPlayCardRoad: canPlayCardRoad(),
+      ableToPlayCardMonopoly: canPlayCardMonopoly(),
+      ableToPlayCardPlenty: canPlayCardPlenty(),
+      ableToPlayCardVictory: canPlayCardVictory(),
+
+    });
   }
 
 
