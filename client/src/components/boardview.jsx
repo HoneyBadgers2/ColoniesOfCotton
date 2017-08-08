@@ -9,7 +9,6 @@ class Boardview extends React.Component {
   }
 
   componentWillReceiveProps(nextprops) {
-    console.log('Boardview: compWillReceiveProps:', nextprops);
     this.setState({
       // slotnumber: this.props.number,
       readyState: nextprops.ready,
@@ -19,10 +18,10 @@ class Boardview extends React.Component {
   
 
   render() {
+    console.log(this.props.gamestate);
     return (
       <div>
         <h3>View of the board:</h3>
-        <div>{JSON.stringify(this.props.gamestate)}</div>
       </div>
     )
   }

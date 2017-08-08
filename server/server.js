@@ -85,8 +85,11 @@ function initiateGame(gamedata) {
 
 
 
-
+var highest = 0;
 var counter = 0;
+var first = null;
+var rolls = 0;
+
 io.on('connection', socket => {
     counter ++
     socket.emit('identity', counter);
@@ -94,18 +97,40 @@ io.on('connection', socket => {
     socket.on('message', body => {
         io.sockets.emit('message', body);
     })
+
+
     const game = initiateGame(initial);
+
+
     if(counter === 4){
     io.sockets.emit('start', game);
     counter = 0;
-    io.sockets.emit('endTurn', 1);
     }
+
 
     socket.on('diceRoll', total => {
         io.sockets.emit('diceRoll', total);
     })
 
+
     socket.on('endTurn', player => {
         io.sockets.emit('endTurn', player)
+    })
+
+    
+    socket.on('firstRoll', obj => {
+        rolls++
+        var message = 'player' + obj.player + ' rolled a ' + obj.roll;
+        io.sockets.emit('message', message);
+        if(obj.roll > highest){
+            highest = obj.roll
+            first = obj.player;
+        }
+
+        if(rolls === 4){
+            io.sockets.emit('first', first);
+            rolls = 0;
+            highest = 0;
+        }
     })
 })

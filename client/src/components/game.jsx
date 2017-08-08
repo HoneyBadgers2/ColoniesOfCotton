@@ -15,12 +15,24 @@ class Game extends React.Component {
       roads: ['myroad'],
       messages: [],
       active: false,
+      firstTurn: false,
+      firstHouse: null,
     }
 
     this.buy = this.buy.bind(this);
     this.handleSubmitMessage = this.handleSubmitMessage.bind(this);
     this.diceRoll = this.diceRoll.bind(this);
     this.endTurn = this.endTurn.bind(this);
+    this.rollForFirst = this.rollForFirst.bind(this);
+  }
+  
+  rollForFirst(){
+    let dice1 = Math.floor(Math.random() * 6 + 1);
+    let dice2 = Math.floor(Math.random() * 6 + 1);
+    let total = dice1 + dice2
+    var obj = {player: this.state.identity, roll: total}
+    this.socket.emit('firstRoll', obj);
+    this.setState({firstTurn: false});
   }
 
   buy(item) {
@@ -39,11 +51,108 @@ class Game extends React.Component {
     this.socket.emit('endTurn', nextPlayer);
   }
 
+
+
   diceRoll(){
     let dice1 = Math.floor(Math.random() * 6 + 1);
     let dice2 = Math.floor(Math.random() * 6 + 1);
     let total = dice1 + dice2
     this.socket.emit('diceRoll', total);
+  }
+
+
+  handleSubmitMessage(event){
+    let body = event.target.value;
+    
+    if(event.keyCode === 13){
+      console.log('running');
+      this.socket.emit('message', body);
+      event.target.value = '';
+    }
+  }
+//////////////////////////////// HELPER FUNCTIONS ////////////////////////////////
+  verifyCorner(cornerId) {
+    if(this.state.settlements[cornerId].owner !== null){
+      return false
+    }
+
+    const adjCorners = getAdjCornersToCorner(cornerId);
+    const adjRoads = getAdjRoadsToCorner(cornerId);
+
+    for(let i = 0; i < adjCorners.length; i++){
+      if(adjCorners[i].owner !== null){
+        return false;
+      }
+    }
+
+    for(let i = 0; i < adjRoads.length; i++){
+      if(adjRoads[i].owner === this.state.identity){
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+
+  verifyRoad(roadId){
+    const adjRoads = getAdjRoadsToRoad(roadId);
+    for(let i = 0; i < adjRoads.length; i++){
+      if(adjRoads[i].owner === this.state.identity){
+        let common = getCommonCornerToTwoRoads(adjRoads[i].id, roadId);
+        if(common.owner === this.state.identity || common.owner === null){
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  getAdjCornersToCorner(cornerId){
+    let arr = this.state.settlements[cornerId].adj_house_slots;
+    let output = [];
+    for(var i = 0; i < arr.length; i++){
+      output.push(this.state.settlements[arr[i]]);
+    }
+    return output;
+  }
+
+  getAdjRoadsToCorner(cornerId){
+    let arr = this.state.settlements[cornerId].connecting_road_slots;
+    let output = [];
+    for(let i = 0; i < arr.length; i++){
+      output.push(this.state.roads[arr[i]]);
+    }
+    return output;
+  }
+
+  getAdjCornerToRoad(roadId){
+    let arr = this.state.roads[roadId].connecting_house_slots;
+    let output = [];
+    for(let i = 0; i < arr.length; i++){
+      output.push(this.state.settlements[arr[i]]);
+    }
+    return output;
+  }
+
+  getAdjRoadsToRoad(roadId){
+    let arr = this.state.roads[roadId].adj_road_slots;
+    let output = [];
+    for(let i = 0; i < arr.length; i++){
+      output.push(this.state.settlements[arr[i]]);
+    }
+    return output;
+  }
+
+  getCommonCornerToTwoRoads(road1, road2){
+    let firstCorners = this.state.roads[road1].connecting_house_slots;
+    let secondCorners = this.state.roads[road2].connecting_house_slots;
+
+    for(let i = 0; i < firstCorners.length; i++){
+      if(secondCorners.indexOf(firstCorners[i]) !== -1){
+        return this.state.settlements[firstCorners[i]];
+      }
+    }
   }
 
   componentDidMount() {
@@ -53,6 +162,7 @@ class Game extends React.Component {
     this.socket.on('start', body => {
       console.log('start trigger heard');
       this.setState({players: body.players, tiles: body.tiles, settlements: body.settlements, roads: body.roads});
+      this.setState({firstTurn: true})
     })
 
     this.socket.on('identity', identity => {
@@ -76,81 +186,24 @@ class Game extends React.Component {
         console.log('ITS YOUR TURN!!!!!!!!!!');
       }
     })
+
+    this.socket.on('first', player => {
+      console.log('starting player is', player);
+    })
   }
 
-  handleSubmitMessage(event){
-    let body = event.target.value;
-    
-    if(event.keyCode === 13){
-      console.log('running');
-      this.socket.emit('message', body);
-      event.target.value = '';
-    }
-  }
-
-  verifyCorner(cornerId) {
-    let allSettlements = this.state.settlements;
-    let allRoads = this.state.roads;
-    let adjacentCorners = allSettlements[cornerId].adj_house_slots;
-
-    if(allSettlements[cornerId].owner !== null){
-      return false
-    }
-
-    for(let i = 0; i < adjacentCorners.length; i++){
-      let house = allSettlements[adjacentCorners[i]]
-      if(house.owner !== null){
-        return false;
-      }
-    }
-
-    let adjacentRoads = allSettlements[cornerId].adj_road_slots;
-    for(let i = 0; i < adjacentRoads.length; i++){
-      let road = allRoads[adjacentRoads[i]];
-      if(road.owner === this.state.identity){
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  verifyRoad(roadId){
-    let allSettlements = this.state.settlements;
-    let allRoads = this.state.roads;
-    let adjacentCorners = allSettlements[cornerId].connecting_house_slots;
-    let adjacentRoads = allSettlements[cornerId].adj_road_slots;
-
-    if(allRoads[roadId].owner !== null){
-      return false;
-    }
 
 
-
-
-    for(let i = 0; i < adjacentCorners.length; i++){
-      let index = adjacentCorners[i];
-      if(allSettlements[index].owner === null || allSettlements[index].owner === this.state.identity){
-        for(let j = 0; j < allSettlements[index].adj_road_slots; j++){
-         let roadIndex = allSettlements[index].adj_road_slots[j];
-         if(allSetllements[roadIndex].owner === this.state.identity){
-           return true
-         }
-        }
-      }
-    }
-
-    return false;
-  }
 
 
   render() {
     return(<div>
     <h2>Now in-game (game.jsx Component)</h2>
+    {this.state.firstTurn ? <button onClick={this.rollForFirst}>RollDice</button> : null}
     {this.state.active ? <Playerinterface gamestate={this.state} diceRoll={this.diceRoll} buymethod={this.buy} endTurn={this.endTurn}/> : null}
     <Messagelog  messages={this.state.messages} handleSubmitMessage={this.handleSubmitMessage}/>
     <Boardview gamestate={this.state} />
-
+    
     </div>)
   }
 
