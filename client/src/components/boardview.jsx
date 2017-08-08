@@ -17,42 +17,34 @@ class Boardview extends React.Component {
   
 
   render() {
-    console.log(this.props.gamestate);
+    // console.log(this.props.gamestate);
     return (
       <div>
         <h3>View of the board:</h3>
         <h4>Players:</h4>
-        {this.state.gamestate.players.map(player => {
+        {this.state.gamestate.players.map((player, index) => {
           return (
-            <div>
-              <div key={player.id}>{JSON.stringify(player)}</div>
-            </div>
+              <div key={index}>{JSON.stringify(player)}</div>
           )
         })}
         <h4>Tiles:</h4>
-        {this.state.gamestate.tiles.map(tile => {
+        {this.state.gamestate.tiles.map((tile, index) => {
           return (
-            <div>
-              <div key={tile.id}>{JSON.stringify(tile)}</div>
-            </div>
+              <div key={index}>{JSON.stringify(tile)}</div>
           )
         })}
 
         <h4>Settlements:</h4>
-        {this.state.gamestate.settlements.map(settlement => {
+        {this.state.gamestate.settlements.map((settlement, index) => {
           return (
-            <div>
-              <div key={settlement.id}>{JSON.stringify(settlement)}</div>
-            </div>
+              <div key={index}>{JSON.stringify(settlement)}</div>
           )
         })}
 
         <h4>Roads:</h4>
-        {this.state.gamestate.roads.map(road => {
+        {this.state.gamestate.roads.map((road, index) => {
           return (
-            <div>
-              <div key={road.id}>{JSON.stringify(road)}</div>
-            </div>
+              <div key={index}>{JSON.stringify(road)}</div>
           )
         })}
 

@@ -108,8 +108,16 @@ io.on('connection', socket => {
     }
 
 
-    socket.on('diceRoll', total => {
-        io.sockets.emit('diceRoll', total);
+    socket.on('diceRoll', obj => {
+        var message = 'player' + obj.player + ' rolled a ' + obj.total;
+        io.sockets.emit('message', message);
+
+        if(obj.total !== 7){
+            io.sockets.emit('diceRoll', obj.total);
+        } else {
+            socket.emit('robber', obj.player);
+            io.sockets.emit('message', 'player'+obj.player+ ' needs to move the robber');
+        }
     })
 
 
