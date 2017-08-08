@@ -203,6 +203,50 @@ class Game extends React.Component {
 
 
 
+  // dice_roll_regular() {
+  //   let die_1_result = Math.floor(Math.random() * 6) + 1;
+  //   let die_2_result = Math.floor(Math.random() * 6) + 1;
+  //   console.log('dice rolled, results: ', die_1_result, die_2_result);
+
+  //   // TODO: update board with roll result
+
+  //   if (dice_roll === 7) {
+  //     for (let i = 1; i < 5; i++) {
+  //       if (resource_cards_in_hand(player[i]) > 7) {
+  //         discard_half(player[i]);
+  //         // move robber and steal 
+  //       }
+  //     }
+  //   } else {
+  //     collect_resources(die_1_result + die_2_result);
+  //   }
+
+  // }
+
+
+
+
+  // collect_resources(rollResult) {
+  //   for (let i = 0; i < this.state.tiles.length; i++) {
+  //     // if tile has roll value, the houses of that tile receive resources.
+  //     if (this.state.tiles[i].roll_trigger_value === rollResult) {
+  //       // check tile's house slots for owners
+  //       for (let j = 0; j < 6; j++) {
+  //         // TODO: check for edge case such as "not enough resources"
+  //         if (this.state.tiles[i].corner[j].owner !== null) {
+  //           let amountToReceive = corner // TODO: incomplete line here
+  //           let resourceRecepient = this.state.tiles[i].corner[j].owner;
+  //           let resourceToCollect = 'card_' + this.state.tiles[i].terrain;
+  //           console.log(resourceRecepient + ' receives ' + amountToReceive + ' ' + resourceToCollect + '(s)');
+  //           this.state.players[0][resourceToCollect]--
+  //           this.state.players[resourceRecepient][resourceToCollect]++
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+
+
 
 
 
