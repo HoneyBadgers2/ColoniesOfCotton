@@ -155,6 +155,56 @@ class Game extends React.Component {
     }
   }
 
+  findPossibleRoads() {
+    // determine Roads that are valid for this player, returns an array
+    let allRoads = this.state.roads;
+    let ownedRoads = this.state.owns_road;
+    let possibleRoads = [];
+
+    for (let i = 0; i < ownedRoads.length; i ++) {
+      for (let j = 0; j < allRoads[ownedRoads[i]].adj_road_slots.length; j++ ) {
+        if (verifyRoad(allRoads[ownedRoads[i]].adj_road_slots[j])) {
+          for (let k = 0; k < possibleRoads.length; k++) {
+            if (possibleRoads[k].id === allRoads[ownedRoads[i]].adj_road_slots[j]) {
+              console.log('road already in possibleRoads');
+              continue;
+            }
+          }
+          possibleRoads.push(allRoads[ownedRoads[i]].adj_road_slots[j]);
+        }
+      }
+    }
+
+    return possibleRoads;
+  }
+
+  findPossibleSettlements() {
+    // determine HouseSlots that are valid for this player, returns an array
+    let allRoads = this.state.roads;
+    let ownedRoads = this.state.owns_road;
+    let possibleSettlements = [];
+
+    for (let i = 0; i < ownedRoads.length; i ++) {
+      for (let j = 0; j < allRoads[ownedRoads[i]].connecting_house_slots.length; j++ ) {
+        if (verifyCorner(allRoads[ownedRoads[i]].connecting_house_slots[j])) {
+          for (let k = 0; k < possibleSettlements.length; k++) {
+            if (possibleSettlements[k].id === allRoads[ownedRoads[i]].connecting_house_slots[j]) {
+              console.log('settlement already in possibleSettlements');
+              continue;
+            }
+          }
+          possibleSettlements.push(allRoads[ownedRoads[i]].connecting_house_slots[j]);
+        }
+      }
+    }
+
+    return possibleSettlements;
+  }
+
+
+
+/////////////////////////// END HELPER FUNCTIONS ///////////////////////////
+
   componentDidMount() {
     console.log('Game: component mounted.');
     this.socket = io('/');
