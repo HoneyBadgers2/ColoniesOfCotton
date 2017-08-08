@@ -11,12 +11,10 @@ class Game extends React.Component {
       identity: 1,
       players: ['BOARD', 'Player1', 'Player2', 'Player3', 'Player4'],
       tiles: [0, 1, 2, 3, 4, 5],
-      settlements: ['mycity'],
-      roads: ['myroad'],
+      settlements: [],
+      roads: [],
       messages: [],
       active: false,
-      firstTurn: false,
-      firstHouse: null,
     }
 
     this.buy = this.buy.bind(this);
@@ -158,7 +156,7 @@ class Game extends React.Component {
   findPossibleRoads() {
     // determine Roads that are valid for this player, returns an array
     let allRoads = this.state.roads;
-    let ownedRoads = this.state.owns_road;
+    let ownedRoads = this.state.identity.owns_road;
     let possibleRoads = [];
 
     for (let i = 0; i < ownedRoads.length; i ++) {
@@ -181,7 +179,7 @@ class Game extends React.Component {
   findPossibleSettlements() {
     // determine HouseSlots that are valid for this player, returns an array
     let allRoads = this.state.roads;
-    let ownedRoads = this.state.owns_road;
+    let ownedRoads = this.state.identity.owns_road;
     let possibleSettlements = [];
 
     for (let i = 0; i < ownedRoads.length; i ++) {
@@ -206,13 +204,14 @@ class Game extends React.Component {
 /////////////////////////// END HELPER FUNCTIONS ///////////////////////////
 
   componentDidMount() {
-    console.log('Game: component mounted.');
     this.socket = io('/');
 
     this.socket.on('start', body => {
       console.log('start trigger heard');
       this.setState({players: body.players, tiles: body.tiles, settlements: body.settlements, roads: body.roads});
-      this.setState({firstTurn: true})
+      if(this.state.identity === 1){
+        this.setState({active: true})
+      }
     })
 
     this.socket.on('identity', identity => {
@@ -249,7 +248,7 @@ class Game extends React.Component {
   render() {
     return(<div>
     <h2>Now in-game (game.jsx Component)</h2>
-    {this.state.firstTurn ? <button onClick={this.rollForFirst}>RollDice</button> : null}
+    <button onClick={this.rollForFirst}>ROLL FOR FIRST</button>
     {this.state.active ? <Playerinterface gamestate={this.state} diceRoll={this.diceRoll} buymethod={this.buy} endTurn={this.endTurn}/> : null}
     <Messagelog  messages={this.state.messages} handleSubmitMessage={this.handleSubmitMessage}/>
     <Boardview gamestate={this.state} />
