@@ -15,6 +15,7 @@ class Game extends React.Component {
       roads: [],
       messages: [],
       active: false,
+      turn: 0
     }
 
     this.buy = this.buy.bind(this);
@@ -55,7 +56,10 @@ class Game extends React.Component {
     let dice1 = Math.floor(Math.random() * 6 + 1);
     let dice2 = Math.floor(Math.random() * 6 + 1);
     let total = dice1 + dice2
-    this.socket.emit('diceRoll', total);
+    let obj = {};
+    obj.player = this.state.identity;
+    obj.total = total;
+    this.socket.emit('diceRoll', obj);
   }
 
 
@@ -156,19 +160,16 @@ class Game extends React.Component {
   findPossibleRoads() {
     // determine Roads that are valid for this player, returns an array
     let allRoads = this.state.roads;
-    let ownedRoads = this.state.identity.owns_road;
+    let ownedRoads = this.state.player[this.state.identity].owns_road;
     let possibleRoads = [];
 
     for (let i = 0; i < ownedRoads.length; i ++) {
       for (let j = 0; j < allRoads[ownedRoads[i]].adj_road_slots.length; j++ ) {
         if (verifyRoad(allRoads[ownedRoads[i]].adj_road_slots[j])) {
-          for (let k = 0; k < possibleRoads.length; k++) {
-            if (possibleRoads[k].id === allRoads[ownedRoads[i]].adj_road_slots[j]) {
-              console.log('road already in possibleRoads');
-              continue;
-            }
+          let road = allRoads[ownedRoads[i]].adj_road_slots[j];
+          if(possibleRoads.indexOf(road) === -1){
+            possibleRoads.push(road);
           }
-          possibleRoads.push(allRoads[ownedRoads[i]].adj_road_slots[j]);
         }
       }
     }
@@ -179,76 +180,22 @@ class Game extends React.Component {
   findPossibleSettlements() {
     // determine HouseSlots that are valid for this player, returns an array
     let allRoads = this.state.roads;
-    let ownedRoads = this.state.identity.owns_road;
+    let ownedRoads = this.state.player[this.state.identity].owns_road;
     let possibleSettlements = [];
 
     for (let i = 0; i < ownedRoads.length; i ++) {
       for (let j = 0; j < allRoads[ownedRoads[i]].connecting_house_slots.length; j++ ) {
         if (verifyCorner(allRoads[ownedRoads[i]].connecting_house_slots[j])) {
-          for (let k = 0; k < possibleSettlements.length; k++) {
-            if (possibleSettlements[k].id === allRoads[ownedRoads[i]].connecting_house_slots[j]) {
-              console.log('settlement already in possibleSettlements');
-              continue;
-            }
+          let corner = allRoads[ownedRoads[i]].connecting_house_slots[j];
+          if(possibleSettlements.indexOf(corner) === -1){
+           possibleSettlements.push(allRoads[ownedRoads[i]].connecting_house_slots[j]);
           }
-          possibleSettlements.push(allRoads[ownedRoads[i]].connecting_house_slots[j]);
         }
       }
     }
 
     return possibleSettlements;
   }
-
-
-
-
-
-  // dice_roll_regular() {
-  //   let die_1_result = Math.floor(Math.random() * 6) + 1;
-  //   let die_2_result = Math.floor(Math.random() * 6) + 1;
-  //   console.log('dice rolled, results: ', die_1_result, die_2_result);
-
-  //   // TODO: update board with roll result
-
-  //   if (dice_roll === 7) {
-  //     for (let i = 1; i < 5; i++) {
-  //       if (resource_cards_in_hand(player[i]) > 7) {
-  //         discard_half(player[i]);
-  //         // move robber and steal 
-  //       }
-  //     }
-  //   } else {
-  //     collect_resources(die_1_result + die_2_result);
-  //   }
-
-  // }
-
-
-
-
-  // collect_resources(rollResult) {
-  //   for (let i = 0; i < this.state.tiles.length; i++) {
-  //     // if tile has roll value, the houses of that tile receive resources.
-  //     if (this.state.tiles[i].roll_trigger_value === rollResult) {
-  //       // check tile's house slots for owners
-  //       for (let j = 0; j < 6; j++) {
-  //         // TODO: check for edge case such as "not enough resources"
-  //         if (this.state.tiles[i].corner[j].owner !== null) {
-  //           let amountToReceive = corner // TODO: incomplete line here
-  //           let resourceRecepient = this.state.tiles[i].corner[j].owner;
-  //           let resourceToCollect = 'card_' + this.state.tiles[i].terrain;
-  //           console.log(resourceRecepient + ' receives ' + amountToReceive + ' ' + resourceToCollect + '(s)');
-  //           this.state.players[0][resourceToCollect]--
-  //           this.state.players[resourceRecepient][resourceToCollect]++
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-
-
-
 
   calculateScore() {
     let score = this.state.player[this.state.identity].played_card_victory + this.state.player[this.state.identity].owns_settlement.length + (2 * this.state.player[this.state.identity].owns_city.length);
@@ -365,17 +312,35 @@ class Game extends React.Component {
     })
 
     this.socket.on('identity', identity => {
-      console.log('identity trigger heard', identity);
       this.setState({identity: identity})
     })
 
     this.socket.on('message', body =>{
-      console.log('receiving messages');
       this.setState({messages: [...this.state.messages, body]})
     })
 
     this.socket.on('diceRoll', total => {
-      console.log('Player rolled a', total);
+      for(var i = 0; i < this.state.tiles.length; i++){
+        let tile = this.state.tiles[i];
+        if(tile.dice_trigger_value === total){
+          for(var j = 0; j < tile.connecting_house_slots.length; j++){
+            let index = tile.connecting_house_slots[j];
+            let corner = this.state.settlements[index];
+            if(corner.owner !== null){
+              let board = this.state.players[0];
+              let player = this.state.players[corner.owner];
+              let resource = tile.terrain;
+              let card = "card_"+resource;
+
+              board[card]--;
+              player[card]++;
+              this.setState({turn: this.state.turn + 1});
+              console.log('player' + corner.owner + " now has " + player[card] + resource + "s");
+              console.log('board now has ' + board[card] + resource + "s")
+            }
+          }
+        }
+      }
     })
 
     this.socket.on('endTurn', active => {
@@ -388,6 +353,10 @@ class Game extends React.Component {
 
     this.socket.on('first', player => {
       console.log('starting player is', player);
+    })
+
+    this.socket.on('robber', player => {
+      console.log('You need to move the robber');
     })
   }
 

@@ -9,7 +9,7 @@ class Messagelog extends React.Component {
   }
 
   componentWillReceiveProps(nextprops) {
-    console.log('Messagelog: compWillReceiveProps:', nextprops);
+    // console.log('Messagelog: compWillReceiveProps:', nextprops);
   }
   
 
@@ -17,8 +17,8 @@ class Messagelog extends React.Component {
     return (
       <div>
         <h2> MESSAGE LOG </h2>
-        {this.props.messages.map(message =>{
-          return (<div>{message}</div>)
+        {this.props.messages.map((message, index) =>{
+          return (<div key={index}>{message}</div>)
         })}
         <input type='text' placeholder="Write a message!" onKeyUp={this.props.handleSubmitMessage}/>
       </div>

@@ -9,7 +9,7 @@ class Playerinteface extends React.Component {
   }
 
   componentWillReceiveProps(nextprops) {
-    console.log('Playerinterface: compWillReceiveProps:', nextprops);
+    // console.log('Playerinterface: compWillReceiveProps:', nextprops);
     this.setState({
       // slotnumber: this.props.number,
       gamestate: nextprops.gamestate
