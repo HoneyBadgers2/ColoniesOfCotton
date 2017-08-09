@@ -148,4 +148,43 @@ io.on('connection', socket => {
         io.sockets.in(obj.room).emit('endTurn', obj.player)
     })
 
+    socket.on('buyRoad', obj => {
+        let message = {
+            message:'Player' + obj.player + ' buys a road.',
+            user:'COMPUTER'
+        }
+
+        io.sockets.in(obj.room).emit('message', message);
+        io.sockets.in(obj.room).emit('buyRoad', obj);
+    })
+
+    socket.on('buySettlement', obj => {
+        let message = {
+            message : 'Player' + obj.player + ' buys a settlement.',
+            user: 'COMPUTER'
+        }
+
+        io.sockets.in(obj.room).emit('message', message);
+        io.sockets.in(obj.room).emit('buySettlement', obj);
+    })
+
+    socket.on('buyCity', obj => {
+        let message = {
+            message: 'Player' + obj.player + ' buys a city.',
+            user: 'COMPUTER'
+        }
+
+        io.sockets.in(obj.room).emit('message', message);
+        io.sockets.in(obj.room).emit('buyCity', obj);
+    })
+
+    socket.on('buyDev', obj => {
+        let message = {
+            message: 'Player' + obj.player + ' buys a development card.',
+            user: "COMPUTER"
+        };
+
+        io.sockets.in(obj.room).emit('message', message);
+        io.sockets.in(obj.room).emit('buyDev', obj);
+    })
 })
