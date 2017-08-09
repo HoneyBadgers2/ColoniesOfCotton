@@ -324,6 +324,7 @@ class Game extends React.Component {
 
   canBuySettlement() {
     let possibleSettlements = this.findPossibleSettlements();
+    console.log(possibleSettlements);
 
     // check if affordable && piece available && there is a valid spot available
     if (this.state.players[this.state.identity].card_brick >= 1 && 
@@ -414,9 +415,12 @@ class Game extends React.Component {
     let buildingtype = event.target.id;
 
     if(event.keyCode === 13){
+      var temp = this.state.roads;
+      temp[slotId].owner = 1;
+      console.log(this.state.players[1].owns_road)
+      this.state.players[1].owns_road.push(Number(slotId));
       this.setState({
-        // update roads/settlements/cities in state
-        // update roads/settlements/cities in gameObject
+        roads: temp
       })
     }
   }
