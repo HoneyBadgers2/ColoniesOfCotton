@@ -1,17 +1,18 @@
 //Dependencies
 const mongoose = require ('mongoose');
-const dotenv = require('dotenv').config();
+require('dotenv').config();
+require('dotenv').load();
 
 
 //Mongoose Connection
-mongoose.connect(process.env.DB_URL);
-const db = mongoose.connection;
+// mongoose.connect(process.env.DB_URL);
+// const db = mongoose.connection;
 
 //DB Connection 
-db.on('error', console.error.bind(console, 'The DB just shit the bed. Here is your connection error:'));
-db.once('open', function () {
-  console.log('Database has created a succesful connection.')
-});
+// db.on('error', console.error.bind(console, 'The DB just shit the bed. Here is your connection error:'));
+// db.once('open', function () {
+//   console.log('Database has created a succesful connection.')
+// });
 
 
 // Board Schema
@@ -103,5 +104,17 @@ const TileSchema = mongoose.Schema({
 // Tile Model 
 const Tile = mongoose.model('Tile', TileSchema);
 
+// User Schema
+const UserSchema = mongoose.Schema({
+  user_name: String,
+  password: String,
+  in_game: Boolean,
+  games_won: Number,
+  current_room: String,
+});
 
-module.exports = {mongoose, Player, Settlement};
+// User Model
+const User = mongoose.model('User', UserSchema);
+
+
+module.exports = {mongoose, Player, Settlement, Road, Tile, User};
