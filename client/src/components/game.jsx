@@ -8,7 +8,6 @@ class Game extends React.Component {
   constructor(props) {
     super(props)
     this.state = { // dummy data
-      game_session_id: null,
       identity: 1,
       players: ['BOARD', 'Player1', 'Player2', 'Player3', 'Player4'],
       tiles: [0, 1, 2, 3, 4, 5],
@@ -33,7 +32,9 @@ class Game extends React.Component {
     }
 
     this.rollForFirst = this.rollForFirst.bind(this);
-    this.buy = this.buy.bind(this);
+    this.makePurchase = this.makePurchase.bind(this);
+    this.startTrade = this.startTrade.bind(this);
+    this.playCard = this.playCard.bind(this);
     this.endTurn = this.endTurn.bind(this);
     this.diceRoll = this.diceRoll.bind(this);
     this.robber = this.robber.bind(this);
@@ -58,7 +59,6 @@ class Game extends React.Component {
     this.canPlayCardMonopoly = this.canPlayCardMonopoly.bind(this);
     this.canPlayCardPlenty = this.canPlayCardPlenty.bind(this);
     this.canPlayCardVictory = this.canPlayCardVictory.bind(this);
-      
   }
   
   rollForFirst(){
@@ -70,8 +70,16 @@ class Game extends React.Component {
     this.setState({firstTurn: false});
   }
 
-  buy(item) {
-    console.log('Game: ', this.state.player[0], ' wants to buy: ', item);
+  makePurchase(item) {
+    console.log('Game: Player', this.state.players[this.state.identity].id, 'wants to:', item);
+  }
+
+  startTrade() {
+    console.log('Game: Player', this.state.players[this.state.identity].id, 'wants to: trade');
+  }
+
+  playCard(item) {
+    console.log('Game: Player', this.state.players[this.state.identity].id, 'wants to:', item);
   }
 
   endTurn() {
@@ -82,11 +90,8 @@ class Game extends React.Component {
       nextPlayer = 1;
     }
     this.setState({active: false});
-    let obj = {
-      room: this.state.game_session_id,
-      player: nextPlayer,
-    }
-    this.socket.emit('endTurn', obj);
+    console.log('nextPlayer is', nextPlayer);
+    this.socket.emit('endTurn', nextPlayer);
   }
 
 
@@ -96,7 +101,6 @@ class Game extends React.Component {
     let dice2 = Math.floor(Math.random() * 6 + 1);
     let total = dice1 + dice2
     let obj = {};
-    obj.room = this.state.game_session_id;
     obj.player = this.state.identity;
     obj.total = total;
     this.socket.emit('diceRoll', obj);
@@ -137,15 +141,10 @@ class Game extends React.Component {
 
 
   handleSubmitMessage(event){
-    let message = {
-      text: event.target.value,
-      user: this.state.identity,
-      game_session_id: this.state.game_session_id,
-    }
+    let body = event.target.value;
     
     if(event.keyCode === 13){
-      console.log('running');
-      this.socket.emit('message', message);
+      this.socket.emit('message', body);
       event.target.value = '';
     }
   }
@@ -155,8 +154,8 @@ class Game extends React.Component {
       return false
     }
 
-    const adjCorners = getAdjCornersToCorner(cornerId);
-    const adjRoads = getAdjRoadsToCorner(cornerId);
+    const adjCorners = this.getAdjCornersToCorner(cornerId);
+    const adjRoads = this.getAdjRoadsToCorner(cornerId);
 
     for(let i = 0; i < adjCorners.length; i++){
       if(adjCorners[i].owner !== null){
@@ -175,13 +174,16 @@ class Game extends React.Component {
 
 
   verifyRoad(roadId){
-    const adjRoads = getAdjRoadsToRoad(roadId);
+    const adjRoads = this.getAdjRoadsToRoad(roadId);
     for(let i = 0; i < adjRoads.length; i++){
       if(adjRoads[i].owner === this.state.identity){
-        let common = getCommonCornerToTwoRoads(adjRoads[i].id, roadId);
-        if(common.owner === this.state.identity || common.owner === null){
-          return true;
+        let common = this.getCommonCornerToTwoRoads(adjRoads[i].id, roadId);
+        if(common.owner){
+          if(common.owner === this.state.identity || common.owner === null){
+            return true;
+          }
         }
+
       }
     }
     return false;
@@ -218,7 +220,7 @@ class Game extends React.Component {
     let arr = this.state.roads[roadId].adj_road_slots;
     let output = [];
     for(let i = 0; i < arr.length; i++){
-      output.push(this.state.settlements[arr[i]]);
+      output.push(this.state.roads[arr[i]]);
     }
     return output;
   }
@@ -237,12 +239,11 @@ class Game extends React.Component {
   findPossibleRoads() {
     // determine Roads that are valid for this player, returns an array
     let allRoads = this.state.roads;
-    let ownedRoads = this.state.player[this.state.identity].owns_road;
+    let ownedRoads = this.state.players[this.state.identity].owns_road;
     let possibleRoads = [];
-
     for (let i = 0; i < ownedRoads.length; i ++) {
       for (let j = 0; j < allRoads[ownedRoads[i]].adj_road_slots.length; j++ ) {
-        if (verifyRoad(allRoads[ownedRoads[i]].adj_road_slots[j])) {
+        if (this.verifyRoad(allRoads[ownedRoads[i]].adj_road_slots[j])) {
           let road = allRoads[ownedRoads[i]].adj_road_slots[j];
           if(possibleRoads.indexOf(road) === -1){
             possibleRoads.push(road);
@@ -257,12 +258,12 @@ class Game extends React.Component {
   findPossibleSettlements() {
     // determine HouseSlots that are valid for this player, returns an array
     let allRoads = this.state.roads;
-    let ownedRoads = this.state.player[this.state.identity].owns_road;
+    let ownedRoads = this.state.players[this.state.identity].owns_road;
     let possibleSettlements = [];
 
     for (let i = 0; i < ownedRoads.length; i ++) {
       for (let j = 0; j < allRoads[ownedRoads[i]].connecting_house_slots.length; j++ ) {
-        if (verifyCorner(allRoads[ownedRoads[i]].connecting_house_slots[j])) {
+        if (this.verifyCorner(allRoads[ownedRoads[i]].connecting_house_slots[j])) {
           let corner = allRoads[ownedRoads[i]].connecting_house_slots[j];
           if(possibleSettlements.indexOf(corner) === -1){
            possibleSettlements.push(allRoads[ownedRoads[i]].connecting_house_slots[j]);
@@ -296,15 +297,13 @@ class Game extends React.Component {
 
 
 
-
-
   canBuyRoad() {
-    let possibleRoads = findPossibleRoads();
+    let possibleRoads = this.findPossibleRoads();
 
     // check if affordable && piece available && there is a valid spot available
-    if (this.state.player[this.state.identity].card_brick >= 1 && 
-      this.state.player[this.state.identity].card_lumber >= 1 && 
-      this.state.player[this.state.identity].owns_road.length < 14 && 
+    if (this.state.players[this.state.identity].card_brick >= 1 && 
+      this.state.players[this.state.identity].card_lumber >= 1 && 
+      this.state.players[this.state.identity].owns_road.length < 14 && 
       possibleRoads.length > 0) {
         return true;
       }
@@ -312,14 +311,14 @@ class Game extends React.Component {
   }
 
   canBuySettlement() {
-    let possibleSettlements = findPossibleSettlements();
+    let possibleSettlements = this.findPossibleSettlements();
 
     // check if affordable && piece available && there is a valid spot available
-    if (this.state.player[this.state.identity].card_brick >= 1 && 
-      this.state.player[this.state.identity].card_lumber >= 1 && 
-      this.state.player[this.state.identity].card_grain >= 1 && 
-      this.state.player[this.state.identity].card_wool >= 1 && 
-      this.state.player[this.state.identity].owns_settlement.length < 5 && 
+    if (this.state.players[this.state.identity].card_brick >= 1 && 
+      this.state.players[this.state.identity].card_lumber >= 1 && 
+      this.state.players[this.state.identity].card_grain >= 1 && 
+      this.state.players[this.state.identity].card_wool >= 1 && 
+      this.state.players[this.state.identity].owns_settlement.length < 5 && 
       possibleSettlements.length > 0) {
         return true;
       }
@@ -327,52 +326,52 @@ class Game extends React.Component {
   }
 
   canBuyCity() {
-    return (this.state.player[this.state.identity].card_ore >= 3 && 
-      this.state.player[this.state.identity].card_grain >= 2 && 
-      this.state.player[this.state.identity].owns_city.length < 4 && 
-      this.state.player[this.state.identity].owns_settlement.length > 0);
+    return (this.state.players[this.state.identity].card_ore >= 3 && 
+      this.state.players[this.state.identity].card_grain >= 2 && 
+      this.state.players[this.state.identity].owns_city.length < 4 && 
+      this.state.players[this.state.identity].owns_settlement.length > 0);
   }
 
   canBuyDevelopmentCard() {
-    return (this.state.player[this.state.identity].card_ore >= 1 && 
-      this.state.player[this.state.identity].card_grain >= 1 && 
-      this.state.player[this.state.identity].card_wool >= 1);
+    return (this.state.players[this.state.identity].card_ore >= 1 && 
+      this.state.players[this.state.identity].card_grain >= 1 && 
+      this.state.players[this.state.identity].card_wool >= 1);
   }
 
   canOfferTrade() {
-    return (this.state.player[this.state.identity].card_brick >= 1 || 
-      this.state.player[this.state.identity].card_lumber >= 1 || 
-      this.state.player[this.state.identity].card_grain >= 1 || 
-      this.state.player[this.state.identity].card_wool >= 1 || 
-      this.state.player[this.state.identity].card_ore >= 1);
+    return (this.state.players[this.state.identity].card_brick >= 1 || 
+      this.state.players[this.state.identity].card_lumber >= 1 || 
+      this.state.players[this.state.identity].card_grain >= 1 || 
+      this.state.players[this.state.identity].card_wool >= 1 || 
+      this.state.players[this.state.identity].card_ore >= 1);
   }
 
   canPlayCardKnight() {
-    return (!this.state.player[this.state.identity].has_played_development_card && this.state.player[this.state.identity].card_knight >= 1);
+    return (!this.state.players[this.state.identity].has_played_development_card && this.state.players[this.state.identity].card_knight >= 1);
   }
 
   canPlayCardRoad() {
-    return (!this.state.player[this.state.identity].has_played_development_card && this.state.player[this.state.identity].card_road >= 1);
+    return (!this.state.players[this.state.identity].has_played_development_card && this.state.players[this.state.identity].card_road >= 1);
   }
 
   canPlayCardMonopoly() {
-    return (!this.state.player[this.state.identity].has_played_development_card && this.state.player[this.state.identity].card_monopoly >= 1);
+    return (!this.state.players[this.state.identity].has_played_development_card && this.state.players[this.state.identity].card_monopoly >= 1);
   }
 
   canPlayCardPlenty() {
-    return (!this.state.player[this.state.identity].has_played_development_card && this.state.player[this.state.identity].card_plenty >= 1);
+    return (!this.state.players[this.state.identity].has_played_development_card && this.state.players[this.state.identity].card_plenty >= 1);
   }
 
   canPlayCardVictory() {
-    return (this.state.player[this.state.identity].card_victory >= 1);
+    return (this.state.players[this.state.identity].card_victory >= 1);
   }
 
   // canCancelAction() {
-  //   return this.state.player[this.state.identity].isInMenu ? true : false;
+  //   return this.state.players[this.state.identity].isInMenu ? true : false;
   // }
 
   // canRollDice() {
-  //   return this.state.player[this.state.identity].hasRolled ? false : true;
+  //   return this.state.players[this.state.identity].hasRolled ? false : true;
   // }
 
 
@@ -384,7 +383,7 @@ class Game extends React.Component {
 
     this.socket.on('start', body => {
       console.log('start trigger heard');
-      this.setState({game_session_id: body.game_session_id, players: body.players, tiles: body.tiles, settlements: body.settlements, roads: body.roads});
+      this.setState({players: body.players, tiles: body.tiles, settlements: body.settlements, roads: body.roads});
       if(this.state.identity === 1){
         this.setState({active: true})
       }
@@ -416,6 +415,20 @@ class Game extends React.Component {
               this.setState({turn: this.state.turn + 1});
               console.log('player' + corner.owner + " now has " + player[card] + resource + "s");
               console.log('board now has ' + board[card] + resource + "s")
+
+                  this.setState({
+                    ableToBuyRoad: this.canBuyRoad(),
+                    ableToBuySettlement: this.canBuySettlement(),
+                    ableToBuyCity: this.canBuyCity(),
+                    ableToBuyDevelopmentCard: this.canBuyDevelopmentCard(),
+                    ableToOfferTrade: this.canOfferTrade(),
+                    ableToPlayCardKnight: this.canPlayCardKnight(),
+                    ableToPlayCardRoad: this.canPlayCardRoad(),
+                    ableToPlayCardMonopoly: this.canPlayCardMonopoly(),
+                    ableToPlayCardPlenty: this.canPlayCardPlenty(),
+                    ableToPlayCardVictory: this.canPlayCardVictory()
+                  })
+
             }
           }
         }
@@ -440,19 +453,6 @@ class Game extends React.Component {
 
 
 
-    this.setState({
-      ableToBuyRoad: canBuyRoad(),
-      ableToBuySettlement: canBuySettlement(),
-      ableToBuyCity: canBuyCity(),
-      ableToBuyDevelopmentCard: canBuyDevelopmentCard(),
-      ableToOfferTrade: canOfferTrade(),
-      ableToPlayCardKnight: canPlayCardKnight(),
-      ableToPlayCardRoad: canPlayCardRoad(),
-      ableToPlayCardMonopoly: canPlayCardMonopoly(),
-      ableToPlayCardPlenty: canPlayCardPlenty(),
-      ableToPlayCardVictory: canPlayCardVictory(),
-
-    });
   }
 
 
@@ -462,12 +462,11 @@ class Game extends React.Component {
   render() {
     return(<div>
     <h2>Now in-game (game.jsx Component)</h2>
-    <div>GAME SESSION ID: {this.state.game_session_id}</div>
     <button onClick={this.rollForFirst}>ROLL FOR FIRST</button>
     <button id="2" onClick={this.robber}>Player 2</button>
     <button id="3" onClick={this.robber}>Player 3</button>
     <button id="4" onClick={this.robber}>Player 4</button>
-    {this.state.active ? <Playerinterface gamestate={this.state} diceRoll={this.diceRoll} buymethod={this.buy} endTurn={this.endTurn}/> : null}
+    {this.state.active ? <Playerinterface gamestate={this.state} diceRoll={this.diceRoll} buymethod={this.makePurchase} playcardmethod={this.playCard} offertrademethod={this.startTrade} endTurn={this.endTurn}/> : null}
     <Messagelog  messages={this.state.messages} handleSubmitMessage={this.handleSubmitMessage}/>
     <Boardview gamestate={this.state} />
     
