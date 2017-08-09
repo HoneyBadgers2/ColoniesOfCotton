@@ -62,7 +62,6 @@ class Game extends React.Component {
     this.canPlayCardMonopoly = this.canPlayCardMonopoly.bind(this);
     this.canPlayCardPlenty = this.canPlayCardPlenty.bind(this);
     this.canPlayCardVictory = this.canPlayCardVictory.bind(this);
-
     this.cheatTakeControl = this.cheatTakeControl.bind(this);
     this.cheatMoveRobber = this.cheatMoveRobber.bind(this);
     this.cheatMaxResource = this.cheatMaxResource.bind(this);
@@ -729,6 +728,92 @@ class Game extends React.Component {
         }
       }
     })
+
+    this.socket.on('buyRoad', obj => {
+      let players = this.state.players;
+      let player = players[obj.player];
+      let board = players[0];
+      player.card_brick --;
+      player.card_lumber --;
+      player.owns_road.push(obj.road);
+
+      board.card_brick ++;
+      board.card_lumber++;
+
+
+      let roads = this.state.roads;
+      let road = roads[obj.road];
+      road.owner = obj.player;
+
+      this.setState({players: players, roads: roads});
+    })
+
+    this.socket.on('buySettlement', obj => {
+      let players = this.state.players;
+      let player = players[obj.player];
+      let board = players[0];
+      player.card_brick --;
+      player.card_lumber --;
+      player.card_grain --;
+      player.card_wool --;
+
+      board.card_brick ++;
+      board.card_lumber ++;
+      board.card_grain ++;
+      board.card_wool ++;
+      
+
+      player.owns_settlement.push(obj.settlement);
+
+      let settlements = this.state.settlements;
+      let settlement = settlements[obj.settlement];
+    
+      settlement.owner = obj.player;
+      settlement.house_type = 1;
+
+      this.setState({players: players, settlements: settlements});
+    })
+
+    this.socket.on('buyCity', obj => {
+      let players = this.state.players;
+      let player = players[obj.player];
+      let board = players[0];
+
+      player.card_grain -= 2;
+      player.card_ore -= 3;
+      board.card_grain += 2;
+      board.card_ore += 2;
+
+      player.owns_city.push(obj.city);
+
+      let settlements = this.state.settlements;
+      let settlement = settlements[obj.city];
+    
+      settlement.house_type = 2;
+
+      let index = player.owns_settlement.indexOf(obj.city);
+      player.owns_settlement.splice(index, 1);
+      this.setState({players: players, settlements: settlement});
+    })
+
+    this.socket.on('buyDev', obj => {
+      let players = this.state.players;
+      let player = players[obj.player];
+      let board = players[0];
+
+      player.card_grain --;
+      player.card_ore --;
+      player.card_wool --;
+
+      board.card_grain ++;
+      board.card_ore ++;
+      board.card_wool ++;
+
+      player[obj.dev] ++;
+      board[obj.dev] --;
+    })
+
+
 
     this.socket.on('endTurn', active => {
       console.log('hearing END TURN', active);
