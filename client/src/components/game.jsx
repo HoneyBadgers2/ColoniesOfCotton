@@ -59,6 +59,12 @@ class Game extends React.Component {
     this.canPlayCardMonopoly = this.canPlayCardMonopoly.bind(this);
     this.canPlayCardPlenty = this.canPlayCardPlenty.bind(this);
     this.canPlayCardVictory = this.canPlayCardVictory.bind(this);
+
+    this.cheatTakeControl = this.cheatTakeControl.bind(this);
+    this.cheatMoveRobber = this.cheatMoveRobber.bind(this);
+    this.cheatMaxResource = this.cheatMaxResource.bind(this);
+    this.cheatMaxDev = this.cheatMaxDev.bind(this);
+
   }
   
   rollForFirst(){
@@ -378,6 +384,97 @@ class Game extends React.Component {
 
 /////////////////////////// END HELPER FUNCTIONS ///////////////////////////
 
+
+
+
+
+
+
+
+
+
+/////////////////////////// CHEATS ///////////////////////////
+/////////////////////////// CHEATS ///////////////////////////
+
+  // remember to bind these functions
+  // this.cheatTakeControl = this.cheatTakeControl.bind(this);
+  // this.cheatMoveRobber = this.cheatMoveRobber.bind(this);
+  // this.cheatMaxResource = this.cheatMaxResource.bind(this);
+  // this.cheatMaxDev = this.cheatMaxDev.bind(this);
+
+
+  cheatTakeControl(event) {
+    let slotId = event.target.value;
+    let buildingtype = event.target.id;
+
+    if(event.keyCode === 13){
+      this.setState({
+        // update roads/settlements/cities in state
+        // update roads/settlements/cities in gameObject
+      })
+    }
+  }
+
+  cheatMoveRobber() {
+    let tileId = event.target.value
+    if(event.keyCode === 13){
+      this.setState({
+        // move robber
+      })
+    }
+  }
+
+  cheatMaxResource() {
+    let allPlayerStates = this.state.players
+    allPlayerStates[this.state.identity].card_brick = 9999;
+    allPlayerStates[this.state.identity].card_grain = 9999;
+    allPlayerStates[this.state.identity].card_lumber = 9999;
+    allPlayerStates[this.state.identity].card_ore = 9999;
+    allPlayerStates[this.state.identity].card_wool = 9999;
+
+    this.setState({
+      players: allPlayers
+    })
+  }
+
+  cheatMaxDev() {
+    let allPlayerStates = this.state.players
+    allPlayerStates[this.state.identity].card_knight = 9999;
+    allPlayerStates[this.state.identity].card_road = 9999;
+    allPlayerStates[this.state.identity].card_monopoly = 9999;
+    allPlayerStates[this.state.identity].card_plenty = 9999;
+    // allPlayerStates[this.state.identity].card_victory = 9999;
+
+    this.setState({
+      players: allPlayers
+    })
+  }
+
+
+    // <h3>Cheat Mode for Developer
+    //   <button id="2" onClick={this.robber}>EventRobberSteal from Player 2</button>
+    //   <button id="3" onClick={this.robber}>EventRobberSteal from Player 3</button>
+    //   <button id="4" onClick={this.robber}>EventRobberSteal from Player 4</button>
+    //   <button onClick={this.cheatMaxResource}>Maxed Resources</button>
+    //   <button onClick={this.cheatMaxDev}>Maxed Dev Cards</button>
+    //   <input type='text' id="cheatroad" placeholder="Take Road Ownership (RoadSlotId)" onKeyUp={this.cheatTakeControl}/>
+    //   <input type='text' id="cheathouse" placeholder="Take House Ownership (HouseSlotId)" onKeyUp={this.cheatTakeControl}/>
+    //   <input type='text' id="cheatmoverobber" placeholder="Move Robber (TileId)" onKeyUp={this.cheatMoveRobber}/>
+    // </h3>
+
+
+
+/////////////////////////// END CHEATS ///////////////////////////
+/////////////////////////// END CHEATS ///////////////////////////
+
+
+
+
+
+
+
+
+
   componentDidMount() {
     this.socket = io('/');
 
@@ -462,10 +559,20 @@ class Game extends React.Component {
   render() {
     return(<div>
     <h2>Now in-game (game.jsx Component)</h2>
+
+    <h3>Cheat Mode for Developer
+    <button id="2" onClick={this.robber}>EventRobberSteal from Player 2</button>
+    <button id="3" onClick={this.robber}>EventRobberSteal from Player 3</button>
+    <button id="4" onClick={this.robber}>EventRobberSteal from Player 4</button>
+    <button onClick={this.cheatMaxResource}>Maxed Resources</button>
+    <button onClick={this.cheatMaxDev}>Maxed Dev Cards</button>
+    <input type='text' id="cheatroad" placeholder="Take Road Ownership (RoadSlotId)" onKeyUp={this.cheatTakeControl}/>
+    <input type='text' id="cheathouse" placeholder="Take House Ownership (HouseSlotId)" onKeyUp={this.cheatTakeControl}/>
+    <input type='text' id="cheatmoverobber" placeholder="Move Robber (TileId)" onKeyUp={this.cheatMoveRobber}/>
+    </h3>
+
     <button onClick={this.rollForFirst}>ROLL FOR FIRST</button>
-    <button id="2" onClick={this.robber}>Player 2</button>
-    <button id="3" onClick={this.robber}>Player 3</button>
-    <button id="4" onClick={this.robber}>Player 4</button>
+
     {this.state.active ? <Playerinterface gamestate={this.state} diceRoll={this.diceRoll} buymethod={this.makePurchase} playcardmethod={this.playCard} offertrademethod={this.startTrade} endTurn={this.endTurn}/> : null}
     <Messagelog  messages={this.state.messages} handleSubmitMessage={this.handleSubmitMessage}/>
     <Boardview gamestate={this.state} />
