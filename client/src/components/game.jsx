@@ -9,6 +9,7 @@ class Game extends React.Component {
     super(props)
     this.state = { // dummy data
       identity: 1,
+      room: null,
       players: ['BOARD', 'Player1', 'Player2', 'Player3', 'Player4'],
       tiles: [0, 1, 2, 3, 4, 5],
       settlements: [],
@@ -107,6 +108,7 @@ class Game extends React.Component {
     let dice2 = Math.floor(Math.random() * 6 + 1);
     let total = dice1 + dice2
     let obj = {};
+    obj.room = this.state.room;
     obj.player = this.state.identity;
     obj.total = total;
     this.socket.emit('diceRoll', obj);
@@ -147,10 +149,14 @@ class Game extends React.Component {
 
 
   handleSubmitMessage(event){
-    let body = event.target.value;
+   let obj = {
+     user: this.state.identity,
+     room: this.state.room,
+     text: event.target.value
+   }
     
     if(event.keyCode === 13){
-      this.socket.emit('message', body);
+      this.socket.emit('message', obj);
       event.target.value = '';
     }
   }
@@ -480,7 +486,7 @@ class Game extends React.Component {
 
     this.socket.on('start', body => {
       console.log('start trigger heard');
-      this.setState({players: body.players, tiles: body.tiles, settlements: body.settlements, roads: body.roads});
+      this.setState({room: body.game_session_id, players: body.players, tiles: body.tiles, settlements: body.settlements, roads: body.roads});
       if(this.state.identity === 1){
         this.setState({active: true})
       }

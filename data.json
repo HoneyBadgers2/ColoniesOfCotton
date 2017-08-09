@@ -232,7 +232,7 @@
             "has_robber": false,
             "connecting_road_slots": [9, 34, 35, 36, 37, 38],
             "connecting_house_slots": [8, 9, 26, 27, 28, 29],
-            "connecting_tiles": [2, 9, 19, null, null, null]
+            "connecting_tiles": [2, 9, 19]
         },
         {
             "id": 9,
@@ -241,7 +241,7 @@
             "has_robber": false,
             "connecting_road_slots": [10, 12, 41, 40, 39, 38],
             "connecting_house_slots": [9, 10, 11, 29, 30, 31],
-            "connecting_tiles": [2, 3, 8, 10, null, null]
+            "connecting_tiles": [2, 3, 8, 10]
         },
         {
             "id": 10,
@@ -250,7 +250,7 @@
             "has_robber": false,
             "connecting_road_slots": [13, 41, 42, 43, 44, 45],
             "connecting_house_slots": [11, 12, 34, 33, 32, 31],
-            "connecting_tiles": [3, 9, 11, null, null, null]
+            "connecting_tiles": [3, 9, 11]
         },
         {
             "id": 11,
@@ -259,7 +259,7 @@
             "has_robber": false,
             "connecting_road_slots": [14, 45, 46, 47, 48, 16],
             "connecting_house_slots": [12, 13, 14, 36, 35, 34],
-            "connecting_tiles": [3, 4, 10, 12, null, null]
+            "connecting_tiles": [3, 4, 10, 12]
         },
         {
             "id": 12,
@@ -268,7 +268,7 @@
             "has_robber": false,
             "connecting_road_slots": [17, 48, 49, 50, 51, 52],
             "connecting_house_slots": [14, 15, 36, 37, 38, 39],
-            "connecting_tiles": [4, 11, 13, null, null, null]
+            "connecting_tiles": [4, 11, 13]
         },
         {
             "id": 13,
@@ -277,7 +277,7 @@
             "has_robber": false,
             "connecting_road_slots": [18, 20, 55, 54, 53, 52],
             "connecting_house_slots": [15, 16, 17, 39, 40, 41],
-            "connecting_tiles": [4, 5, 12, 14, null, null]
+            "connecting_tiles": [4, 5, 12, 14]
         },
         {
             "id": 14,
@@ -286,7 +286,7 @@
             "has_robber": false,
             "connecting_road_slots": [21, 55, 56, 57, 58, 59],
             "connecting_house_slots": [17, 18, 41, 42, 43, 44],
-            "connecting_tiles": [5, 13, 15, null, null, null]
+            "connecting_tiles": [5, 13, 15]
         },
         {
             "id": 15,
@@ -295,7 +295,7 @@
             "has_robber": false,
             "connecting_road_slots": [59, 60, 61, 62, 22, 24],
             "connecting_house_slots": [18, 19, 20, 44, 45, 46],
-            "connecting_tiles": [5, 6, 14, 16, null, null]
+            "connecting_tiles": [5, 6, 14, 16]
         },
         {
             "id": 16,
@@ -304,7 +304,7 @@
             "has_robber": false,
             "connecting_road_slots": [62, 63, 64, 65, 66, 25],
             "connecting_house_slots": [46, 47, 48, 49, 20, 21],
-            "connecting_tiles": [6, 15, 17, null, null, null]
+            "connecting_tiles": [6, 15, 17]
         },
         {
             "id": 17,
@@ -313,7 +313,7 @@
             "has_robber": false,
             "connecting_road_slots": [66, 67, 68, 69, 26, 28],
             "connecting_house_slots": [21, 22, 23, 49, 50, 51],
-            "connecting_tiles": [6, 7, 16, 18, null, null]
+            "connecting_tiles": [6, 7, 16, 18]
         },
         {
             "id": 18,
@@ -322,7 +322,7 @@
             "has_robber": false,
             "connecting_road_slots": [29, 31, 69, 70, 71, 72],
             "connecting_house_slots": [23, 24, 51, 52, 53, 54],
-            "connecting_tiles": [7, 17, 19, null, null, null]
+            "connecting_tiles": [7, 17, 19]
         },
         {
             "id": 19,
@@ -331,7 +331,7 @@
             "has_robber": false,
             "connecting_road_slots": [8, 30, 31, 32, 33, 34],
             "connecting_house_slots": [7, 8, 24, 54, 25, 26],
-            "connecting_tiles": [2, 7, 8, 18, null, null]
+            "connecting_tiles": [2, 7, 8, 18]
         }
     ],
     "settlements":[
@@ -592,8 +592,8 @@
             "port_id": 5,
             "port_input_type": "lumber",
             "port_input_value": 2,
-            "adj_house_slots": [54, 26, null],
-            "connecting_road_slots": [32, 33, null]
+            "adj_house_slots": [54, 26],
+            "connecting_road_slots": [32, 33]
         },
         {
             "id": 26,
@@ -612,8 +612,8 @@
             "port_id": 6,
             "port_input_type": "any_type",
             "port_input_value": 3,
-            "adj_house_slots": [26, 28, null],
-            "connecting_road_slots": [35, 36, null]
+            "adj_house_slots": [26, 28],
+            "connecting_road_slots": [35, 36]
         },
         {
             "id": 28,
@@ -622,8 +622,8 @@
             "port_id": 6,
             "port_input_type": "any_type",
             "port_input_value": 3,
-            "adj_house_slots": [27, 29, null],
-            "connecting_road_slots": [36, 37, null]
+            "adj_house_slots": [27, 29],
+            "connecting_road_slots": [36, 37]
         },
         {
             "id": 29,
@@ -642,8 +642,8 @@
             "port_id": 7,
             "port_input_type": "grain",
             "port_input_value": 2,
-            "adj_house_slots": [29, 31, null],
-            "connecting_road_slots": [39, 40, null]
+            "adj_house_slots": [29, 31],
+            "connecting_road_slots": [39, 40]
         },
         {
             "id": 31,
@@ -662,8 +662,8 @@
             "port_id": null,
             "port_input_type": null,
             "port_input_value": null,
-            "adj_house_slots": [31, 33, null],
-            "connecting_road_slots": [42, 43, null]
+            "adj_house_slots": [31, 33],
+            "connecting_road_slots": [42, 43]
         },
         {
             "id": 33,
@@ -672,8 +672,8 @@
             "port_id": null,
             "port_input_type": null,
             "port_input_value": null,
-            "adj_house_slots": [32, 34, null],
-            "connecting_road_slots": [43, 44, null]
+            "adj_house_slots": [32, 34],
+            "connecting_road_slots": [43, 44]
         },
         {
             "id": 34,
@@ -692,8 +692,8 @@
             "port_id": 8,
             "port_input_type": "ore",
             "port_input_value": 2,
-            "adj_house_slots": [34, 36, null],
-            "connecting_road_slots": [46, 47, null]
+            "adj_house_slots": [34, 36],
+            "connecting_road_slots": [46, 47]
         },
         {
             "id": 36,
@@ -712,8 +712,8 @@
             "port_id": 9,
             "port_input_type": "any_type",
             "port_input_value": 3,
-            "adj_house_slots": [36, 38, null],
-            "connecting_road_slots": [49, 50, null]
+            "adj_house_slots": [36, 38],
+            "connecting_road_slots": [49, 50]
         },
         {
             "id": 38,
@@ -722,8 +722,8 @@
             "port_id": 9,
             "port_input_type": "any_type",
             "port_input_value": 3,
-            "adj_house_slots": [37, 39, null],
-            "connecting_road_slots": [50, 51, null]
+            "adj_house_slots": [37, 39],
+            "connecting_road_slots": [50, 51]
         },
         {
             "id": 39,
@@ -742,8 +742,8 @@
             "port_id": 1,
             "port_input_type": "wool",
             "port_input_value": 2,
-            "adj_house_slots": [39, 41, null],
-            "connecting_road_slots": [53, 54, null]
+            "adj_house_slots": [39, 41],
+            "connecting_road_slots": [53, 54]
         },
         {
             "id": 41,
@@ -762,8 +762,8 @@
             "port_id": null,
             "port_input_type": null,
             "port_input_value": null,
-            "adj_house_slots": [41, 43, null],
-            "connecting_road_slots": [56, 57, null]
+            "adj_house_slots": [41, 43],
+            "connecting_road_slots": [56, 57]
         },
         {
             "id": 43,
@@ -772,8 +772,8 @@
             "port_id": null,
             "port_input_type": null,
             "port_input_value": null,
-            "adj_house_slots": [42, 44, null],
-            "connecting_road_slots": [57, 58, null]
+            "adj_house_slots": [42, 44],
+            "connecting_road_slots": [57, 58]
         },
         {
             "id": 44,
@@ -792,8 +792,8 @@
             "port_id": 2,
             "port_input_type": "any_type",
             "port_input_value": 3,
-            "adj_house_slots": [44, 46, null],
-            "connecting_road_slots": [60, 61, null]
+            "adj_house_slots": [44, 46],
+            "connecting_road_slots": [60, 61]
         },
         {
             "id": 46,
@@ -812,8 +812,8 @@
             "port_id": 3,
             "port_input_type": "any_type",
             "port_input_value": 3,
-            "adj_house_slots": [46, 48, null],
-            "connecting_road_slots": [63, 64, null]
+            "adj_house_slots": [46, 48],
+            "connecting_road_slots": [63, 64]
         },
         {
             "id": 48,
@@ -822,8 +822,8 @@
             "port_id": 3,
             "port_input_type": "any_type",
             "port_input_value": 3,
-            "adj_house_slots": [47, 49, null],
-            "connecting_road_slots": [64, 65, null]
+            "adj_house_slots": [47, 49],
+            "connecting_road_slots": [64, 65]
         },
         {
             "id": 49,
@@ -842,8 +842,8 @@
             "port_id": 4,
             "port_input_type": "brick",
             "port_input_value": 2,
-            "adj_house_slots": [49, 51, null],
-            "connecting_road_slots": [67, 68, null]
+            "adj_house_slots": [49, 51],
+            "connecting_road_slots": [67, 68]
         },
         {
             "id": 51,
@@ -862,8 +862,8 @@
             "port_id": null,
             "port_input_type": null,
             "port_input_value": null,
-            "adj_house_slots": [51, 53, null],
-            "connecting_road_slots": [70, 71, null]
+            "adj_house_slots": [51, 53],
+            "connecting_road_slots": [70, 71]
         },
         {
             "id": 53,
@@ -872,8 +872,8 @@
             "port_id": null,
             "port_input_type": null,
             "port_input_value": null,
-            "adj_house_slots": [52, 54, null],
-            "connecting_road_slots": [71, 72, null]
+            "adj_house_slots": [52, 54],
+            "connecting_road_slots": [71, 72]
         },
         {
             "id": 54,
@@ -1083,13 +1083,13 @@
             "id": 32,
             "owner": 1,
             "connecting_house_slots": [54, 25],
-            "adj_road_slots": [31, 33, 72, null]
+            "adj_road_slots": [31, 33, 72]
         },
         {
             "id": 33,
             "owner": null,
             "connecting_house_slots": [25, 26],
-            "adj_road_slots": [32, 34, 35, null]
+            "adj_road_slots": [32, 34, 35]
         },
         {
             "id": 34,
@@ -1101,19 +1101,19 @@
             "id": 35,
             "owner": null,
             "connecting_house_slots": [26, 27],
-            "adj_road_slots": [33, 34, 36, null]
+            "adj_road_slots": [33, 34, 36]
         },
         {
             "id": 36,
             "owner": 1,
             "connecting_house_slots": [27, 28],
-            "adj_road_slots": [35, 38, null, null]
+            "adj_road_slots": [35, 38]
         },
         {
             "id": 37,
             "owner": null,
             "connecting_house_slots": [28, 29],
-            "adj_road_slots": [36, 38, 39, null]
+            "adj_road_slots": [36, 38, 39]
         },
         {
             "id": 38,
@@ -1125,13 +1125,13 @@
             "id": 39,
             "owner": null,
             "connecting_house_slots": [29, 30],
-            "adj_road_slots": [37, 38, 40, null]
+            "adj_road_slots": [37, 38, 40]
         },
         {
             "id": 40,
             "owner": null,
             "connecting_house_slots": [30, 31],
-            "adj_road_slots": [39, 41, 42, null]
+            "adj_road_slots": [39, 41, 42]
         },
         {
             "id": 41,
@@ -1143,19 +1143,19 @@
             "id": 42,
             "owner": 2,
             "connecting_house_slots": [31, 32],
-            "adj_road_slots": [40, 41, 43, null]
+            "adj_road_slots": [40, 41, 43]
         },
         {
             "id": 43,
             "owner": null,
             "connecting_house_slots": [32, 33],
-            "adj_road_slots": [42, 44, null, null]
+            "adj_road_slots": [42, 44]
         },
         {
             "id": 44,
             "owner": null,
             "connecting_house_slots": [33, 34],
-            "adj_road_slots": [43, 45, 46, null]
+            "adj_road_slots": [43, 45, 46]
         },
         {
             "id": 45,
@@ -1167,13 +1167,13 @@
             "id": 46,
             "owner": null,
             "connecting_house_slots": [34, 35],
-            "adj_road_slots": [44, 45, 47, null]
+            "adj_road_slots": [44, 45, 47]
         },
         {
             "id": 47,
             "owner": null,
             "connecting_house_slots": [35, 36],
-            "adj_road_slots": [46, 48, 49, null]
+            "adj_road_slots": [46, 48, 49]
         },
         {
             "id": 48,
@@ -1185,19 +1185,19 @@
             "id": 49,
             "owner": null,
             "connecting_house_slots": [36, 37],
-            "adj_road_slots": [47, 48, 50, null]
+            "adj_road_slots": [47, 48, 50]
         },
         {
             "id": 50,
             "owner": 3,
             "connecting_house_slots": [37, 38],
-            "adj_road_slots": [49, 51, null, null]
+            "adj_road_slots": [49, 51]
         },
         {
             "id": 51,
             "owner": null,
             "connecting_house_slots": [38, 39],
-            "adj_road_slots": [50, 52, 53, null]
+            "adj_road_slots": [50, 52, 53]
         },
         {
             "id": 52,
@@ -1209,13 +1209,13 @@
             "id": 53,
             "owner": null,
             "connecting_house_slots": [39, 40],
-            "adj_road_slots": [51, 52, 54, null]
+            "adj_road_slots": [51, 52, 54]
         },
         {
             "id": 54,
             "owner": 3,
             "connecting_house_slots": [40, 41],
-            "adj_road_slots": [53, 55, 56, null]
+            "adj_road_slots": [53, 55, 56]
         },
         {
             "id": 55,
@@ -1227,19 +1227,19 @@
             "id": 56,
             "owner": null,
             "connecting_house_slots": [41, 42],
-            "adj_road_slots": [54, 55, 57, null]
+            "adj_road_slots": [54, 55, 57]
         },
         {
             "id": 57,
             "owner": null,
             "connecting_house_slots": [42, 43],
-            "adj_road_slots": [56, 58, null, null]
+            "adj_road_slots": [56, 58]
         },
         {
             "id": 58,
             "owner": null,
             "connecting_house_slots": [43, 44],
-            "adj_road_slots": [57, 59, 60, null]
+            "adj_road_slots": [57, 59, 60]
         },
         {
             "id": 59,
@@ -1251,13 +1251,13 @@
             "id": 60,
             "owner": null,
             "connecting_house_slots": [44, 45],
-            "adj_road_slots": [58, 59, 61, null]
+            "adj_road_slots": [58, 59, 61]
         },
         {
             "id": 61,
             "owner": null,
             "connecting_house_slots": [45, 46],
-            "adj_road_slots": [60, 62, 63, null]
+            "adj_road_slots": [60, 62, 63]
         },
         {
             "id": 62,
@@ -1269,19 +1269,19 @@
             "id": 63,
             "owner": null,
             "connecting_house_slots": [46, 47],
-            "adj_road_slots": [61, 62, 64, null]
+            "adj_road_slots": [61, 62, 64]
         },
         {
             "id": 64,
             "owner": null,
             "connecting_house_slots": [47, 48],
-            "adj_road_slots": [63, 65, null, null]
+            "adj_road_slots": [63, 65]
         },
         {
             "id": 65,
             "owner": 4,
             "connecting_house_slots": [48, 49],
-            "adj_road_slots": [64, 66, 67, null]
+            "adj_road_slots": [64, 66, 67]
         },
         {
             "id": 66,
@@ -1293,13 +1293,13 @@
             "id": 67,
             "owner": null,
             "connecting_house_slots": [49, 50],
-            "adj_road_slots": [65, 66, 68, null]
+            "adj_road_slots": [65, 66, 68]
         },
         {
             "id": 68,
             "owner": null,
             "connecting_house_slots": [50, 51],
-            "adj_road_slots": [67, 69, 70, null]
+            "adj_road_slots": [67, 69, 70]
         },
         {
             "id": 69,
@@ -1311,19 +1311,19 @@
             "id": 70,
             "owner": null,
             "connecting_house_slots": [51, 52],
-            "adj_road_slots": [68, 69, 71, null]
+            "adj_road_slots": [68, 69, 71]
         },
         {
             "id": 71,
             "owner": null,
             "connecting_house_slots": [52, 53],
-            "adj_road_slots": [70, 72, null, null]
+            "adj_road_slots": [70, 72]
         },
         {
             "id": 72,
             "owner": null,
             "connecting_house_slots": [53, 54],
-            "adj_road_slots": [31, 32, 71, null]
+            "adj_road_slots": [31, 32, 71]
         }
     ]}
 

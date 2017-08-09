@@ -104,13 +104,13 @@ io.on('connection', socket => {
     }
 
     socket.on('message', body => {
-        let room = body.game_session_id;
+        let room = body.room;
         let message = {
             text: body.text,
             user: body.user
         }
 
-        io.sockets.emit('message', message);
+        io.sockets.in(room).emit('message', message);
     })
 
 
@@ -129,7 +129,9 @@ io.on('connection', socket => {
             io.sockets.in(room).emit('diceRoll', obj.total);
         } else {
             socket.emit('robber', obj.player);
-            io.sockets.in(room).emit('message', 'player'+obj.player+ ' needs to move the robber');
+            let robber = {}
+            message.text = 'player'+obj.player+ ' needs to move the robber';
+            io.sockets.in(room).emit('message', message);
         }
     })
 
