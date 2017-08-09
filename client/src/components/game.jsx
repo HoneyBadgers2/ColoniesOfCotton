@@ -8,6 +8,7 @@ class Game extends React.Component {
   constructor(props) {
     super(props)
     this.state = { // dummy data
+      game_session_id: null,
       identity: 1,
       players: ['BOARD', 'Player1', 'Player2', 'Player3', 'Player4'],
       tiles: [0, 1, 2, 3, 4, 5],
@@ -31,12 +32,33 @@ class Game extends React.Component {
       hasRolled: false
     }
 
-    this.buy = this.buy.bind(this);
-    this.handleSubmitMessage = this.handleSubmitMessage.bind(this);
-    this.diceRoll = this.diceRoll.bind(this);
-    this.endTurn = this.endTurn.bind(this);
     this.rollForFirst = this.rollForFirst.bind(this);
+    this.buy = this.buy.bind(this);
+    this.endTurn = this.endTurn.bind(this);
+    this.diceRoll = this.diceRoll.bind(this);
     this.robber = this.robber.bind(this);
+    this.handleSubmitMessage = this.handleSubmitMessage.bind(this);
+    this.verifyCorner = this.verifyCorner.bind(this);
+    this.verifyRoad = this.verifyRoad.bind(this);
+    this.getAdjCornersToCorner = this.getAdjCornersToCorner.bind(this);
+    this.getAdjRoadsToCorner = this.getAdjRoadsToCorner.bind(this);
+    this.getAdjCornerToRoad = this.getAdjCornerToRoad.bind(this);
+    this.getAdjRoadsToRoad = this.getAdjRoadsToRoad.bind(this);
+    this.getCommonCornerToTwoRoads = this.getCommonCornerToTwoRoads.bind(this);
+    this.findPossibleRoads = this.findPossibleRoads.bind(this);
+    this.findPossibleSettlements = this.findPossibleSettlements.bind(this);
+    this.calculateScore = this.calculateScore.bind(this);
+    this.canBuyRoad = this.canBuyRoad.bind(this);
+    this.canBuySettlement = this.canBuySettlement.bind(this);
+    this.canBuyCity = this.canBuyCity.bind(this);
+    this.canBuyDevelopmentCard = this.canBuyDevelopmentCard.bind(this);
+    this.canOfferTrade = this.canOfferTrade.bind(this);
+    this.canPlayCardKnight = this.canPlayCardKnight.bind(this);
+    this.canPlayCardRoad = this.canPlayCardRoad.bind(this);
+    this.canPlayCardMonopoly = this.canPlayCardMonopoly.bind(this);
+    this.canPlayCardPlenty = this.canPlayCardPlenty.bind(this);
+    this.canPlayCardVictory = this.canPlayCardVictory.bind(this);
+      
   }
   
   rollForFirst(){
@@ -60,8 +82,11 @@ class Game extends React.Component {
       nextPlayer = 1;
     }
     this.setState({active: false});
-    console.log('nextPlayer is', nextPlayer);
-    this.socket.emit('endTurn', nextPlayer);
+    let obj = {
+      room: this.state.game_session_id,
+      player: nextPlayer,
+    }
+    this.socket.emit('endTurn', obj);
   }
 
 
@@ -71,6 +96,7 @@ class Game extends React.Component {
     let dice2 = Math.floor(Math.random() * 6 + 1);
     let total = dice1 + dice2
     let obj = {};
+    obj.room = this.state.game_session_id;
     obj.player = this.state.identity;
     obj.total = total;
     this.socket.emit('diceRoll', obj);
@@ -111,11 +137,15 @@ class Game extends React.Component {
 
 
   handleSubmitMessage(event){
-    let body = event.target.value;
+    let message = {
+      text: event.target.value,
+      user: this.state.identity,
+      game_session_id: this.state.game_session_id,
+    }
     
     if(event.keyCode === 13){
       console.log('running');
-      this.socket.emit('message', body);
+      this.socket.emit('message', message);
       event.target.value = '';
     }
   }
@@ -354,7 +384,7 @@ class Game extends React.Component {
 
     this.socket.on('start', body => {
       console.log('start trigger heard');
-      this.setState({players: body.players, tiles: body.tiles, settlements: body.settlements, roads: body.roads});
+      this.setState({game_session_id: body.game_session_id, players: body.players, tiles: body.tiles, settlements: body.settlements, roads: body.roads});
       if(this.state.identity === 1){
         this.setState({active: true})
       }
@@ -432,6 +462,7 @@ class Game extends React.Component {
   render() {
     return(<div>
     <h2>Now in-game (game.jsx Component)</h2>
+    <div>GAME SESSION ID: {this.state.game_session_id}</div>
     <button onClick={this.rollForFirst}>ROLL FOR FIRST</button>
     <button id="2" onClick={this.robber}>Player 2</button>
     <button id="3" onClick={this.robber}>Player 3</button>

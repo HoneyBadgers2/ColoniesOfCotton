@@ -18,7 +18,7 @@ class Messagelog extends React.Component {
       <div>
         <h2> MESSAGE LOG </h2>
         {this.props.messages.map((message, index) =>{
-          return (<div key={index}>{message}</div>)
+          return (<div key={index}>{message.user}:  {message.text}</div>)
         })}
         <input type='text' placeholder="Write a message!" onKeyUp={this.props.handleSubmitMessage}/>
       </div>

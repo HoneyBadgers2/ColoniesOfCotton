@@ -84,61 +84,58 @@ function initiateGame(gamedata) {
 
 
 
-
+var room = 0;
 var highest = 0;
 var counter = 0;
 var first = null;
 var rolls = 0;
 
 io.on('connection', socket => {
-    counter ++
+    counter ++;
     socket.emit('identity', counter);
-
-    socket.on('message', body => {
-        io.sockets.emit('message', body);
-    })
-
-
-    const game = initiateGame(initial);
-
+    socket.join(room.toString());
 
     if(counter === 4){
-    io.sockets.emit('start', game);
-    counter = 0;
+        const game = initiateGame(initial);
+        game.game_session_id = room.toString();
+        counter = 0;
+        io.sockets.in(room.toString()).emit('start', game);
+        room ++;
     }
+
+    socket.on('message', body => {
+        let room = body.game_session_id;
+        let message = {
+            text: body.text,
+            user: body.user
+        }
+
+        io.sockets.emit('message', message);
+    })
+
 
 
     socket.on('diceRoll', obj => {
-        var message = 'player' + obj.player + ' rolled a ' + obj.total;
-        io.sockets.emit('message', message);
+        let room = obj.room;
+        let message = {
+                        text: 'player' + obj.player + ' rolled a ' + obj.total,
+                        user: "COMPUTER"
+                    }
+
+        
+        io.sockets.in(room).emit('message', message);
 
         if(obj.total !== 7){
-            io.sockets.emit('diceRoll', obj.total);
+            io.sockets.in(room).emit('diceRoll', obj.total);
         } else {
             socket.emit('robber', obj.player);
-            io.sockets.emit('message', 'player'+obj.player+ ' needs to move the robber');
+            io.sockets.in(room).emit('message', 'player'+obj.player+ ' needs to move the robber');
         }
     })
 
 
-    socket.on('endTurn', player => {
-        io.sockets.emit('endTurn', player)
+    socket.on('endTurn', obj => {
+        io.sockets.in(obj.room).emit('endTurn', obj.player)
     })
 
-    
-    socket.on('firstRoll', obj => {
-        rolls++
-        var message = 'player' + obj.player + ' rolled a ' + obj.roll;
-        io.sockets.emit('message', message);
-        if(obj.roll > highest){
-            highest = obj.roll
-            first = obj.player;
-        }
-
-        if(rolls === 4){
-            io.sockets.emit('first', first);
-            rolls = 0;
-            highest = 0;
-        }
-    })
 })
