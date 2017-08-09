@@ -81,14 +81,161 @@ class Game extends React.Component {
 
   makePurchase(item) {
     console.log('Game: Player', this.state.players[this.state.identity].id, 'wants to:', item);
+    if (item === 'buyroad') {
+      let possibleRoadSlots = findPossibleRoads()
+      if (possibleRoadSlots.length > 0) {
+        let roadId;
+        //display textform for input
+          //roadId = userinput
+
+        // emit for all 4 players to update
+        let allPlayers = this.state.players;
+        allPlayers[this.state.identity].card_brick--
+        allPlayers[this.state.identity].card_lumber--
+        allplayers[this.state.identity].owns_road.push(roadId);
+        let allRoads = this.state.roads;
+        allRoads[roadId].owner = this.state.identity;
+          this.setState({
+            players: allPlayers,
+            roads: allroads
+          })
+      }
+      
+    } else if (item === 'buysettlement') {
+      let possibleSettlementSlots = findPossibleSettlements()
+      if (possibleSettlementSlots.length > 0) {
+        let settlementId;
+        //display textform for input
+          //settlementId = userinput
+
+        // emit for all 4 players to update
+        let allPlayers = this.state.players;
+        allPlayers[this.state.identity].card_brick--
+        allPlayers[this.state.identity].card_lumber--
+        allPlayers[this.state.identity].card_grain--
+        allPlayers[this.state.identity].card_wool--
+        allplayers[this.state.identity].owns_settlement.push(settlementId);
+        let allSettlements = this.state.settlements;
+        allSettlements[settlementId].owner = this.state.identity;
+        this.setState({
+          players: allPlayers,
+          settlements: allSettlements
+        })
+      }
+
+    } else if (item === 'buycity') {
+      let allPlayers = this.state.players;
+      let possibleCities = allPlayers[this.state.identity].owns_settlement;
+      let allHouses = this.state.settlements;
+      let houseId;
+      //display form for input
+        //cityId = userinput
+
+      // emit for all 4 players to update
+      allPlayers[this.state.identity].owns_settlement; // slice settlement out of owns_settlement, it's becoming a city
+      allPlayers[this.state.identity].owns_city.push(houseId);
+      this.setState({
+        players: allPlayers,
+        settlements: allHouses
+      })
+
+    } else if (item === 'buydevelopmentcard') {
+      //build array of development cards
+      //check lenght of array
+      //increment player's card count
+      //decrement board card
+      //emit
+    }
   }
 
   startTrade() {
     console.log('Game: Player', this.state.players[this.state.identity].id, 'wants to: trade');
+    //display input form for desired resources
+    //display input form for resources to give
+    //await response from other users?
   }
 
   playCard(item) {
     console.log('Game: Player', this.state.players[this.state.identity].id, 'wants to:', item);
+    if (item === 'playcardknight') {
+      let allPlayers = this.state.players
+      allPlayers[this.state.identity].card_knight--
+      allPlayers[this.state.identity].played_card_knight++
+      this.setState({
+        players: allPlayers
+      })
+      let tileId;
+      //inputform to set tileId to input
+        //if input value's tile has robber already, reject
+      let allTiles = this.state.tiles
+      allTiles['TILE ID OF ORIGINAL ROBBER'].has_robber = false;
+      allTiles[tileId].has_robber = true;
+      //emit
+
+            //list possible players to steal from
+      //display input form (target player)
+      //invoke eventRobberSteal
+      //emit
+
+    } else if (item === 'playcardroad') {
+      let possibleRoadSlots = findPossibleRoads()
+      if (possibleRoadSlots.length > 0) {
+        //set a cardroadplayed counter = 0
+        //display possible roads
+        //display input form for a road (roadId)
+        //set ownership on players
+        //set ownership on roads
+        //set a cardroadplayed counter = 1
+        //emit
+        possibleRoadSlots = findPossibleRoads()
+        if (possibleRoadSlots.length > 0) {
+          //display possible roads
+          //display input form for a road (roadId)
+          //set ownership on players
+          //set ownership on roads
+          //set a cardroadplayed counter = 2 (done with road placing process)
+          //emit
+        } else {
+          //set a cardroadplayed counter = 2 (done with road placing process)
+        }
+
+      }
+
+      this.state.roadCardCounter = 0
+      let allPlayers = this.state.players
+      allPlayers[this.state.identity].card_road--
+      allPlayers[this.state.identity].played_card_road++
+      allplayers[this.state.identity].owns_road.push(roadId);
+      let allRoads = this.state.roads;
+      allRoads[roadId].owner = this.state.identity;
+      this.state.roadCardCounter = 1
+
+
+      
+    } else if (item === 'playcardmonopoly') {
+      let allPlayers = this.state.players
+      allPlayers[this.state.identity].card_monopoly--
+      allPlayers[this.state.identity].played_card_monopoly++
+      //display input form for resource (select one resource)
+      //calculate resources of other players
+      //set those resources = 0
+      //increment player's resources by that sum
+      //emit
+    } else if (item === 'playcardplenty') {
+      let allPlayers = this.state.players
+      allPlayers[this.state.identity].card_plenty--
+      allPlayers[this.state.identity].played_card_plenty++
+      //display input form for resources (up to 2)
+      //decrement board's resources
+      //increment player's resources
+      //emit
+    } else if (item === 'playcardvictory') {
+      let allPlayers = this.state.players
+      allPlayers[this.state.identity].card_victory--
+      allPlayers[this.state.identity].played_card_victory++
+      calculateScore();
+      //emit
+    }
   }
 
   endTurn() {
