@@ -1,14 +1,15 @@
 //Dependencies
 const mongoose = require ('mongoose');
 const path = require('path');
-const data = require('../SettlementData.json');
-const db = mongoose.connection;
-const {Settlement} = require('./mongo');
-const dotenv = require('dotenv').config();
+const data = require('../data/SettlementData.json');
+const {Settlement} = require('../mongo');
+// require('dotenv').config();
+// require('dotenv').load();
 
 const SettlementSeeder = () => {
 //Mongoose Connection
-mongoose.connect(process.env.DB_URL);
+mongoose.connect();
+const db = mongoose.connection;
 //Connection to Database
 db.on('error', console.error.bind(console, 'The DB just shit the bed. Here is your connection error:'));
 db.once('open', function () {

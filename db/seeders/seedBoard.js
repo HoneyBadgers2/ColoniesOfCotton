@@ -1,21 +1,21 @@
 //Dependencies
 const mongoose = require ('mongoose');
 const path = require('path');
-const data = require('../BoardData.json');
-const db = mongoose.connection;
-const {Player} = require('./mongo');
-const dotenv = require('dotenv').config();
+const data = require('../data/BoardData.json');
+const {Player} = require('../mongo');
+
 
 
 const boardSeeder = () => {
 //Mongoose Connection
-mongoose.connect(process.env.DB_URL);
+mongoose.connect();
+const db = mongoose.connection;
 //Connection to Database
 db.on('error', console.error.bind(console, 'The DB just shit the bed. Here is your connection error:'));
 db.once('open', function () {
   console.log('Database has created a succesful connection.')
   // Truncate Table 
-  Player.collection.drop();
+  // Player.collection.drop();
   // Seeding
     data.forEach((player) => {
       const newPlayer = Player.create({
