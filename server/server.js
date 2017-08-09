@@ -135,6 +135,14 @@ io.on('connection', socket => {
         }
     })
 
+    socket.on('moveRobber', obj => {
+        io.sockets.in(obj.room).emit('moveRobber', obj.tile);
+    })
+
+    socket.on('rob', obj => {
+        io.sockets.in(obj.room).emit('rob', obj);
+    })
+
 
     socket.on('endTurn', obj => {
         io.sockets.in(obj.room).emit('endTurn', obj.player)
