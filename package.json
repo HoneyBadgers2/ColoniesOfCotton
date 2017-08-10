@@ -36,6 +36,7 @@
     "react-babylonjs": "0.0.8",
     "react-dom": "^15.6.1",
     "sequelize": "^4.4.2",
+    "socket.io": "^2.0.3",
     "webpack": "^3.4.1"
   }
 }

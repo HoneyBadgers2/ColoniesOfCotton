@@ -3,6 +3,9 @@ import io from 'socket.io-client';
 import Playerinterface from './playerinterface';
 import Messagelog from './messagelog';
 import Boardview from './boardview';
+import {Scene} from 'react-babylonjs';
+import {SceneLoader, ShaderMaterial, HemisphericLight, PointLight, Vector3, Color3, PhysicsEngine, OimoJSPlugin,
+    StandardMaterial, Mesh, CubeTexture, ArcRotateCamera, Texture, Engine } from 'babylonjs';
 
 class Game extends React.Component {
   constructor(props) {
@@ -36,7 +39,18 @@ class Game extends React.Component {
       isBuyingSettlement: false,
       isBuyingCity: false,
     }
+    this.scene = undefined;
+    this.engine = undefined;
+    this.onSceneMount = this.onSceneMount.bind(this);
+    this.onMeshPicked = this.onMeshPicked.bind(this);
+    this.initEnvironment = this.initEnvironment.bind(this)
+    this.getIDFromMesh = this.getIDFromMesh.bind(this);
+    this.moveRobber = this.moveRobber.bind(this);
+    this.colorPiece = this.colorPiece.bind(this);
 
+
+    /////////////////////////////////////////////////////
+    this.toggleBuyRoad = this.toggleBuyRoad.bind(this);
     this.rollForFirst = this.rollForFirst.bind(this);
     this.buyingRoad = this.buyingRoad.bind(this);
     this.buyingSettlement = this.buyingSettlement.bind(this);
@@ -74,6 +88,98 @@ class Game extends React.Component {
     this.cheatMaxDev = this.cheatMaxDev.bind(this);
 
   }
+  /////////////////////////////////////////////////////////////////////////////
+   onMeshPicked(mesh, scene) {
+     console.log(mesh.name);
+     if(this.state.isBuyingRoad){
+       var roadId = Number(this.getIDFromMesh(mesh));
+       this.buyingRoad(roadId);
+     }
+    }
+
+
+
+    moveRobber(mesh, scene) {
+        var robber = scene.getMeshByID('Robber'); 
+        robber.position.x = mesh.position.x;
+        robber.position.z = mesh.position.z;
+    }
+
+    colorPiece(Id, mat) {
+      let mesh = this.scene.getMeshByID(Id);
+        mesh.visibility = 1;   
+        mesh.material = mat;
+    }
+
+    getIDFromMesh(mesh){
+        return mesh.name.slice(-2);
+    }
+    
+    createMat(player){
+        var mat = new StandardMaterial("Color", this.scene);
+          if(player === 1){
+            mat.diffuseColor = new Color3(1, 0, 0);
+          } else if (player === 2){
+            mat.diffuseColor = new Color3(1, 1, 0);
+          } else if (player ===3){
+            mat.diffuseColor = new Color3(0, 0, 1);
+          } else if (player ===4){
+            mat.diffuseColor = new Color3(0, 1, 0);
+          }
+
+      return mat;
+    }
+
+    
+    onSceneMount(e) {
+        const { canvas, scene, engine} = e;   
+        this.scene = scene;   
+        this.engine = engine;
+
+
+
+        console.log('Engine is: ' + this.engine);
+        this.initEnvironment(canvas, scene);
+        SceneLoader.ImportMesh("", "", "boardTemplate.babylon", scene, function (newMeshes) {   
+            for(var mesh of newMeshes) {
+                mesh.convertToFlatShadedMesh();
+                if(mesh.name.includes('City') || mesh.name.includes('House') || mesh.name.includes('Road')) {       
+                    mesh.visibility = 0.0;                                
+                } 
+            }              
+        });
+       
+
+        engine.runRenderLoop(() => {
+
+            if (scene) {
+                scene.render();
+            }
+        });
+
+    
+    }
+
+    initEnvironment(canvas, scene) {
+        
+        var light = new HemisphericLight('hemi', new Vector3(0, 1, 0), scene);
+        light.intensity = 1.35;
+       
+
+        var camera = new ArcRotateCamera('Camera', 0, 1.05, 20, Vector3.Zero(), scene)
+        camera.lowerRadiusLimit = 10
+        camera.upperRadiusLimit = 35
+        camera.upperBetaLimit = Math.PI / 2
+        camera.attachControl(canvas, false)
+        
+
+        scene.registerBeforeRender(function () {
+                light.position = camera.position;
+        });
+
+      
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   rollForFirst(){
     let dice1 = Math.floor(Math.random() * 6 + 1);
@@ -87,11 +193,9 @@ class Game extends React.Component {
   buyingRoad(roadId) {
     if (this.verifyRoad(roadId)) {
       let obj = {room: this.state.room, player: this.state.identity, road: roadId};
-      this.setState({isBuyingRoad: false})
-      console.log('Game: player ' + obj.player + 'bought a road at ' + obj.settlement);
+      this.toggleBuyRoad();
       this.socket.emit('buyRoad', obj);
     } else {
-      // console.log('Game: selected slot is invalid, please select another!');
       let message = {
         user: 'COMPUTER',
         text: 'selected slot is invalid, please select another!'
@@ -377,6 +481,11 @@ class Game extends React.Component {
 
   verifyRoad(roadId){
     const adjRoads = this.getAdjRoadsToRoad(roadId);
+    if(this.state.roads[roadId].owner !== null){
+      return false;
+    }
+
+
     for(let i = 0; i < adjRoads.length; i++){
       if(adjRoads[i].owner === this.state.identity){
         let common = this.getCommonCornerToTwoRoads(adjRoads[i].id, roadId);
@@ -443,12 +552,14 @@ class Game extends React.Component {
     let allRoads = this.state.roads;
     let ownedRoads = this.state.players[this.state.identity].owns_road;
     let possibleRoads = [];
-    for (let i = 0; i < ownedRoads.length; i ++) {
-      for (let j = 0; j < allRoads[ownedRoads[i]].adj_road_slots.length; j++ ) {
-        if (this.verifyRoad(allRoads[ownedRoads[i]].adj_road_slots[j])) {
-          let road = allRoads[ownedRoads[i]].adj_road_slots[j];
-          if(possibleRoads.indexOf(road) === -1){
-            possibleRoads.push(road);
+    if(ownedRoads){
+      for (let i = 0; i < ownedRoads.length; i ++) {
+        for (let j = 0; j < allRoads[ownedRoads[i]].adj_road_slots.length; j++ ) {
+            let road = allRoads[ownedRoads[i]].adj_road_slots[j];
+            if (this.verifyRoad(road)) {
+            if(possibleRoads.indexOf(road) === -1){
+              possibleRoads.push(road);
+            }
           }
         }
       }
@@ -637,6 +748,33 @@ class Game extends React.Component {
     })
   }
 
+  toggleBuyRoad(){
+
+
+
+    this.setState({isBuyingRoad: !this.state.isBuyingRoad},
+        function(){
+        if(this.state.isBuyingRoad){
+            let arr = this.findPossibleRoads();
+            console.log('POSSIBLE ROADS IS', arr);
+            for(let i = 0; i < arr.length; i++){
+              let mesh = this.scene.getMeshByID('Road' + arr[i]);
+              mesh.visibility = 0.8
+            }
+          } else {
+            let arr = this.findPossibleRoads();
+            for(let i = 0; i < arr.length; i++){
+              let mesh = this.scene.getMeshByID('Road' + arr[i]);
+              mesh.visibility = 0
+            }
+          }
+    })
+
+
+        
+
+  }
+
   cheatMaxDev() {
     let allPlayerStates = this.state.players
     allPlayerStates[this.state.identity].card_knight = 9999;
@@ -676,6 +814,14 @@ class Game extends React.Component {
 
 
   componentDidMount() {
+
+
+
+
+
+
+
+
     this.socket = io('/');
 
     this.socket.on('start', body => {
@@ -757,6 +903,9 @@ class Game extends React.Component {
       let roads = this.state.roads;
       let road = roads[obj.road];
       road.owner = obj.player;
+      let mat = this.createMat(obj.player);
+      this.colorPiece('Road'+obj.road, mat);
+      
 
       this.setState({players: players, roads: roads});
     })
@@ -861,10 +1010,11 @@ class Game extends React.Component {
 
 
   render() {
+
     return(<div>
     <h2>Now in-game (game.jsx Component)</h2>
 
-    <h3>Cheat Mode for Developer
+    {/* <h3>Cheat Mode for Developer
     <button id="2" onClick={this.robber}>EventRobberSteal from Player 2</button>
     <button id="3" onClick={this.robber}>EventRobberSteal from Player 3</button>
     <button id="4" onClick={this.robber}>EventRobberSteal from Player 4</button>
@@ -873,14 +1023,20 @@ class Game extends React.Component {
     <input type='text' id="cheatroad" placeholder="Take Road Ownership (RoadSlotId)" onKeyUp={this.cheatTakeControl}/>
     <input type='text' id="cheathouse" placeholder="Take House Ownership (HouseSlotId)" onKeyUp={this.cheatTakeControl}/>
     <input type='text' id="cheatmoverobber" placeholder="Move Robber (TileId)" onKeyUp={this.cheatMoveRobber}/>
-    </h3>
-
-    <button onClick={this.rollForFirst}>ROLL FOR FIRST</button>
-
-    {this.state.active ? <Playerinterface gamestate={this.state} diceRoll={this.diceRoll} buymethod={this.makePurchase} playcardmethod={this.playCard} offertrademethod={this.startTrade} endTurn={this.endTurn}/> : null}
-    <Messagelog  messages={this.state.messages} handleSubmitMessage={this.handleSubmitMessage}/>
-    <Boardview gamestate={this.state} />
+    </h3> */}
     
+    <button onClick={this.rollForFirst}>ROLL FOR FIRST</button>
+    <button onClick={this.toggleBuyRoad}>BUY ROAD</button>
+    <button onClick={()=>(console.log(this.state))}>CHECK GAME STATE</button>
+
+     {/* {this.state.active ? <Playerinterface gamestate={this.state} diceRoll={this.diceRoll} buymethod={this.makePurchase} playcardmethod={this.playCard} offertrademethod={this.startTrade} endTurn={this.endTurn}/> : null} */}
+     {/* <Boardview gamestate={this.state} />   */}
+                     <Scene              
+                    onSceneMount={this.onSceneMount} 
+                    onMeshPicked={this.onMeshPicked}
+                    visible={true} />
+     <Messagelog  messages={this.state.messages} handleSubmitMessage={this.handleSubmitMessage}/> 
+                    <h1>THIS IS THE BOTTOM</h1>    
     </div>)
   }
 
