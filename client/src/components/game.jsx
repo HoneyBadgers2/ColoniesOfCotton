@@ -31,11 +31,17 @@ class Game extends React.Component {
       ableToPlayCardPlenty: false,
       ableToPlayCardVictory: false,
       ableToCancelAction: false,
-      hasRolled: false
+      hasRolled: false,
+      isBuyingRoad: false,
+      isBuyingSettlement: false,
+      isBuyingCity: false,
     }
 
     this.rollForFirst = this.rollForFirst.bind(this);
-    this.makePurchase = this.makePurchase.bind(this);
+    this.buyingRoad = this.buyingRoad.bind(this);
+    this.buyingSettlement = this.buyingSettlement.bind(this);
+    this.buyingCity = this.buyingCity.bind(this);
+    this.buyingDevelopmentCard = this.buyingDevelopmentCard.bind(this);
     this.startTrade = this.startTrade.bind(this);
     this.playCard = this.playCard.bind(this);
     this.endTurn = this.endTurn.bind(this);
@@ -78,73 +84,80 @@ class Game extends React.Component {
     this.setState({firstTurn: false});
   }
 
-  makePurchase(item) {
-    console.log('Game: Player', this.state.players[this.state.identity].id, 'wants to:', item);
-    if (item === 'buyroad') {
-      let possibleRoadSlots = findPossibleRoads()
-      if (possibleRoadSlots.length > 0) {
-        let roadId;
-        //display textform for input
-          //roadId = userinput
-
-        // emit for all 4 players to update
-        let allPlayers = this.state.players;
-        allPlayers[this.state.identity].card_brick--
-        allPlayers[this.state.identity].card_lumber--
-        allplayers[this.state.identity].owns_road.push(roadId);
-        let allRoads = this.state.roads;
-        allRoads[roadId].owner = this.state.identity;
-          this.setState({
-            players: allPlayers,
-            roads: allroads
-          })
-      }
-      
-    } else if (item === 'buysettlement') {
-      let possibleSettlementSlots = findPossibleSettlements()
-      if (possibleSettlementSlots.length > 0) {
-        let settlementId;
-        //display textform for input
-          //settlementId = userinput
-
-        // emit for all 4 players to update
-        let allPlayers = this.state.players;
-        allPlayers[this.state.identity].card_brick--
-        allPlayers[this.state.identity].card_lumber--
-        allPlayers[this.state.identity].card_grain--
-        allPlayers[this.state.identity].card_wool--
-        allplayers[this.state.identity].owns_settlement.push(settlementId);
-        let allSettlements = this.state.settlements;
-        allSettlements[settlementId].owner = this.state.identity;
-        this.setState({
-          players: allPlayers,
-          settlements: allSettlements
-        })
-      }
-
-    } else if (item === 'buycity') {
-      let allPlayers = this.state.players;
-      let possibleCities = allPlayers[this.state.identity].owns_settlement;
-      let allHouses = this.state.settlements;
-      let houseId;
-      //display form for input
-        //cityId = userinput
-
-      // emit for all 4 players to update
-      allPlayers[this.state.identity].owns_settlement; // slice settlement out of owns_settlement, it's becoming a city
-      allPlayers[this.state.identity].owns_city.push(houseId);
-      this.setState({
-        players: allPlayers,
-        settlements: allHouses
-      })
-
-    } else if (item === 'buydevelopmentcard') {
-      //build array of development cards
-      //check lenght of array
-      //increment player's card count
-      //decrement board card
-      //emit
+  buyingRoad(roadId) {
+    if (this.verifyRoad(roadId)) {
+      let obj = {room: this.state.room, player: this.state.identity, road: roadId};
+      this.setState({isBuyingRoad: false})
+      console.log('Game: player ' + obj.player + 'bought a road at ' + obj.settlement);
+      this.socket.emit('buyRoad', obj);
+    } else {
+      // console.log('Game: selected slot is invalid, please select another!');
+      let message = {
+        user: 'COMPUTER',
+        text: 'selected slot is invalid, please select another!'
+      };
+      this.setState({messages: [...this.state.messages, message]})
     }
+
+  }
+
+  buyingSettlement(settlementId) {
+    if (this.verifyCorner(settlementId)) {
+      let obj = {room: this.state.room, player: this.state.identity, settlement: settlementId};
+      this.setState({isBuyingSettlement: false});
+      console.log('Game: player ' + obj.player + 'bought a settlement at ' + obj.settlement);
+      this.socket.emit('buySettlement', obj);
+    } else {
+      // console.log('Game: selected slot is invalid, please select another!');
+      let message = {
+        user: 'COMPUTER',
+        text: 'selected slot is invalid, please select another!'
+      };
+      this.setState({messages: [...this.state.messages, message]});
+    }
+  }
+
+  buyingCity(cityId) {
+    let allPlayers = this.state.players;
+    if (allPlayers[this.state.identity].owns_settlement.includes(cityId) && this.state.settlements[cityId].owner === this.state.identity) {
+      let obj = {player: this.state.identity, city: cityId};
+      this.setState({isBuyingCity: false});
+      console.log('Game: player ' + obj.player + 'bought a city at ' + obj.settlement);
+      this.socket.emit('buyCity', obj);
+    } else {
+      // console.log('Game: selected slot is invalid, please select another!');
+      let message = {
+        user: 'COMPUTER',
+        text: 'selected slot is invalid, please select another!'
+      };
+      this.setState({messages: [...this.state.messages, message]});
+    }
+  }
+
+  buyingDevelopmentCard() {
+    let possibleDevCards = [];
+    for (let i = 0; i < this.state.players[0].card_knight; i++) {
+      possibleDevCards.push('card_knight');
+    }
+    for (let i = 0; i < this.state.players[0].card_road; i++) {
+      possibleDevCards.push('card_knight');
+    }
+    for (let i = 0; i < this.state.players[0].card_monopoly; i++) {
+      possibleDevCards.push('card_knight');
+    }
+    for (let i = 0; i < this.state.players[0].card_plenty; i++) {
+      possibleDevCards.push('card_knight');
+    }
+    for (let i = 0; i < this.state.players[0].card_victory; i++) {
+      possibleDevCards.push('card_knight');
+    }
+
+    let RNG = Math.floor(Math.random() * possibleDevCards.length);
+    let randomCard = possibleDevCards[RNG];
+    console.log('You get:', randomCard);
+
+    let obj = {player: this.state.identity, dev: randomCard}
+    this.socket.emit('buyDev', obj);
   }
 
   startTrade() {
