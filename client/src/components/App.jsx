@@ -51,14 +51,13 @@ export default class App extends Component {
             //Makes a house appear when click makes a city appear when click twice
             if (mesh.name.includes('House')){             
                this.placeHouseAndCity(mesh, mat, scene);    
-               this.showPossibleRoadAndHousePlacement(mesh);
+              
  
             }
 
             if (mesh.name.includes('Road')){
                 this.placeRoad(mesh, mat);
-                this.showPossibleRoadAndHousePlacement(mesh);
-
+               
 
             }
 
@@ -72,7 +71,7 @@ export default class App extends Component {
           
 
         }
-       
+       this.showPossibleRoadAndHousePlacement();
         
     }
 
@@ -99,7 +98,9 @@ export default class App extends Component {
         mesh.material = mat;
     }
 
-    showPossibleRoadAndHousePlacement(mesh){
+    showPossibleRoadAndHousePlacement(){
+        var mesh = this.scene.getMeshByID('Robber');
+        console.log(this.scene);
         mesh.visibility = 0.5;
     }
 
