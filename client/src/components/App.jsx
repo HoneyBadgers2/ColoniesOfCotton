@@ -7,7 +7,9 @@ import {SceneLoader, ShaderMaterial, HemisphericLight, PointLight, Vector3, Colo
 export default class App extends Component {
      constructor (props) {
         super(props);
-
+        this.state = {
+            meshes: null
+        }
         this.scene = undefined;
         this.engine = undefined;
         this.onSceneMount = this.onSceneMount.bind(this);
@@ -31,7 +33,8 @@ export default class App extends Component {
     
     onMeshPicked(mesh, scene) {
         // This will be called when a mesh is picked in the canvas
-       
+       let robber = scene.getMeshByID('Robber'); 
+       robber.visibility = 0;
         if(mesh != null){
             
             //TODO: Put code into a condition and will be use to put materials on roads and houses/cities. 
@@ -51,13 +54,13 @@ export default class App extends Component {
             //Makes a house appear when click makes a city appear when click twice
             if (mesh.name.includes('House')){             
                this.placeHouseAndCity(mesh, mat, scene);    
-               this.showPossibleRoadAndHousePlacement(mesh);
+            //    this.showPossibleRoadAndHousePlacement(mesh);
  
             }
 
             if (mesh.name.includes('Road')){
                 this.placeRoad(mesh, mat);
-                this.showPossibleRoadAndHousePlacement(mesh);
+                // this.showPossibleRoadAndHousePlacement(mesh);
 
 
             }
@@ -66,7 +69,9 @@ export default class App extends Component {
             if(mesh.name.includes('Rock') || mesh.name.includes('Hay') || 
                mesh.name.includes('Brick') || mesh.name.includes('Sheep') || 
                mesh.name.includes('Tree')) {
-                this.moveRobber(mesh, scene);
+                if(!mesh.name.includes('Ship')){
+                 this.moveRobber(mesh, scene);
+                }
             }
 
           
@@ -103,10 +108,9 @@ export default class App extends Component {
         mesh.visibility = 0.5;
     }
 
-    getIDFromMesh(name){
-        return name.slice(-2);
+    getIDFromMesh(mesh){
+        return mesh.name.slice(-2);
     }
-
 
     
     onSceneMount(e) {
@@ -115,7 +119,7 @@ export default class App extends Component {
         this.engine = engine;
         console.log('Engine is: ' + this.engine);
         this.initEnvironment(canvas, scene);
-        SceneLoader.ImportMesh("", "", "boardTemplate.babylon", scene, function (newMeshes) {       
+        SceneLoader.ImportMesh("", "", "boardTemplate.babylon", scene, function (newMeshes) {   
             for(var mesh of newMeshes) {
                 mesh.convertToFlatShadedMesh();
                 if(mesh.name.includes('City') || mesh.name.includes('House') || mesh.name.includes('Road')) {       
@@ -160,7 +164,10 @@ export default class App extends Component {
                  <Scene              
                     onSceneMount={this.onSceneMount} 
                     onMeshPicked={this.onMeshPicked}
-                    visible={true} />    
+                    visible={true} />
+                    <div>
+                        <button>BUY</button><button>TRADE</button><button>PLAY DEV</button><button>END TURN</button>
+                    </div>
              </div>
          )
      }
