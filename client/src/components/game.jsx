@@ -28,7 +28,9 @@ from 'babylonjs';
 class Game extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { // dummy data
+        this.state = {
+          setupCorner: false,
+          setupRoad: false,
           identity: 1,
           room: null,
           players: ['BOARD', 'Player1', 'Player2', 'Player3', 'Player4'],
@@ -37,6 +39,7 @@ class Game extends React.Component {
           roads: [],
           messages: [],
           active: false,
+          canRollForFirst: false,
           turn: 0,
           moveRobber: false,
           robber: false,
@@ -68,6 +71,9 @@ class Game extends React.Component {
 
 
         /////////////////////////////////////////////////////
+        this.toggleSetupCorner= this.toggleSetupCorner.bind(this);
+        this.toggleSetupRoad = this.toggleSetupRoad.bind(this);
+        this.checkPossibleActions = this.checkPossibleActions.bind(this);
         this.toggleOff = this.toggleOff.bind(this);
         this.toggleBuySettlement = this.toggleBuySettlement.bind(this);
         this.toggleBuyCity = this.toggleBuyCity.bind(this);
@@ -111,7 +117,27 @@ class Game extends React.Component {
       }
       /////////////////////////////////////////////////////////////////////////////
     onMeshPicked(mesh, scene) {
-      console.log(mesh.name);
+      if(this.state.setupCorner){
+        let meshType = mesh.name.slice(0, 5);
+        let id = Number(mesh.name.slice(5));
+        if (meshType === 'House' && mesh.visibility === 0.8) {
+          this.settingSettlement(id);
+          this.toggleSetupCorner('off');
+          this.toggleSetupRoad(id);
+          this.setState({setupCorner: false, setupRoad: true});
+        }
+      }
+
+      if(this.state.setupRoad){
+        let meshType = mesh.name.slice(0, 4);
+        let id = Number(mesh.name.slice(4));
+        if(meshType === 'Road' && mesh.visibility === 0.8) {
+          this.settingRoad(id);
+          this.toggleSetupRoad();
+          this.setState({setupRoad: false});
+        }
+      }
+
       if (this.state.isBuyingRoad) {
         let tile = mesh.name.slice(0, 4);
         let id = Number(mesh.name.slice(4));
@@ -286,18 +312,74 @@ class Game extends React.Component {
 
       }
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    settingSettlement(id) {
+      let obj = {};
+      obj.room = this.state.room;
+      obj.player = this.state.identity;
+      obj.corner = id;
+
+      this.socket.emit('settingSettlement', obj);
+    }
+
+    settingRoad(id) {
+      let nextPlayer = null;
+      let last = true;
+      let obj = {};
+
+      let numberOfSettlementsOwned = this.state.players[this.state.identity].owns_settlement.length;
+      if(numberOfSettlementsOwned === 1){
+        for(let i = 1; i < this.state.players.length; i++){
+          if(this.state.players[i].owns_settlement.length < 1){
+            last = false;
+          }
+        }
+        if(last){
+          nextPlayer = this.state.identity;
+        } else {
+          nextPlayer = this.state.identity + 1;
+          if(nextPlayer === 5){
+            nextPlayer = 1;
+          }
+        }
+      }
+
+      if(numberOfSettlementsOwned === 2){
+        for(let i = 1; i < this.state.players.length; i++){
+          if(this.state.players[i].owns_settlement.length < 2){
+            last = false;
+          }
+        }
+        if(last){
+          nextPlayer = this.state.identity;
+          obj.start = true;
+        } else {
+          nextPlayer = this.state.identity - 1;
+          if(nextPlayer === 0){
+            nextPlayer = 4;
+          }
+        }
+      }
+
+      obj.room = this.state.room;
+      obj.player = this.state.identity;
+      obj.road = id;
+      obj.next = nextPlayer
+      
+      this.socket.emit('settingRoad', obj);
+    }
 
     rollForFirst() {
       let dice1 = Math.floor(Math.random() * 6 + 1);
       let dice2 = Math.floor(Math.random() * 6 + 1);
       let total = dice1 + dice2
       var obj = {
+        room: this.state.room,
         player: this.state.identity,
         roll: total
       }
       this.socket.emit('firstRoll', obj);
       this.setState({
-        firstTurn: false
+        canRollForFirst: false
       });
     }
 
@@ -399,85 +481,7 @@ class Game extends React.Component {
     }
 
     playCard(item) {
-      if (item === 'playcardknight') {
-        let allPlayers = this.state.players
-        allPlayers[this.state.identity].card_knight--
-          allPlayers[this.state.identity].played_card_knight++
-          this.setState({
-            players: allPlayers
-          })
-        let tileId;
-        //inputform to set tileId to input
-        //if input value's tile has robber already, reject
-        let allTiles = this.state.tiles
-        allTiles['TILE ID OF ORIGINAL ROBBER'].has_robber = false;
-        allTiles[tileId].has_robber = true;
-        //emit
-
-        //list possible players to steal from
-        //display input form (target player)
-        //invoke eventRobberSteal
-        //emit
-
-      } else if (item === 'playcardroad') {
-        let possibleRoadSlots = findPossibleRoads()
-        if (possibleRoadSlots.length> 0) {
-          //set a cardroadplayed counter = 0
-          //display possible roads
-          //display input form for a road (roadId)
-          //set ownership on players
-          //set ownership on roads
-          //set a cardroadplayed counter = 1
-          //emit
-          possibleRoadSlots = findPossibleRoads()
-          if (possibleRoadSlots.length> 0) {
-            //display possible roads
-            //display input form for a road (roadId)
-            //set ownership on players
-            //set ownership on roads
-            //set a cardroadplayed counter = 2 (done with road placing process)
-            //emit
-          } else {
-            //set a cardroadplayed counter = 2 (done with road placing process)
-          }
-
-        }
-
-        this.state.roadCardCounter = 0
-        let allPlayers = this.state.players
-        allPlayers[this.state.identity].card_road--
-          allPlayers[this.state.identity].played_card_road++
-          allplayers[this.state.identity].owns_road.push(roadId);
-        let allRoads = this.state.roads;
-        allRoads[roadId].owner = this.state.identity;
-        this.state.roadCardCounter = 1
-
-
-
-      } else if (item === 'playcardmonopoly') {
-        let allPlayers = this.state.players
-        allPlayers[this.state.identity].card_monopoly--
-          allPlayers[this.state.identity].played_card_monopoly++
-          //display input form for resource (select one resource)
-          //calculate resources of other players
-          //set those resources = 0
-          //increment player's resources by that sum
-          //emit
-      } else if (item === 'playcardplenty') {
-        let allPlayers = this.state.players
-        allPlayers[this.state.identity].card_plenty--
-          allPlayers[this.state.identity].played_card_plenty++
-          //display input form for resources (up to 2)
-          //decrement board's resources
-          //increment player's resources
-          //emit
-      } else if (item === 'playcardvictory') {
-        let allPlayers = this.state.players
-        allPlayers[this.state.identity].card_victory--
-          allPlayers[this.state.identity].played_card_victory++
-          calculateScore();
-        //emit
-      }
+      // no need for this function now?
     }
 
     endTurn() {
@@ -490,7 +494,11 @@ class Game extends React.Component {
       this.setState({
         active: false
       })
-      this.socket.emit('endTurn', nextPlayer);
+      let obj = {
+        room: this.state.room,
+        player: nextPlayer
+      }
+      this.socket.emit('endTurn', obj);
     }
 
 
@@ -504,6 +512,7 @@ class Game extends React.Component {
       obj.player = this.state.identity;
       obj.total = total;
       this.socket.emit('diceRoll', obj);
+      this.setState({hasRolled: true});
     }
 
     moveRobber(tileId) {
@@ -734,6 +743,8 @@ class Game extends React.Component {
       return score - player.card_victory;
     }
 
+    
+
 
 
     canBuyRoad() {
@@ -805,6 +816,22 @@ class Game extends React.Component {
       return (this.state.players[this.state.identity].card_victory>= 1);
     }
 
+
+    checkPossibleActions(){
+      this.setState({
+        ableToBuyRoad: this.canBuyRoad(),
+        ableToBuySettlement: this.canBuySettlement(),
+        ableToBuyCity: this.canBuyCity(),
+        ableToBuyDevelopmentCard: this.canBuyDevelopmentCard(),
+        ableToOfferTrade: this.canOfferTrade(),
+        ableToPlayCardKnight: this.canPlayCardKnight(),
+        ableToPlayCardRoad: this.canPlayCardRoad(),
+        ableToPlayCardMonopoly: this.canPlayCardMonopoly(),
+        ableToPlayCardPlenty: this.canPlayCardPlenty(),
+        ableToPlayCardVictory: this.canPlayCardVictory()
+      })
+    }
+
     // canCancelAction() {
     //   return this.state.players[this.state.identity].isInMenu ? true : false;
     // }
@@ -873,7 +900,7 @@ class Game extends React.Component {
     }
 
     toggleBuyRoad() {
-      toggleOff('Road');
+      this.toggleOff('Road');
       this.setState({
           isBuyingRoad: !this.state.isBuyingRoad
         },
@@ -895,7 +922,7 @@ class Game extends React.Component {
     }
 
     toggleBuySettlement() {
-      toggleOff('Settlement');
+      this.toggleOff('Settlement');
       this.setState({
           isBuyingSettlement: !this.state.isBuyingSettlement
         },
@@ -918,7 +945,7 @@ class Game extends React.Component {
     }
 
     toggleBuyCity() {
-      toggleOff('City');
+      this.toggleOff('City');
       this.setState({
         isBuyingCity: !this.state.isBuyingCity
       })
@@ -937,6 +964,64 @@ class Game extends React.Component {
       this.setState({
         players: allPlayers
       })
+    }
+
+    toggleSetupCorner(param){
+      if(param === 'on'){
+        for(let i = 1; i < 55; i++){
+          let corner = this.state.settlements[i];
+          let mesh = this.scene.getMeshByID('House'+i);
+
+          let adj = this.getAdjCornersToCorner(i);
+          let available = true;
+          if(corner.owner !== null){
+            available = false;
+          } else {
+            for(let j = 0; j < adj.length; j++){
+              if(adj[j].owner !== null){
+                available = false;
+              }
+            }
+          }
+
+          if(available){
+            mesh.visibility = 0.8
+          } else {
+            if(corner.owner === null){
+              mesh.visibility = 0;
+            }
+          }
+        }
+      } else if(param === 'off'){
+        for(let i = 1; i < 55; i++){
+          let corner = this.state.settlements[i];
+          let mesh = this.scene.getMeshByID('House'+i);
+          if(corner.owner === null){
+            mesh.visibility = 0;
+          }
+        }
+      }
+    }
+
+    toggleSetupRoad(id, param){
+      if(id){
+        let adj = this.getAdjRoadsToCorner(id);
+        for(let i = 0; i < adj.length; i++){
+          let mesh = this.scene.getMeshByID('Road' + adj[i].id);
+          if(adj[i].owner === null){
+            mesh.visibility = 0.8;
+          }
+        }
+      } else {
+        for(let i = 1; i < 73; i++){
+          let road = this.state.roads[i];
+          let mesh = this.scene.getMeshByID('Road'+i);
+          if(road.owner === null){
+            mesh.visibility = 0; 
+          }
+        }
+        
+      }
     }
 
 
@@ -967,29 +1052,81 @@ class Game extends React.Component {
     componentDidMount() {
 
 
-
-
-
-
-
-
       this.socket = io('/');
 
       this.socket.on('start', body => {
         console.log('STARTING GAME');
         this.setState({
+          canRollForFirst: true,
           room: body.game_session_id,
           players: body.players,
           tiles: body.tiles,
           settlements: body.settlements,
           roads: body.roads
         });
-        if (this.state.identity === 1) {
-          this.setState({
-            active: true
-          })
+      })
+
+      this.socket.on('settingSettlement', obj => {
+        let playerID = obj.player;
+        let cornerID = obj.corner;
+
+        let players = this.state.players;
+        let player = players[playerID];
+
+        let settlements = this.state.settlements;
+        let settlement = settlements[cornerID];
+
+        player.owns_settlement.push(cornerID);
+        settlement.owner = playerID;
+        if(player.owns_settlement.length === 2){
+          debugger;
+          for(let i = 1; i < 20; i++){
+            let tile = this.state.tiles[i];
+            if(tile.connecting_house_slots.indexOf(cornerID) !== -1){
+              let resource = 'card_' + tile.terrain;
+              players[0][resource] --;
+              player[resource] ++;
+            }
+          }
+        }
+
+        this.setState({players: players, settlements: settlements});
+
+        let mat = this.createMat(playerID);
+        this.colorPiece('House'+cornerID, mat);
+      })
+
+      this.socket.on('settingRoad', obj => {
+        let playerID = obj.player;
+        let roadID = obj.road;
+
+        let players = this.state.players;
+        let player = players[playerID];
+
+        let roads = this.state.roads;
+        let road = roads[roadID];
+
+        player.owns_road.push(roadID);
+        road.owner = playerID;
+
+        this.setState({players: players, roads: roads});
+        debugger;
+        let mat = this.createMat(playerID);
+        this.colorPiece('Road'+roadID, mat);
+        if(!obj.start){
+          if(obj.next === this.state.identity){
+            this.setState({setupCorner: true}, function(){this.toggleSetupCorner('on')});
+          }
+        }
+        if(obj.start){
+          if(obj.next === this.state.identity){
+            this.setState({active: true});
+          }
         }
       })
+
+
+
 
       this.socket.on('rob', obj => {
         let victim = this.state.players[obj.target];
@@ -1001,6 +1138,7 @@ class Game extends React.Component {
         this.setState({
           turns: this.state.turns++
         });
+        this.checkPossibleActions();
       })
 
       this.socket.on('identity', identity => {
@@ -1033,26 +1171,11 @@ class Game extends React.Component {
                 this.setState({
                   turn: this.state.turn + 1
                 });
-
-
-
-                this.setState({
-                  ableToBuyRoad: this.canBuyRoad(),
-                  ableToBuySettlement: this.canBuySettlement(),
-                  ableToBuyCity: this.canBuyCity(),
-                  ableToBuyDevelopmentCard: this.canBuyDevelopmentCard(),
-                  ableToOfferTrade: this.canOfferTrade(),
-                  ableToPlayCardKnight: this.canPlayCardKnight(),
-                  ableToPlayCardRoad: this.canPlayCardRoad(),
-                  ableToPlayCardMonopoly: this.canPlayCardMonopoly(),
-                  ableToPlayCardPlenty: this.canPlayCardPlenty(),
-                  ableToPlayCardVictory: this.canPlayCardVictory()
-                })
-
               }
             }
           }
         }
+        this.checkPossibleActions();
       })
 
       this.socket.on('buyRoad', obj => {
@@ -1078,6 +1201,7 @@ class Game extends React.Component {
           players: players,
           roads: roads
         });
+        this.checkPossibleActions();
       })
 
       this.socket.on('buySettlement', obj => {
@@ -1110,6 +1234,7 @@ class Game extends React.Component {
           players: players,
           settlements: settlements
         });
+        this.checkPossibleActions();
       })
 
       this.socket.on('buyCity', obj => {
@@ -1137,6 +1262,7 @@ class Game extends React.Component {
           players: players,
           settlements: settlements
         });
+        this.checkPossibleActions();
       })
 
       this.socket.on('buyDev', obj => {
@@ -1154,6 +1280,7 @@ class Game extends React.Component {
 
         player[obj.dev]++;
         board[obj.dev]--;
+        this.checkPossibleActions();
       })
 
 
@@ -1167,7 +1294,11 @@ class Game extends React.Component {
         }
       })
 
-      this.socket.on('first', player => {})
+      this.socket.on('first', player => {
+        if(this.state.identity === player){
+          this.setState({setupCorner: true}, function(){this.toggleSetupCorner('on')});
+        }
+      })
 
       this.socket.on('robber', player => {
         this.state.moveRobber = true;
@@ -1204,58 +1335,59 @@ class Game extends React.Component {
 
         return ( <div>
           <h2> Now in -game(game.jsx Component) </h2>
+          <div>{'Player# ' + this.state.identity + ' , in room: ' + this.state.room}</div>
+          <div>{'Resources: BRI: ' + this.state.players[this.state.identity].card_brick + ', GRA: ' + this.state.players[this.state.identity].card_grain + ', LUM: ' + this.state.players[this.state.identity].card_lumber + ', ORE: ' + this.state.players[this.state.identity].card_ore + ', WOO: ' + this.state.players[this.state.identity].card_wool}</div>
+          <div>{'Property: Road: ' + this.state.players[this.state.identity].owns_road + ', Sett: ' + this.state.players[this.state.identity].owns_settlement + ', City: ' + this.state.players[this.state.identity].owns_city}</div>
 
-          {
-            /* <h3>Cheat Mode for Developer
-                <button id="2" onClick={this.robber}>EventRobberSteal from Player 2</button>
-                <button id="3" onClick={this.robber}>EventRobberSteal from Player 3</button>
-                <button id="4" onClick={this.robber}>EventRobberSteal from Player 4</button>
-                <button onClick={this.cheatMaxResource}>Maxed Resources</button>
-                <button onClick={this.cheatMaxDev}>Maxed Dev Cards</button>
-                <input type='text' id="cheatroad" placeholder="Take Road Ownership (RoadSlotId)" onKeyUp={this.cheatTakeControl}/>
-                <input type='text' id="cheathouse" placeholder="Take House Ownership (HouseSlotId)" onKeyUp={this.cheatTakeControl}/>
-                <input type='text' id="cheatmoverobber" placeholder="Move Robber (TileId)" onKeyUp={this.cheatMoveRobber}/>
-                </h3> */
-          }
 
-          <button onClick = {
-            () => (console.log(this.state))
-          }> GET GAME STATE </button>  {
-            this.state.active ? <Playerinterface gamestate = {
-              this.state
-            }
-            diceRoll = {
-              this.diceRoll
-            }
-            buymethod = {
-              this.makePurchase
-            }
-            playcardmethod = {
-              this.playCard
-            }
-            offertrademethod = {
-              this.startTrade
-            }
-            endTurn = {
-              this.endTurn
-            }
-            /> : null}  { /* <Boardview gamestate={this.state} />   */ } <Scene
-            onSceneMount = {
-              this.onSceneMount
-            }
-            onMeshPicked = {
-              this.onMeshPicked
-            }
-            visible = {
-              true
-            }
-            /> <Messagelog messages = {
-              this.state.messages
-            }
-            handleSubmitMessage = {
-              this.handleSubmitMessage
-            }
-            />  <h1> THIS IS THE BOTTOM </h1>     </div>)
+      <h3>Player Actions Menu</h3>
+      { this.state.canRollForFirst ? <button onClick={this.rollForFirst}>Roll</button> : null}
+      <button onClick={this.toggleSetupCorner}>TOGGLE</button>
+      {this.state.active ? 
+      <div>
+      {(!this.state.hasRolled) ? <button type="button" onClick={this.diceRoll}>Roll Dice</button> : null}
+      {(this.state.ableToBuyRoad) ? <button type="button" id="buyroad" onClick={this.toggleBuyRoad}>Buy Road</button> : null}
+      {(this.state.ableToBuySettlement) ? <button type="button" id="buysettlement" onClick={this.toggleBuySettlement}>Buy Settlement</button> : null}
+      {(this.state.ableToBuyCity) ? <button type="button" id="buycity" onClick={this.toggleBuyCity}>Buy City</button> : null}
+      {(this.state.ableToBuyDevelopmentCard) ? <button type="button" id="buydevcard" onClick={this.buyingDevelopmentCard}>Buy Development Card</button> : null}
+      {(this.state.ableToOfferTrade) ? <button type="button" id="offertrade" onClick={() => {console.log('trade here')}}>Offer Trade</button> : null}
+      {(this.state.hasRolled) ? <button onClick={this.endTurn}>End Turn</button> : null}
+      </div> : null
+      }
+
+
+      {/* {(this.state.ableToPlayCardKnight) ? <button type="button" id="playcardknight" onClick={this.playingCardKnight}>Play Card: Knight</button> : null}
+
+      {(this.state.ableToPlayCardRoad) ? <button type="button" id="playcardroad" onClick={this.playingCardRoad}>Play Card: Road Building</button> : null}
+
+      {(this.state.ableToPlayCardMonopoly) ? <button type="button" id="playcardmonopoly" onClick={this.playingCardMonopoly}>Play Card: Monopoly</button> : null}
+
+      {(this.state.ableToPlayCardPlenty) ? <button type="button" id="playcardplenty" onClick={this.playingCardPlenty}>Play Card: Plenty</button> : null}
+
+      {(this.state.ableToPlayCardVictory) ? <button type="button" id="playcardvictory" onClick={this.playingCardVictory}>Play Card: Victory Point</button> : null}
+
+      {(this.state.isInMenu) ? <button type="button" id="cancelaction" onClick={this.takeAction}>Cancel Action (isInMenu)</button> : null}
+
+      {(this.state.ableToCancelAction) ? <button type="button" id="cancelaction" onClick={this.takeAction}>Cancel Action (ableToCancel)</button> : null} */}
+
+
+
+
+
+
+      {/* {(this.state.isPlayingCardKnight) ? <div>Select a tile where the robber will go.</div> : null}
+
+      {(this.state.isPlayingCardRoad) ? <div>Select a slot to place road.</div> : null}
+
+      {(this.state.isPlayingCardMonopoly) ? <div>Select a resource type.</div> : null}
+
+      {(this.state.isPlayingCardPlenty) ? <div>Select resources to take.</div> : null} */}
+
+ 
+            <Scene onSceneMount = {this.onSceneMount} onMeshPicked = {this.onMeshPicked} visible = {true}/>  
+            <Messagelog messages = {this.state.messages} handleSubmitMessage = {this.handleSubmitMessage}/>  
+            
+            <h1> THIS IS THE BOTTOM </h1>     </div>)
           }
 
 
