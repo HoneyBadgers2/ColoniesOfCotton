@@ -50,6 +50,9 @@ class Game extends React.Component {
 
 
     /////////////////////////////////////////////////////
+    this.toggleOff = this.toggleOff.bind(this);
+    this.toggleBuySettlement = this.toggleBuySettlement.bind(this);
+    this.toggleBuyCity = this.toggleBuyCity.bind(this);
     this.toggleBuyRoad = this.toggleBuyRoad.bind(this);
     this.rollForFirst = this.rollForFirst.bind(this);
     this.buyingRoad = this.buyingRoad.bind(this);
@@ -90,11 +93,34 @@ class Game extends React.Component {
   }
   /////////////////////////////////////////////////////////////////////////////
    onMeshPicked(mesh, scene) {
-     console.log(mesh.name);
      if(this.state.isBuyingRoad){
-       var roadId = Number(this.getIDFromMesh(mesh));
-       this.buyingRoad(roadId);
+       let tile = mesh.name.slice(0,4);
+       let id = Number(mesh.name.slice(4));
+       if(tile === 'Road'){
+       this.buyingRoad(id);
+       }
      }
+
+    if(this.state.isBuyingSettlement){
+       let tile = mesh.name.slice(0,5);
+       let id = Number(mesh.name.slice(5));
+       if(tile === 'House'){
+       this.buyingSettlement(id);
+       }
+     }
+
+     if(this.state.isBuyingCity) {
+       let tile = mesh.name.slice(0, 5);
+       let id = Number(mesh.name.slice(5));
+       console.log('buying City at house', tile, 'at id', id);
+       if(tile === 'House'){
+         this.buyingCity(id);
+       }
+     }
+
+
+
+     
     }
 
 
@@ -112,7 +138,9 @@ class Game extends React.Component {
     }
 
     getIDFromMesh(mesh){
-        return mesh.name.slice(-2);
+        let temp = mesh.name.slice(-2);
+        temp = Number(temp);
+        return temp;
     }
     
     createMat(player){
@@ -130,6 +158,20 @@ class Game extends React.Component {
       return mat;
     }
 
+    toggleOff(){
+      if(this.state.isBuyingCity){
+        this.toggleBuyCity();
+      }
+
+      if(this.state.isBuyingRoad){
+        this.toggleBuyRoad();
+      }
+
+      if(this.state.isBuyingSettlement){
+        this.toggleBuySettlement();
+      }
+    }
+
     
     onSceneMount(e) {
         const { canvas, scene, engine} = e;   
@@ -138,7 +180,6 @@ class Game extends React.Component {
 
 
 
-        console.log('Engine is: ' + this.engine);
         this.initEnvironment(canvas, scene);
         SceneLoader.ImportMesh("", "", "boardTemplate.babylon", scene, function (newMeshes) {   
             for(var mesh of newMeshes) {
@@ -175,6 +216,42 @@ class Game extends React.Component {
 
         scene.registerBeforeRender(function () {
                 light.position = camera.position;
+                var brick = scene.getMeshByID('BrickIcon');
+            if(brick !== null) {
+                brick.rotation.y += 0.02;
+            }
+            var random = scene.getMeshByID('RandomIcon');
+            if(random !== null) {
+                random.rotation.y += 0.02;
+            }
+            var random1 = scene.getMeshByID('RandomIcon.001');
+            if(random1 !== null) {
+                random1.rotation.y += 0.02;
+            }
+            var random2 = scene.getMeshByID('RandomIcon.002');
+            if(random2 !== null) {
+                random2.rotation.y += 0.02;
+            }
+            var random3 = scene.getMeshByID('RandomIcon.003');
+            if(random3 !== null) {
+                random3.rotation.y += 0.02;
+            }
+            var hay = scene.getMeshByID('HayIcon');
+            if(hay !== null) {
+                hay.rotation.y += 0.02;
+            }
+            var rock = scene.getMeshByID('RockIcon');
+            if(rock !== null) {
+                rock.rotation.y += 0.02;
+            }
+            var sheep = scene.getMeshByID('SheepIcon');
+            if(sheep !== null) {
+                sheep.rotation.y += 0.02;
+            }
+            var tree = scene.getMeshByID('TreeIcon');
+            if(tree !== null) {
+                tree.rotation.y += 0.02;
+            }
         });
 
       
@@ -207,12 +284,10 @@ class Game extends React.Component {
 
   buyingSettlement(settlementId) {
     if (this.verifyCorner(settlementId)) {
+      this.toggleBuySettlement();
       let obj = {room: this.state.room, player: this.state.identity, settlement: settlementId};
-      this.setState({isBuyingSettlement: false});
-      console.log('Game: player ' + obj.player + 'bought a settlement at ' + obj.settlement);
       this.socket.emit('buySettlement', obj);
     } else {
-      // console.log('Game: selected slot is invalid, please select another!');
       let message = {
         user: 'COMPUTER',
         text: 'selected slot is invalid, please select another!'
@@ -224,12 +299,11 @@ class Game extends React.Component {
   buyingCity(cityId) {
     let allPlayers = this.state.players;
     if (allPlayers[this.state.identity].owns_settlement.includes(cityId) && this.state.settlements[cityId].owner === this.state.identity) {
-      let obj = {player: this.state.identity, city: cityId};
-      this.setState({isBuyingCity: false});
-      console.log('Game: player ' + obj.player + 'bought a city at ' + obj.settlement);
+      this.toggleBuyCity();
+      let obj = {room: this.state.room, player: this.state.identity, city: cityId};
+      console.log('emitting buyCity with', obj);
       this.socket.emit('buyCity', obj);
     } else {
-      // console.log('Game: selected slot is invalid, please select another!');
       let message = {
         user: 'COMPUTER',
         text: 'selected slot is invalid, please select another!'
@@ -258,21 +332,18 @@ class Game extends React.Component {
 
     let RNG = Math.floor(Math.random() * possibleDevCards.length);
     let randomCard = possibleDevCards[RNG];
-    console.log('You get:', randomCard);
 
     let obj = {player: this.state.identity, dev: randomCard}
     this.socket.emit('buyDev', obj);
   }
 
   startTrade() {
-    console.log('Game: Player', this.state.players[this.state.identity].id, 'wants to: trade');
     //display input form for desired resources
     //display input form for resources to give
     //await response from other users?
   }
 
   playCard(item) {
-    console.log('Game: Player', this.state.players[this.state.identity].id, 'wants to:', item);
     if (item === 'playcardknight') {
       let allPlayers = this.state.players
       allPlayers[this.state.identity].card_knight--
@@ -361,8 +432,7 @@ class Game extends React.Component {
     } else {
       nextPlayer = 1;
     }
-    this.setState({active: false});
-    console.log('nextPlayer is', nextPlayer);
+    this.setState({active: false})
     this.socket.emit('endTurn', nextPlayer);
   }
 
@@ -480,23 +550,23 @@ class Game extends React.Component {
 
 
   verifyRoad(roadId){
-    const adjRoads = this.getAdjRoadsToRoad(roadId);
+  
     if(this.state.roads[roadId].owner !== null){
       return false;
     }
+    const adjRoads = this.getAdjRoadsToRoad(roadId);
 
 
     for(let i = 0; i < adjRoads.length; i++){
       if(adjRoads[i].owner === this.state.identity){
         let common = this.getCommonCornerToTwoRoads(adjRoads[i].id, roadId);
-        if(common.owner){
           if(common.owner === this.state.identity || common.owner === null){
             return true;
           }
-        }
 
       }
     }
+    
     return false;
   }
 
@@ -554,6 +624,7 @@ class Game extends React.Component {
     let possibleRoads = [];
     if(ownedRoads){
       for (let i = 0; i < ownedRoads.length; i ++) {
+          
         for (let j = 0; j < allRoads[ownedRoads[i]].adj_road_slots.length; j++ ) {
             let road = allRoads[ownedRoads[i]].adj_road_slots[j];
             if (this.verifyRoad(road)) {
@@ -600,7 +671,6 @@ class Game extends React.Component {
     }
 
     if (score >= 10) {
-      console.log('Player ' + this.state.identity + ' has reached 10 points!');
       // endGame(); // need to write this function
     }
     
@@ -624,8 +694,7 @@ class Game extends React.Component {
   }
 
   canBuySettlement() {
-    let possibleSettlements = this.findPossibleSettlements();
-    console.log(possibleSettlements);
+    let possibleSettlements = this.findPossibleSettlements()
 
     // check if affordable && piece available && there is a valid spot available
     if (this.state.players[this.state.identity].card_brick >= 1 && 
@@ -718,7 +787,6 @@ class Game extends React.Component {
     if(event.keyCode === 13){
       var temp = this.state.roads;
       temp[slotId].owner = 1;
-      console.log(this.state.players[1].owns_road)
       this.state.players[1].owns_road.push(Number(slotId));
       this.setState({
         roads: temp
@@ -749,14 +817,10 @@ class Game extends React.Component {
   }
 
   toggleBuyRoad(){
-
-
-
     this.setState({isBuyingRoad: !this.state.isBuyingRoad},
         function(){
         if(this.state.isBuyingRoad){
             let arr = this.findPossibleRoads();
-            console.log('POSSIBLE ROADS IS', arr);
             for(let i = 0; i < arr.length; i++){
               let mesh = this.scene.getMeshByID('Road' + arr[i]);
               mesh.visibility = 0.8
@@ -769,11 +833,33 @@ class Game extends React.Component {
             }
           }
     })
-
-
-        
-
   }
+
+    toggleBuySettlement(){
+    this.setState({isBuyingSettlement: !this.state.isBuyingSettlement},
+        function(){
+        if(this.state.isBuyingSettlement){
+            let arr = this.findPossibleSettlements();
+    
+            for(let i = 0; i < arr.length; i++){
+              let mesh = this.scene.getMeshByID('House' + arr[i]);
+              mesh.visibility = 0.8
+            }
+          } else {
+            let arr = this.findPossibleSettlements();
+            for(let i = 0; i < arr.length; i++){
+              let mesh = this.scene.getMeshByID('House' + arr[i]);
+              mesh.visibility = 0
+            }
+          }
+    })
+  }
+
+  toggleBuyCity(){
+    this.setState({isBuyingCity: !this.state.isBuyingCity})
+  }
+
+
 
   cheatMaxDev() {
     let allPlayerStates = this.state.players
@@ -825,7 +911,7 @@ class Game extends React.Component {
     this.socket = io('/');
 
     this.socket.on('start', body => {
-      console.log('start trigger heard');
+      console.log('STARTING GAME');
       this.setState({room: body.game_session_id, players: body.players, tiles: body.tiles, settlements: body.settlements, roads: body.roads});
       if(this.state.identity === 1){
         this.setState({active: true})
@@ -866,8 +952,8 @@ class Game extends React.Component {
               board[card]--;
               player[card]++;
               this.setState({turn: this.state.turn + 1});
-              console.log('player' + corner.owner + " now has " + player[card] + resource + "s");
-              console.log('board now has ' + board[card] + resource + "s")
+      
+      
 
                   this.setState({
                     ableToBuyRoad: this.canBuyRoad(),
@@ -933,6 +1019,9 @@ class Game extends React.Component {
       settlement.owner = obj.player;
       settlement.house_type = 1;
 
+      let mat = this.createMat(obj.player);
+      this.colorPiece('House'+obj.settlement, mat);
+
       this.setState({players: players, settlements: settlements});
     })
 
@@ -955,7 +1044,9 @@ class Game extends React.Component {
 
       let index = player.owns_settlement.indexOf(obj.city);
       player.owns_settlement.splice(index, 1);
-      this.setState({players: players, settlements: settlement});
+      let mat = this.createMat(obj.player);
+      this.colorPiece('City'+obj.city, mat);
+      this.setState({players: players, settlements: settlements});
     })
 
     this.socket.on('buyDev', obj => {
@@ -978,15 +1069,13 @@ class Game extends React.Component {
 
 
     this.socket.on('endTurn', active => {
-      console.log('hearing END TURN', active);
       if(active === this.state.identity){
         this.setState({active: true});
-        console.log('ITS YOUR TURN!!!!!!!!!!');
+
       }
     })
 
     this.socket.on('first', player => {
-      console.log('starting player is', player);
     })
 
     this.socket.on('robber', player => {
@@ -1027,6 +1116,8 @@ class Game extends React.Component {
     
     <button onClick={this.rollForFirst}>ROLL FOR FIRST</button>
     <button onClick={this.toggleBuyRoad}>BUY ROAD</button>
+    <button onClick={this.toggleBuySettlement}>BUY SETTLEMENT</button>
+    <button onClick={this.toggleBuyCity}>BUY CITY</button>
     <button onClick={()=>(console.log(this.state))}>CHECK GAME STATE</button>
 
      {/* {this.state.active ? <Playerinterface gamestate={this.state} diceRoll={this.diceRoll} buymethod={this.makePurchase} playcardmethod={this.playCard} offertrademethod={this.startTrade} endTurn={this.endTurn}/> : null} */}
