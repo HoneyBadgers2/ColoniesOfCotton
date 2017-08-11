@@ -9,7 +9,6 @@ class Messagelog extends React.Component {
   }
 
   componentWillReceiveProps(nextprops) {
-    // console.log('Messagelog: compWillReceiveProps:', nextprops);
   }
   
 

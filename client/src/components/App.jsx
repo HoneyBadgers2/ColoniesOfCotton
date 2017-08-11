@@ -117,7 +117,6 @@ export default class App extends Component {
         const { canvas, scene, engine} = e;   
         this.scene = scene;   
         this.engine = engine;
-        console.log('Engine is: ' + this.engine);
         this.initEnvironment(canvas, scene);
         SceneLoader.ImportMesh("", "", "boardTemplate.babylon", scene, function (newMeshes) {   
             for(var mesh of newMeshes) {
