@@ -113,6 +113,27 @@ io.on('connection', socket => {
         io.sockets.in(room).emit('message', message);
     })
 
+    socket.on('firstRoll', obj => {
+        let player = obj.player
+        let total = obj.roll
+        rolls ++
+        let message = {
+            text: "Player" + player + " rolled a " + total,
+            user: "COMPUTER"
+        }
+        
+        io.sockets.in(obj.room).emit('message', message);
+        if(total > highest){
+            highest = total
+            first = player
+        }
+        if(rolls === 4){
+            io.sockets.in(obj.room).emit('message', {user: "COMPUTER", text: "Player" + first + " goes first."})
+            io.sockets.in(obj.room).emit('first', first);
+            rolls = 0;
+        }
+    })
+
 
 
     socket.on('diceRoll', obj => {
@@ -186,5 +207,13 @@ io.on('connection', socket => {
 
         io.sockets.in(obj.room).emit('message', message);
         io.sockets.in(obj.room).emit('buyDev', obj);
+    })
+
+    socket.on('settingSettlement', obj => {
+        io.sockets.in(obj.room).emit('settingSettlement', obj);
+    })
+
+    socket.on('settingRoad', obj => {
+        io.sockets.in(obj.room).emit('settingRoad', obj);
     })
 })

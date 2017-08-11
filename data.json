@@ -40,8 +40,8 @@
             "is_active_player": false,
             "has_played_development_card": false,
             "player_points": 0,
-            "owns_road": [32, 36],
-            "owns_settlement": [25, 27],
+            "owns_road": [],
+            "owns_settlement": [],
             "owns_city": [],
             "played_card_knight": 0,
             "played_card_road": 0,
@@ -50,11 +50,11 @@
             "played_card_victory": 0,
             "has_longest_road": false,
             "has_biggest_army": false,
-            "card_brick": 1,
-            "card_grain": 0,
-            "card_lumber": 1,
-            "card_ore": 0,
-            "card_wool": 0,
+            "card_brick": 50,
+            "card_grain": 50,
+            "card_lumber": 50,
+            "card_ore": 50,
+            "card_wool": 50,
             "card_knight": 0,
             "card_road": 0,
             "card_monopoly": 0,
@@ -70,8 +70,8 @@
             "is_active_player": false,
             "has_played_development_card": false,
             "player_points": 0,
-            "owns_road": [42, 45],
-            "owns_settlement": [32, 34],
+            "owns_road": [],
+            "owns_settlement": [],
             "owns_city": [],
             "played_card_knight": 0,
             "played_card_road": 0,
@@ -100,8 +100,8 @@
             "is_active_player": false,
             "has_played_development_card": false,
             "player_points": 0,
-            "owns_road": [50, 54],
-            "owns_settlement": [38, 40],
+            "owns_road": [],
+            "owns_settlement": [],
             "owns_city": [],
             "played_card_knight": 0,
             "played_card_road": 0,
@@ -130,8 +130,8 @@
             "is_active_player": false,
             "has_played_development_card": false,
             "player_points": 0,
-            "owns_road": [62, 65],
-            "owns_settlement": [46, 48],
+            "owns_road": [],
+            "owns_settlement": [],
             "owns_city": [],
             "played_card_knight": 0,
             "played_card_road": 0,
@@ -587,7 +587,7 @@
         },
         {
             "id": 25,
-            "owner": 1,
+            "owner": null,
             "house_type": 0,
             "port_id": 5,
             "port_input_type": "lumber",
@@ -607,7 +607,7 @@
         },
         {
             "id": 27,
-            "owner": 1,
+            "owner": null,
             "house_type": 0,
             "port_id": 6,
             "port_input_type": "any_type",
@@ -657,7 +657,7 @@
         },
         {
             "id": 32,
-            "owner": 2,
+            "owner": null,
             "house_type": 0,
             "port_id": null,
             "port_input_type": null,
@@ -677,7 +677,7 @@
         },
         {
             "id": 34,
-            "owner": 2,
+            "owner": null,
             "house_type": 0,
             "port_id": 8,
             "port_input_type": "ore",
@@ -717,7 +717,7 @@
         },
         {
             "id": 38,
-            "owner": 3,
+            "owner": null,
             "house_type": 0,
             "port_id": 9,
             "port_input_type": "any_type",
@@ -737,7 +737,7 @@
         },
         {
             "id": 40,
-            "owner": 3,
+            "owner": null,
             "house_type": 0,
             "port_id": 1,
             "port_input_type": "wool",
@@ -797,7 +797,7 @@
         },
         {
             "id": 46,
-            "owner": 4,
+            "owner": null,
             "house_type": 0,
             "port_id": null,
             "port_input_type": null,
@@ -817,7 +817,7 @@
         },
         {
             "id": 48,
-            "owner": 4,
+            "owner": null,
             "house_type": 0,
             "port_id": 3,
             "port_input_type": "any_type",
@@ -1081,7 +1081,7 @@
         },
         {
             "id": 32,
-            "owner": 1,
+            "owner": null,
             "connecting_house_slots": [54, 25],
             "adj_road_slots": [31, 33, 72]
         },
@@ -1105,7 +1105,7 @@
         },
         {
             "id": 36,
-            "owner": 1,
+            "owner": null,
             "connecting_house_slots": [27, 28],
             "adj_road_slots": [35, 38]
         },
@@ -1141,7 +1141,7 @@
         },
         {
             "id": 42,
-            "owner": 2,
+            "owner": null,
             "connecting_house_slots": [31, 32],
             "adj_road_slots": [40, 41, 43]
         },
@@ -1159,7 +1159,7 @@
         },
         {
             "id": 45,
-            "owner": 2,
+            "owner": null,
             "connecting_house_slots": [12, 34],
             "adj_road_slots": [13, 14, 44, 46]
         },
@@ -1189,7 +1189,7 @@
         },
         {
             "id": 50,
-            "owner": 3,
+            "owner": null,
             "connecting_house_slots": [37, 38],
             "adj_road_slots": [49, 51]
         },
@@ -1213,7 +1213,7 @@
         },
         {
             "id": 54,
-            "owner": 3,
+            "owner": null,
             "connecting_house_slots": [40, 41],
             "adj_road_slots": [53, 55, 56]
         },
@@ -1261,7 +1261,7 @@
         },
         {
             "id": 62,
-            "owner": 4,
+            "owner": null,
             "connecting_house_slots": [20, 46],
             "adj_road_slots": [24, 25, 61, 63]
         },
@@ -1279,7 +1279,7 @@
         },
         {
             "id": 65,
-            "owner": 4,
+            "owner": null,
             "connecting_house_slots": [48, 49],
             "adj_road_slots": [64, 66, 67]
         },
