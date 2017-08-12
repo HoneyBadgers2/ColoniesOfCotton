@@ -219,7 +219,6 @@ class Game extends React.Component {
     }
 
     handleResourceClick(event){
-      console.log('resource picked'); 
       if(this.state.isPlayingCardPlenty < 2){
         debugger;
         if(this.state.players[0][event.target.id  ] > 0){
@@ -239,7 +238,20 @@ class Game extends React.Component {
 
         }
       } 
+      
 
+      if(this.state.isPlayingCardMonopoly){
+        let obj = {
+          player: this.state.identity,
+          room: this.state.room,
+          resource: event.target.id
+        }
+
+        this.socket.emit('playedCardMonopoly', obj);
+        this.setState({needResourceBar: false});
+        this.toggleUI();
+        this.checkPossibleActions();
+      }
     }
 
 
@@ -617,18 +629,24 @@ class Game extends React.Component {
 
     playingCardMonopoly(cardType) {
       let allPlayers = this.state.players;
-      if (!allPlayers[this.state.identity].has_played_development_card) {
-        let obj = {room: this.state.room, player: this.state.identity, card: 'card_monopoly', resourceType: cardType};
-        allPlayers[this.state.identity].has_played_development_card = true;
-        this.setState({isPlayingCardMonopoly: false});
-        this.socket.emit('playedCardMonopoly', obj);
-      } else {
-        let message = {
-          user: 'COMPUTER',
-          text: 'Cannot play card_monopoly: you have already played a development card this turn.'
-        };
-        this.setState({messages: [...this.state.messages, message]});
-      }
+      let player = allPlayers[this.state.identity];
+      player.card_monopoly--;
+      player.has_played_development_card = true;
+      let obj = {
+        player: this.state.identity,
+        dev: "Monopoly",
+        room: this.state.room
+      };
+
+      this.socket.emit('playingDev', obj);
+      this.setState({
+        isPlayingDevCard: false,
+        players: allPlayers,
+        isPlayingCardMonopoly: true,
+        needResourceBar: true,
+        instruction: "Pick A Resource To Take"
+      });
+      this.toggleUI();
     }
 
 
@@ -1467,7 +1485,7 @@ class Game extends React.Component {
         player.card_grain--;
         player.card_ore--;
         player.card_wool--;
-        player.total_resource -= 3;
+        player.total_resources -= 3;
         board.card_grain++;
         board.card_ore++;
         board.card_wool++;
@@ -1524,16 +1542,16 @@ class Game extends React.Component {
     this.socket.on('playedCardKnight', obj => {
       let allTiles = this.state.tiles;
       let allPlayers = this.state.players;
+      let player = allPlayers[obj.player];
+      player.card_knight--;
+      player.has_played_development_card = true;
       let allRoads = this.state.roads;
       let allSettlements = this.state.settlements;
       
-      let player = allPlayers[obj.player];
       let board = allPlayers[0];
       let road = roads[obj.road];
       
       player.played_card_knight++;
-      player.card_knight--;
-      player.has_played_development_card = true;
 
       this.setState({players: allPlayers, isPlayingCardKnight: false});
       // need to invoke eventRobberSteal
@@ -1579,29 +1597,21 @@ class Game extends React.Component {
     })
 
     this.socket.on('playedCardMonopoly', obj => {
-      let allTiles = this.state.tiles;
-      let allPlayers = this.state.players;
-      let allRoads = this.state.roads;
-      let allSettlements = this.state.settlements;
-      
-      let player = allPlayers[obj.player];
-      let board = allPlayers[0];
-      let cardTypeToTake = obj.resourceType;
-      let stolenCardAmount = 0;
-      for (let i = 1; i < allPlayers.length; i++) {
-        if (allPlayers[i].id !== obj.player) {
-          stolenCardAmount = stolenCardAmount + allPlayers[i][cardTypeToTake];
-          allPlayers[i][cardTypeToTake] = 0;
-        }
-      };
-      
-      player.played_card_monopoly++;
-      player.card_monopoly--;
-      player[cardTypeToTake] = player[cardTypeToTake] + stolenCardAmount;
-      player.has_played_development_card = true;
+       let players = this.state.players;
+       let player = this.state.players[obj.player];
+       let resource = obj.resource;
 
-      this.setState({players: allPlayers, isPlayingCardMonopoly: false});
-      
+      for(let i = 1; i < players.length; i++){
+        if(i !== obj.player){
+          while(players[i][resource] > 0){
+            players[i][resource] --
+            players[i].total_resources --
+            player[resource] ++
+            player.total_resources ++
+          }
+        }
+      }
+
     })
 
 

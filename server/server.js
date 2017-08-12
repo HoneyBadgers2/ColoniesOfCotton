@@ -247,13 +247,12 @@ io.on('connection', socket => {
 
 
   socket.on('playedCardMonopoly', obj => {
-    let message = {
-        text: 'Player' + obj.player + ' plays: ' + obj.card + ', and gets all ' + obj.resourceType,
-        user: "COMPUTER"
-    };
-
-    io.sockets.in(obj.room).emit('message', message);
-    io.sockets.in(obj.room).emit('playedCardMonopoly', obj);
+      io.sockets.in(obj.room).emit('playedCardMonopoly', obj);
+      let message = {
+          text: "Player" + obj.player + " steals everyone's " + obj.resource.slice(5) + "!",
+          user: "COMPUTER"
+      }
+      io.sockets.in(obj.room).emit('message', message);
   })
 
   socket.on('playingDev', obj =>{
@@ -272,8 +271,6 @@ io.on('connection', socket => {
       io.sockets.in(obj.room).emit('message', message);
       io.sockets.in(obj.room).emit('playedCardPlenty', obj);
   })
-
-
 
 //////////////////////////////////////////
     socket.on('cheatSkipSetup', obj => {
