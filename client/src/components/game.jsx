@@ -27,116 +27,116 @@ from 'babylonjs';
 
 class Game extends React.Component {
   constructor(props) {
-      super(props)
-      this.state = {
-        setupCorner: false,
-        setupRoad: false,
-        identity: 1,
-        room: null,
-        players: ['BOARD', 'Player1', 'Player2', 'Player3', 'Player4'],
-        tiles: [0, 1, 2, 3, 4, 5],
-        settlements: [],
-        roads: [],
-        messages: [],
-        active: false,
-        canRollForFirst: false,
-        turn: 0,
-        moveRobber: false,
-        robber: false,
-        robbedTile: 1,
-        ableToBuyRoad: false,
-        ableToBuySettlement: false,
-        ableToBuyCity: false,
-        ableToBuyDevelopmentCard: false,
-        ableToOfferTrade: false,
-        ableToPlayCardKnight: false,
-        ableToPlayCardRoad: false,
-        ableToPlayCardMonopoly: false,
-        ableToPlayCardPlenty: false,
-        ableToPlayCardVictory: false,
-        ableToCancelAction: false,
-        hasRolled: false,
-        isBuyingRoad: false,
-        isBuyingSettlement: false,
-        isBuyingCity: false,
-        isBuying: false,
-        isPlayingDevCard: false,
-        isPlayingCardKnight: false,
-        isPlayingCardRoad: false,
-        isPlayingCardMonopoly: false,
-        isPlayingCardPlenty: 2,
-        wantedCards: {card_brick: 0, card_grain: 0, card_lumber: 0, card_ore: 0, card_wool: 0},
-        needResourceBar: false,
-        interfaceToggled: false,
-        instruction: null,
-      }
-      this.scene = undefined;
-      this.engine = undefined;
-      this.onSceneMount = this.onSceneMount.bind(this);
-      this.onMeshPicked = this.onMeshPicked.bind(this);
-      this.initEnvironment = this.initEnvironment.bind(this)
-      this.getIDFromMesh = this.getIDFromMesh.bind(this);
-      this.moveRobber = this.moveRobber.bind(this);
-      this.colorPiece = this.colorPiece.bind(this);
-
-
-      ////////////////////////////////////////////////////
-      this.cheatSkipSetup = this.cheatSkipSetup.bind(this);
-///////////////////////////////////////////////////////////////////
-      this.toggleResourceBar = this.toggleResourceBar.bind(this);
-      this.playCardPlenty = this.playCardPlenty.bind(this);
-      this.toggleUI = this.toggleUI.bind(this);
-      this.handleResourceClick = this.handleResourceClick.bind(this);
-      this.playingCardKnight = this.playingCardKnight.bind(this);
-      this.playingCardRoad = this.playingCardRoad.bind(this);
-      this.playingCardMonopoly = this.playingCardMonopoly.bind(this);
-      this.togglePlayingDev = this.togglePlayingDev.bind(this);
-      this.toggleBuying = this.toggleBuying.bind(this);
-      this.toggleSetupCorner= this.toggleSetupCorner.bind(this);
-      this.toggleSetupRoad = this.toggleSetupRoad.bind(this);
-      this.checkPossibleActions = this.checkPossibleActions.bind(this);
-      this.toggleOff = this.toggleOff.bind(this);
-      this.toggleBuySettlement = this.toggleBuySettlement.bind(this);
-      this.toggleBuyCity = this.toggleBuyCity.bind(this);
-      this.toggleBuyRoad = this.toggleBuyRoad.bind(this);
-      this.rollForFirst = this.rollForFirst.bind(this);
-      this.buyingRoad = this.buyingRoad.bind(this);
-      this.buyingSettlement = this.buyingSettlement.bind(this);
-      this.buyingCity = this.buyingCity.bind(this);
-      this.buyingDevelopmentCard = this.buyingDevelopmentCard.bind(this);
-      this.startTrade = this.startTrade.bind(this);
-      this.endTurn = this.endTurn.bind(this);
-      this.diceRoll = this.diceRoll.bind(this);
-      this.robber = this.robber.bind(this);
-      this.handleSubmitMessage = this.handleSubmitMessage.bind(this);
-      this.verifyCorner = this.verifyCorner.bind(this);
-      this.verifyRoad = this.verifyRoad.bind(this);
-      this.getAdjCornersToCorner = this.getAdjCornersToCorner.bind(this);
-      this.getAdjRoadsToCorner = this.getAdjRoadsToCorner.bind(this);
-      this.getAdjCornerToRoad = this.getAdjCornerToRoad.bind(this);
-      this.getAdjRoadsToRoad = this.getAdjRoadsToRoad.bind(this);
-      this.getCommonCornerToTwoRoads = this.getCommonCornerToTwoRoads.bind(this);
-      this.findPossibleRoads = this.findPossibleRoads.bind(this);
-      this.findPossibleSettlements = this.findPossibleSettlements.bind(this);
-      this.calculateScore = this.calculateScore.bind(this);
-      this.canBuyRoad = this.canBuyRoad.bind(this);
-      this.canBuySettlement = this.canBuySettlement.bind(this);
-      this.canBuyCity = this.canBuyCity.bind(this);
-      this.canBuyDevelopmentCard = this.canBuyDevelopmentCard.bind(this);
-      this.canOfferTrade = this.canOfferTrade.bind(this);
-      this.canPlayCardKnight = this.canPlayCardKnight.bind(this);
-      this.canPlayCardRoad = this.canPlayCardRoad.bind(this);
-      this.canPlayCardMonopoly = this.canPlayCardMonopoly.bind(this);
-      this.canPlayCardPlenty = this.canPlayCardPlenty.bind(this);
-      this.canPlayCardVictory = this.canPlayCardVictory.bind(this);
-      this.cheatTakeControl = this.cheatTakeControl.bind(this);
-      this.cheatMoveRobber = this.cheatMoveRobber.bind(this);
-      this.cheatMaxResource = this.cheatMaxResource.bind(this);
-      this.cheatMaxDev = this.cheatMaxDev.bind(this);
-      this.cheatResetDevCard = this.cheatResetDevCard.bind(this);
-
+    super(props)
+    this.state = {
+      setupCorner: false,
+      setupRoad: false,
+      identity: 1,
+      room: null,
+      players: ['BOARD', 'Player1', 'Player2', 'Player3', 'Player4'],
+      tiles: [0, 1, 2, 3, 4, 5],
+      settlements: [],
+      roads: [],
+      messages: [],
+      active: false,
+      canRollForFirst: false,
+      turn: 0,
+      moveRobber: false,
+      robber: false,
+      robbedTile: 1,
+      ableToBuyRoad: false,
+      ableToBuySettlement: false,
+      ableToBuyCity: false,
+      ableToBuyDevelopmentCard: false,
+      ableToOfferTrade: false,
+      ableToPlayCardKnight: false,
+      ableToPlayCardRoad: false,
+      ableToPlayCardMonopoly: false,
+      ableToPlayCardPlenty: false,
+      ableToPlayCardVictory: false,
+      ableToCancelAction: false,
+      hasRolled: false,
+      isBuyingRoad: false,
+      isBuyingSettlement: false,
+      isBuyingCity: false,
+      isBuying: false,
+      isPlayingDevCard: false,
+      isPlayingCardKnight: false,
+      isPlayingCardRoad: false,
+      isPlayingCardMonopoly: false,
+      isPlayingCardPlenty: 2,
+      wantedCards: {card_brick: 0, card_grain: 0, card_lumber: 0, card_ore: 0, card_wool: 0},
+      needResourceBar: false,
+      interfaceToggled: false,
+      instruction: null,
     }
-    /////////////////////////////////////////////////////////////////////////////
+    this.scene = undefined;
+    this.engine = undefined;
+    this.onSceneMount = this.onSceneMount.bind(this);
+    this.onMeshPicked = this.onMeshPicked.bind(this);
+    this.initEnvironment = this.initEnvironment.bind(this)
+    this.getIDFromMesh = this.getIDFromMesh.bind(this);
+    this.moveRobber = this.moveRobber.bind(this);
+    this.colorPiece = this.colorPiece.bind(this);
+
+
+    ////////////////////////////////////////////////////
+    this.cheatSkipSetup = this.cheatSkipSetup.bind(this);
+///////////////////////////////////////////////////////////////////
+    this.toggleResourceBar = this.toggleResourceBar.bind(this);
+    this.playCardPlenty = this.playCardPlenty.bind(this);
+    this.toggleUI = this.toggleUI.bind(this);
+    this.handleResourceClick = this.handleResourceClick.bind(this);
+    this.playingCardKnight = this.playingCardKnight.bind(this);
+    this.playingCardRoad = this.playingCardRoad.bind(this);
+    this.playingCardMonopoly = this.playingCardMonopoly.bind(this);
+    this.togglePlayingDev = this.togglePlayingDev.bind(this);
+    this.toggleBuying = this.toggleBuying.bind(this);
+    this.toggleSetupCorner= this.toggleSetupCorner.bind(this);
+    this.toggleSetupRoad = this.toggleSetupRoad.bind(this);
+    this.checkPossibleActions = this.checkPossibleActions.bind(this);
+    this.toggleOff = this.toggleOff.bind(this);
+    this.toggleBuySettlement = this.toggleBuySettlement.bind(this);
+    this.toggleBuyCity = this.toggleBuyCity.bind(this);
+    this.toggleBuyRoad = this.toggleBuyRoad.bind(this);
+    this.rollForFirst = this.rollForFirst.bind(this);
+    this.buyingRoad = this.buyingRoad.bind(this);
+    this.buyingSettlement = this.buyingSettlement.bind(this);
+    this.buyingCity = this.buyingCity.bind(this);
+    this.buyingDevelopmentCard = this.buyingDevelopmentCard.bind(this);
+    this.startTrade = this.startTrade.bind(this);
+    this.endTurn = this.endTurn.bind(this);
+    this.diceRoll = this.diceRoll.bind(this);
+    this.robber = this.robber.bind(this);
+    this.handleSubmitMessage = this.handleSubmitMessage.bind(this);
+    this.verifyCorner = this.verifyCorner.bind(this);
+    this.verifyRoad = this.verifyRoad.bind(this);
+    this.getAdjCornersToCorner = this.getAdjCornersToCorner.bind(this);
+    this.getAdjRoadsToCorner = this.getAdjRoadsToCorner.bind(this);
+    this.getAdjCornerToRoad = this.getAdjCornerToRoad.bind(this);
+    this.getAdjRoadsToRoad = this.getAdjRoadsToRoad.bind(this);
+    this.getCommonCornerToTwoRoads = this.getCommonCornerToTwoRoads.bind(this);
+    this.findPossibleRoads = this.findPossibleRoads.bind(this);
+    this.findPossibleSettlements = this.findPossibleSettlements.bind(this);
+    this.calculateScore = this.calculateScore.bind(this);
+    this.canBuyRoad = this.canBuyRoad.bind(this);
+    this.canBuySettlement = this.canBuySettlement.bind(this);
+    this.canBuyCity = this.canBuyCity.bind(this);
+    this.canBuyDevelopmentCard = this.canBuyDevelopmentCard.bind(this);
+    this.canOfferTrade = this.canOfferTrade.bind(this);
+    this.canPlayCardKnight = this.canPlayCardKnight.bind(this);
+    this.canPlayCardRoad = this.canPlayCardRoad.bind(this);
+    this.canPlayCardMonopoly = this.canPlayCardMonopoly.bind(this);
+    this.canPlayCardPlenty = this.canPlayCardPlenty.bind(this);
+    this.canPlayCardVictory = this.canPlayCardVictory.bind(this);
+    this.cheatTakeControl = this.cheatTakeControl.bind(this);
+    this.cheatMoveRobber = this.cheatMoveRobber.bind(this);
+    this.cheatMaxResource = this.cheatMaxResource.bind(this);
+    this.cheatMaxDev = this.cheatMaxDev.bind(this);
+    this.cheatResetDevCard = this.cheatResetDevCard.bind(this);
+
+  }
+  /////////////////////////////////////////////////////////////////////////////
 
 
   onMeshPicked(mesh, scene) {
@@ -1234,15 +1234,15 @@ class Game extends React.Component {
       
     }
   }
-  //////////////////////////////////////////////////
+//////////////////////////////////////////////////
   cheatSkipSetup() {
     let obj = {};
     obj.room = this.state.room;
     this.socket.emit('cheatSkipSetup', obj);
   }
 
-  //////////////////////////////////////////////////
-
+//////////////////////////////////////////////////
+/////////// START SOCKET LISTENERS ///////////
   componentDidMount() {
 
 
@@ -1538,7 +1538,6 @@ class Game extends React.Component {
     })
 
 
-
   this.socket.on('playedCardKnight', obj => {
     let allTiles = this.state.tiles;
     let allPlayers = this.state.players;
@@ -1613,9 +1612,6 @@ class Game extends React.Component {
     }
 
   })
-
-
-
 
 
   this.socket.on('playedCardVictory', obj => {
@@ -1695,47 +1691,96 @@ class Game extends React.Component {
     }
     
   })
-/////////////////////////////////////////////////////
-
-
-
-    
-
-
+////////////////////////////////////////////
 
   }
-
+/////////// END SOCKET LISTENERS ///////////
 
 
 
 
   render() {
 
-      return ( <div>
-        <h2> Now in -game(game.jsx Component) </h2>
-        <Scene onSceneMount = {this.onSceneMount} onMeshPicked = {this.onMeshPicked} visible = {true}/>  
-        <div>TOTAL RESOURCES: {this.state.players[this.state.identity].total_resources}</div>
-          <button id={1} onClick={this.robber}>Steal from Player 1</button> 
-        <button onClick={()=> {console.log(this.state)}}>SEE EVERYTHING!</button>
-        <div>{'Player# ' + this.state.identity + ' , in room: ' + this.state.room}</div>
-        <span className="resourceBar">
-        <span className="icon Brick" id="card_brick" disabled={true}></span><span className="value">{this.state.players[this.state.identity].card_brick}</span>
-        <span className="icon Wheat" id="card_grain"></span><span className="value">{this.state.players[this.state.identity].card_grain}</span>
-        <span className="icon Wood" id="card_lumber"></span><span className="value">{this.state.players[this.state.identity].card_lumber}</span>
-        <span className="icon Sheep" id="card_wool"></span><span className="value">{this.state.players[this.state.identity].card_wool}</span>
-        <span className="icon Rock" id="card_ore"></span><span className="value">{this.state.players[this.state.identity].card_ore}</span>
-        </span>
-        <div>{'Property: Road: ' + this.state.players[this.state.identity].owns_road + ', Sett: ' + this.state.players[this.state.identity].owns_settlement + ', City: ' + this.state.players[this.state.identity].owns_city}</div>
+    return ( <div>
+      
+      <button id={1} onClick={this.robber}>Steal from Player 1</button> 
+      <button onClick={()=> {console.log(this.state)}}>SEE EVERYTHING!</button>
+      <button onClick={this.cheatSkipSetup}>Skip Setup Phase</button>
+
+      <h2> Now in-game (game.jsx Component) </h2>
+      <Scene onSceneMount = {this.onSceneMount} onMeshPicked = {this.onMeshPicked} visible = {true}/>  
+
+      <div>{'Player# ' + this.state.identity + ' , in room: ' + this.state.room}</div>
+      <div>My Total Resources: {this.state.players[this.state.identity].total_resources}</div>
+      <span className="resourceBar">
+      <span className="icon Brick" id="card_brick" disabled={true}></span><span className="value">{this.state.players[this.state.identity].card_brick}</span>
+      <span className="icon Wheat" id="card_grain"></span><span className="value">{this.state.players[this.state.identity].card_grain}</span>
+      <span className="icon Wood" id="card_lumber"></span><span className="value">{this.state.players[this.state.identity].card_lumber}</span>
+      <span className="icon Sheep" id="card_wool"></span><span className="value">{this.state.players[this.state.identity].card_wool}</span>
+      <span className="icon Rock" id="card_ore"></span><span className="value">{this.state.players[this.state.identity].card_ore}</span>
+      </span>
 
 
-    <button onClick={this.cheatSkipSetup}>Skip Setup Phase</button>
+      {(this.state.roads.length > 0) ?
+        <div>
+          <span>My Score: </span><span>{this.calculateScore(this.state.identity) + this.state.players[this.state.identity].card_victory}</span>
+        </div> : null
+      }
+
+      {(this.state.roads.length > 0) ?
+        <div>
+          <span>My Dev Cards: </span><span>{'Knight: ' + this.state.players[this.state.identity].card_knight + ', Road Building: ' + this.state.players[this.state.identity].card_road + ', Monopoly: ' + this.state.players[this.state.identity].card_monopoly + ', Year of Plenty: ' + this.state.players[this.state.identity].card_plenty + ', Victory Point: ' + this.state.players[this.state.identity].card_victory}</span>
+        </div> : null
+      }
+
+
+      <div>{'Property: Road: ' + this.state.players[this.state.identity].owns_road + ', Sett: ' + this.state.players[this.state.identity].owns_settlement + ', City: ' + this.state.players[this.state.identity].owns_city}</div>
+
+
+      <br></br>
+
+
+
+      {this.state.players.map((player, index) => {
+        if (this.state.roads.length > 0 && this.state.players[player.id].id !== this.state.identity && player.id !== 0) {
+          return (
+            <div>
+              <div><strong>{player.user_number_label}</strong></div>
+
+              <div><span><strong>Resource Cards: </strong></span><span>{player.card_brick + player.card_grain + player.card_lumber + player.card_ore + player.card_wool}</span>
+              </div>
+
+              <div>
+              <span><strong>Dev Cards: </strong></span><span>{player.card_knight + player.card_road + player.card_monopoly + player.card_plenty + player.card_victory}</span>
+              </div>
+
+              <div>
+              <span><strong>Property Owned: </strong></span><span>{'Roads: ' + player.owns_road.length + ', Settlements: ' + player.owns_settlement.length + ', Cities: ' + player.owns_city.length}</span>
+              </div>
+
+              <div>
+              <span><strong>Knights Played: </strong></span><span>{player.played_card_knight}</span>
+              </div>
+
+              <div>
+              <span><strong>Points: </strong></span><span>{this.calculateScore(player.id)}</span>
+              </div>
+              
+
+            </div>
+          )
+
+        }
+      })}
+
+
     <h3>Player Actions Menu</h3>
 
-    { this.state.canRollForFirst ? <button onClick={this.rollForFirst}>Roll</button> : null}
+    {this.state.canRollForFirst ? <button onClick={this.rollForFirst}>Roll</button> : null}
 
-    { this.state.needResourceBar ?
+    {this.state.needResourceBar ?
       <div>
-        <h3>{this.state.instruction}</h3>
+        <h3>{his.state.instruction}</h3>
         <span className="icon Brick" id="card_brick" onClick={this.handleResourceClick}></span>
         <span className="icon Wheat" id="card_grain" onClick={this.handleResourceClick}></span>
         <span className="icon Wood" id="card_lumber" onClick={this.handleResourceClick}></span>
@@ -1744,7 +1789,7 @@ class Game extends React.Component {
       </div> : null
     }
 
-    { this.state.isPlayingDevCard ?
+    {this.state.isPlayingDevCard ?
       <div>
       <span className="resourceBar">
           {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardknight" onClick={this.playingCardKnight} disabled={!this.state.ableToPlayCardKnight}>Play Card: Knight</button><span className="value">{this.state.players[this.state.identity].card_brick}</span></span> : null}
@@ -1771,10 +1816,7 @@ class Game extends React.Component {
     {(!this.state.players[this.state.identity].has_played_development_card && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.togglePlayingDev}>Play Dev Card</button> : null}
 
 
-
-
-
-          <Messagelog messages = {this.state.messages} handleSubmitMessage = {this.handleSubmitMessage}/>  
+    <Messagelog messages = {this.state.messages} handleSubmitMessage = {this.handleSubmitMessage}/>  
           
           <div>By: Team HoneyBadgers</div>
      </div>)
