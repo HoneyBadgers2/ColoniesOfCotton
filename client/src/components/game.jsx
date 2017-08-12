@@ -720,7 +720,7 @@ class Game extends React.Component {
           }
         }
         if(arr.length > 0){
-          if (arr.indexOf(Number(event.target.id)) !== -1) {
+          if (arr.indexOf(Number(event.target.id)) !== -1 && this.state.players[Number(event.target.id)].total_resources > 0) {
             let target = this.state.players[event.target.id]
             let available = [];
 
@@ -1251,6 +1251,7 @@ class Game extends React.Component {
 
         board[resource] --;
         player[resource] ++;
+        player.total_resources ++;
 
         this.setState({players: players})
       })
@@ -1274,6 +1275,7 @@ class Game extends React.Component {
               let resource = 'card_' + tile.terrain;
               players[0][resource] --;
               player[resource] ++;
+              player.total_resources++;
             }
           }
         }
@@ -1322,7 +1324,9 @@ class Game extends React.Component {
         let resource = obj.resource;
 
         victim[resource]--;
+        victim.total_resources--;
         crim[resource]++;
+        crim.total_resources++;
         this.setState({
           turns: this.state.turns++
         });
@@ -1356,6 +1360,7 @@ class Game extends React.Component {
 
                 board[card]--;
                 player[card]++;
+                player.total_resources ++
                 this.setState({
                   turn: this.state.turn + 1
                 });
@@ -1372,6 +1377,7 @@ class Game extends React.Component {
         let board = players[0];
         player.card_brick--;
         player.card_lumber--;
+        player.total_resources -= 2;
         player.owns_road.push(obj.road);
 
         board.card_brick++;
@@ -1400,7 +1406,7 @@ class Game extends React.Component {
         player.card_lumber--;
         player.card_grain--;
         player.card_wool--;
-
+        player.total_resources -= 4;
         board.card_brick++;
         board.card_lumber++;
         board.card_grain++;
@@ -1434,7 +1440,7 @@ class Game extends React.Component {
         player.card_ore -= 3;
         board.card_grain += 2;
         board.card_ore += 2;
-
+        player.total_resources -= 5;
         player.owns_city.push(obj.city);
 
         let settlements = this.state.settlements;
@@ -1461,7 +1467,7 @@ class Game extends React.Component {
         player.card_grain--;
         player.card_ore--;
         player.card_wool--;
-
+        player.total_resource -= 3;
         board.card_grain++;
         board.card_ore++;
         board.card_wool++;
@@ -1696,12 +1702,14 @@ class Game extends React.Component {
     render() {
 
         return ( <div>
+          <h2> Now in -game(game.jsx Component) </h2>
+          <Scene onSceneMount = {this.onSceneMount} onMeshPicked = {this.onMeshPicked} visible = {true}/>  
+          <div>TOTAL RESOURCES: {this.state.players[this.state.identity].total_resources}</div>
            <button id={1} onClick={this.robber}>Steal from Player 1</button> 
           <button onClick={()=> {console.log(this.state)}}>SEE EVERYTHING!</button>
-          <h2> Now in -game(game.jsx Component) </h2>
           <div>{'Player# ' + this.state.identity + ' , in room: ' + this.state.room}</div>
           <span className="resourceBar">
-          <span className="icon Brick" id="card_brick"></span><span className="value">{this.state.players[this.state.identity].card_brick}</span>
+          <span className="icon Brick" id="card_brick" disabled={true}></span><span className="value">{this.state.players[this.state.identity].card_brick}</span>
           <span className="icon Wheat" id="card_grain"></span><span className="value">{this.state.players[this.state.identity].card_grain}</span>
           <span className="icon Wood" id="card_lumber"></span><span className="value">{this.state.players[this.state.identity].card_lumber}</span>
           <span className="icon Sheep" id="card_wool"></span><span className="value">{this.state.players[this.state.identity].card_wool}</span>
@@ -1709,11 +1717,6 @@ class Game extends React.Component {
           </span>
           <div>{'Property: Road: ' + this.state.players[this.state.identity].owns_road + ', Sett: ' + this.state.players[this.state.identity].owns_settlement + ', City: ' + this.state.players[this.state.identity].owns_city}</div>
 
-          <button onClick={() => {console.log(this.state.players)}}>Check Player States</button>
-          <button onClick={() => {console.log(this.state.roads)}}>Check Road States</button>
-          <button onClick={() => {console.log(this.state.settlements)}}>Check Settlement States</button>
-          <button onClick={() => {console.log(this.state.tiles)}}>Check Tile States</button>
-          <button onClick={this.cheatResetDevCard}>Reset Dev Card State</button>
 
       <button onClick={this.cheatSkipSetup}>Skip Setup Phase</button>
       <h3>Player Actions Menu</h3>
@@ -1730,25 +1733,37 @@ class Game extends React.Component {
           <span className="icon Rock" id="card_ore" onClick={this.handleResourceClick}></span>
         </div> : null
       }
-      <button onClick={this.toggleUI}>Toggle Interface</button>
+
+      { this.state.isPlayingDevCard ?
+        <div>
+        <span className="resourceBar">
+            {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardknight" onClick={this.playingCardKnight} disabled={!this.state.ableToPlayCardKnight}>Play Card: Knight</button><span className="value">{this.state.players[this.state.identity].card_brick}</span></span> : null}
+            {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardroad" onClick={this.playingCardRoad} disabled={!this.state.ableToPlayCardRoad}>Play Card: Road Building</button><span className="value">{this.state.players[this.state.identity].card_brick}</span></span> : null}
+            {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardmonopoly" onClick={this.playingCardMonopoly} disabled={!this.state.ableToPlayCardMonopoly}>Play Card: Monopoly</button><span className="value">{this.state.players[this.state.identity].card_brick}</span></span>: null}
+            {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardplenty" onClick={this.playCardPlenty} disabled={!this.state.ableToPlayCardPlenty}>Play Card: Plenty</button><span className="value">{this.state.players[this.state.identity].card_brick}</span></span> : null}
+        </span></div> : null
+      }
+
+      {this.state.isBuying ?
+      <div>
+      <span className="resourceBar">
+        {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buysettlement" onClick={this.toggleBuyRoad} disabled={!this.state.ableToBuyRoad}>Buy Road</button> : null}
+        {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buysettlement" onClick={this.toggleBuySettlement} disabled={!this.state.ableToBuySettlement}>Buy Settlement</button> : null}
+        {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buycity" onClick={this.toggleBuyCity} disabled={!this.state.ableToBuyCity}>Buy City</button> : null}
+        {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buydevcard" onClick={this.buyingDevelopmentCard} disabled={!this.state.ableToBuyDevelopmentCard}>Buy Development Card</button> : null}
+      </span></div>:null}
+
+
       {(!this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button type="button" onClick={this.diceRoll}>Roll Dice</button> : null}
       {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button type="button" id="offertrade" onClick={() => {console.log('trade here')}}>Offer Trade</button> : null}
       {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.endTurn}>End Turn</button> : null}
       {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.toggleBuying}>Buy</button> : null}
-      {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.togglePlayingDev}>Play Dev Card</button> : null}
-      {(this.state.isBuying && this.state.ableToBuyRoad && !this.state.interfaceToggled) ? <button type="button" id="buysettlement" onClick={this.toggleBuyRoad}>Buy Road</button> : null}
-      {(this.state.isBuying && this.state.ableToBuySettlement && !this.state.interfaceToggled) ? <button type="button" id="buysettlement" onClick={this.toggleBuySettlement}>Buy Settlement</button> : null}
-      {(this.state.isBuying && this.state.ableToBuyCity && !this.state.interfaceToggled) ? <button type="button" id="buycity" onClick={this.toggleBuyCity}>Buy City</button> : null}
-      {(this.state.isBuying && this.state.ableToBuyDevelopmentCard && !this.state.interfaceToggled) ? <button type="button" id="buydevcard" onClick={this.buyingDevelopmentCard}>Buy Development Card</button> : null}
-      {(this.state.ableToPlayCardKnight && this.state.isPlayingDevCard && !this.state.interfaceToggled) ? <button type="button" id="playcardknight" onClick={this.playingCardKnight}>Play Card: Knight</button> : null}
-      {(this.state.ableToPlayCardRoad && this.state.isPlayingDevCard && !this.state.interfaceToggled) ? <button type="button" id="playcardroad" onClick={this.playingCardRoad}>Play Card: Road Building</button> : null}
-      {(this.state.ableToPlayCardMonopoly && this.state.isPlayingDevCard && !this.state.interfaceToggled) ? <button type="button" id="playcardmonopoly" onClick={this.playingCardMonopoly}>Play Card: Monopoly</button> : null}
-      {(this.state.ableToPlayCardPlenty && this.state.isPlayingDevCard && !this.state.interfaceToggled) ? <button type="button" id="playcardplenty" onClick={this.playCardPlenty}>Play Card: Plenty</button> : null}
+      {(!this.state.players[this.state.identity].has_played_development_card && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.togglePlayingDev}>Play Dev Card</button> : null}
+
 
 
 
  
-            <Scene onSceneMount = {this.onSceneMount} onMeshPicked = {this.onMeshPicked} visible = {true}/>  
             <Messagelog messages = {this.state.messages} handleSubmitMessage = {this.handleSubmitMessage}/>  
             
             <h1> THIS IS THE BOTTOM </h1>     </div>)
