@@ -61,6 +61,11 @@ class Game extends React.Component {
           isBuyingCity: false,
           isBuying: false,
           isPlayingDevCard: false,
+          isPlayingCardKnight: false,
+          isPlayingCardRoad: false,
+          isPlayingCardMonopoly: false,
+          isPlayingCardPlenty: false,
+          wantedCards: {card_brick: 0, card_grain: 0, card_lumber: 0, card_ore: 0, card_wool: 0},
         }
         this.scene = undefined;
         this.engine = undefined;
@@ -73,6 +78,14 @@ class Game extends React.Component {
 
 
         ////////////////////////////////////////////////////
+
+        this.handleResourceClick = this.handleResourceClick.bind(this);
+        this.playingCardKnight = this.playingCardKnight.bind(this);
+        this.playingCardRoad = this.playingCardRoad.bind(this);
+        this.playingCardMonopoly = this.playingCardMonopoly.bind(this);
+        this.submitCardPlenty = this.submitCardPlenty.bind(this);
+        this.playingCardPlenty = this.playingCardPlenty.bind(this);
+        this.playingCardVictory = this.playingCardVictory.bind(this);
         this.togglePlayingDev = this.togglePlayingDev.bind(this);
         this.toggleBuying = this.toggleBuying.bind(this);
         this.toggleSetupCorner= this.toggleSetupCorner.bind(this);
@@ -117,6 +130,7 @@ class Game extends React.Component {
         this.cheatMoveRobber = this.cheatMoveRobber.bind(this);
         this.cheatMaxResource = this.cheatMaxResource.bind(this);
         this.cheatMaxDev = this.cheatMaxDev.bind(this);
+        this.cheatResetDevCard = this.cheatResetDevCard.bind(this);
 
       }
       /////////////////////////////////////////////////////////////////////////////
@@ -491,6 +505,158 @@ class Game extends React.Component {
       //display input form for resources to give
       //await response from other users?
     }
+
+
+
+    playingCardKnight(tileId) {
+      let allPlayers = this.state.players;
+      if (!allPlayers[this.state.identity].has_played_development_card) {
+
+        let allTiles = this.state.tiles;
+        if (allTiles[tileId].robber) {
+          let message = {
+            user: 'COMPUTER',
+            text: 'The robber is already there! Please make another selection.'
+          };
+          this.setState({messages: [...this.state.messages, message]});
+        } else {
+          let obj = {room: this.state.room, player: this.state.identity, card: 'card_knight', location: tileId};
+          console.log('Game: player ' + obj.player + ' played ' + obj.card + ', robber moves to tile' + obj.location);
+          allPlayers[this.state.identity].has_played_development_card = true;
+          this.setState({isPlayingCardKnight: false});
+          this.socket.emit('playedCardKnight', obj);
+        }
+
+      } else {
+        let message = {
+          user: 'COMPUTER',
+          text: 'Cannot play card_knight: You have already played a development card this turn.'
+        };
+        this.setState({messages: [...this.state.messages, message]});
+      }
+    }
+
+    playingCardRoad() {
+      let allPlayers = this.state.players;
+      if (!allPlayers[this.state.identity].has_played_development_card) {
+        let roadsToBuy = [];
+
+        // can only place one at a time in order to keep possible roads updated corectly.
+
+        let boughtRoads = 0;
+
+        // get roadId from input, push to roadsToBuy
+
+        // verifyRoad for each Id given
+        // if (possibleRoads.length === 0 || boughtRoads === 2), end and emit
+
+        if (roadsToBuy.length === 0) { 
+          let obj = {room: this.state.room, player: this.state.identity, card: 'card_road'}
+          allPlayers[this.state.identity].has_played_development_card = true;
+          this.setState({isPlayingCardRoad: false});
+          this.socket.emit('playedCardRoadNull', obj);
+        } else if (roadsToBuy.length > 0) { 
+          let obj = {room: this.state.room, player: this.state.identity, card: 'card_road', roadsBought: roadsToBuy};
+          allPlayers[this.state.identity].has_played_development_card = true;
+          this.setState({isPlayingCardRoad: false});
+          this.socket.emit('playedCardRoad', obj);
+        }
+        
+      } else {
+        let message = {
+          user: 'COMPUTER',
+          text: 'Cannot play card_road: You have already played a development card this turn.'
+        };
+        this.setState({messages: [...this.state.messages, message]});
+      }
+    }
+
+    playingCardMonopoly(cardType) {
+      let allPlayers = this.state.players;
+      if (!allPlayers[this.state.identity].has_played_development_card) {
+        let obj = {room: this.state.room, player: this.state.identity, card: 'card_monopoly', resourceType: cardType};
+        allPlayers[this.state.identity].has_played_development_card = true;
+        this.setState({isPlayingCardMonopoly: false});
+        this.socket.emit('playedCardMonopoly', obj);
+      } else {
+        let message = {
+          user: 'COMPUTER',
+          text: 'Cannot play card_monopoly: you have already played a development card this turn.'
+        };
+        this.setState({messages: [...this.state.messages, message]});
+      }
+    }
+
+    submitCardPlenty() {
+      this.playingCardPlenty(this.state.wantedCards)
+    }
+
+    playingCardPlenty(cardsToTake) {
+      let allPlayers = this.state.players;
+      if (!allPlayers[this.state.identity].has_played_development_card) {
+        let board = this.state.players[0];
+        let availableResource = {
+          card_brick: board.card_brick,
+          card_grain: board.card_grain,
+          card_lumber: board.card_lumber,
+          card_ore: board.card_ore,
+          card_wool: board.card_wool,
+        };
+
+        let availableResourceTotal = availableResource.card_brick + availableResource.card_grain + availableResource.card_lumber + availableResource.card_ore + availableResource.card_wool;
+
+        if (availableResourceTotal <= 0) {
+          let obj = {room: this.state.room, player: this.state.identity, card: 'card_plenty'};
+          // console.log('Game: player ' + obj.player + ' played ' + obj.card + ', with no effect');
+          allPlayers[this.state.identity].has_played_development_card = true;
+          this.setState({isPlayingCardPlenty: false});
+          this.socket.emit('playedCardPlentyNull', obj);
+
+        } else if (availableResourceTotal > 1) {
+
+          let cardsToTakeTotal = cardsToTake.card_brick + cardsToTake.card_grain + cardsToTake.card_lumber + cardsToTake.card_ore + cardsToTake.card_wool
+
+          let canTake = false;
+
+          if (cardsToTakeTotal <= availableResourceTotal && cardsToTakeTotal <= 2 && cardsToTake.card_brick <= availableResource.card_brick && cardsToTake.card_grain <= availableResource.card_grain && cardsToTake.card_lumber <= availableResource.card_lumber && cardsToTake.card_ore <= availableResource.card_ore && cardsToTake.card_wool <= availableResource.card_wool) {
+            canTake = true;
+          }
+
+
+          if (!canTake) {
+            let message = {
+              user: 'COMPUTER',
+              text: 'Invalid selection. Please make a valid selection.'
+            };
+            this.setState({wantedCards: {card_brick: 0, card_grain: 0, card_lumber: 0, card_ore: 0, card_wool: 0}})
+            this.setState({messages: [...this.state.messages, message]});
+          } else if (canTake) {
+            let obj = {room: this.state.room, player: this.state.identity, card: 'card_plenty', cardsTaken: cardsToTake};
+
+
+            allPlayers[this.state.identity].has_played_development_card = true;
+            this.setState({isPlayingCardPlenty: false});
+            this.socket.emit('playedCardPlenty', obj);
+          }
+
+        }
+
+      } else {
+        let message = {
+          user: 'COMPUTER',
+          text: 'Cannot play card_plenty: You have already played a development card this turn.'
+        };
+        this.setState({messages: [...this.state.messages, message]});
+      }
+    }
+
+    playingCardVictory() {
+      let obj = {room: this.state.room, player: this.state.identity, card: 'card_victory'};
+      this.socket.emit('playedCardVictory', obj);
+    }
+
+
+
 
     playCard(item) {
       // no need for this function now?
@@ -912,6 +1078,12 @@ class Game extends React.Component {
       })
     }
 
+    cheatResetDevCard() {
+      let allPlayers = this.state.players;
+      allPlayers[this.state.identity].has_played_development_card = false;
+      this.setState({players: allPlayers});
+    }
+
     toggleBuyRoad() {
       this.toggleOff('Road');
       this.setState({
@@ -1329,6 +1501,148 @@ class Game extends React.Component {
 
 
 
+    this.socket.on('playedCardKnight', obj => {
+      let allTiles = this.state.tiles;
+      let allPlayers = this.state.players;
+      let allRoads = this.state.roads;
+      let allSettlements = this.state.settlements;
+      
+      let player = allPlayers[obj.player];
+      let board = allPlayers[0];
+      let road = roads[obj.road];
+      
+      player.played_card_knight++;
+      player.card_knight--;
+      player.has_played_development_card = true;
+
+      this.setState({players: allPlayers, isPlayingCardKnight: false});
+      // need to invoke eventRobberSteal
+
+    })
+
+    this.socket.on('playedCardRoadNull', obj => {
+      let allTiles = this.state.tiles;
+      let allPlayers = this.state.players;
+      let allRoads = this.state.roads;
+      let allSettlements = this.state.settlements;
+      
+      let player = allPlayers[obj.player];
+      let board = allPlayers[0];
+      
+      player.played_card_road++;
+      player.card_road--;
+      player.has_played_development_card = true;
+
+      this.setState({players: allPlayers, isPlayingCardRoad: false});
+      
+    })
+
+    this.socket.on('playedCardRoad', obj => {
+      let allTiles = this.state.tiles;
+      let allPlayers = this.state.players;
+      let allRoads = this.state.roads;
+      let allSettlements = this.state.settlements;
+      
+      let player = allPlayers[obj.player];
+      let board = allPlayers[0];
+      for (let i = 0; i < obj.roadsBought.length; i++) {
+        player.owns_road.push(obj.roadsBought[i]);
+        allRoads[obj.roadsBought[i]].owner = player.id;
+      };
+      
+      player.played_card_road++;
+      player.card_road--;
+      player.has_played_development_card = true;
+
+      this.setState({players: allPlayers, roads: allRoads, isPlayingCardRoad: false});
+      
+    })
+
+    this.socket.on('playedCardMonopoly', obj => {
+      let allTiles = this.state.tiles;
+      let allPlayers = this.state.players;
+      let allRoads = this.state.roads;
+      let allSettlements = this.state.settlements;
+      
+      let player = allPlayers[obj.player];
+      let board = allPlayers[0];
+      let cardTypeToTake = obj.resourceType;
+      let stolenCardAmount = 0;
+      for (let i = 1; i < allPlayers.length; i++) {
+        if (allPlayers[i].id !== obj.player) {
+          stolenCardAmount = stolenCardAmount + allPlayers[i][cardTypeToTake];
+          allPlayers[i][cardTypeToTake] = 0;
+        }
+      };
+      
+      player.played_card_monopoly++;
+      player.card_monopoly--;
+      player[cardTypeToTake] = player[cardTypeToTake] + stolenCardAmount;
+      player.has_played_development_card = true;
+
+      this.setState({players: allPlayers, isPlayingCardMonopoly: false});
+      
+    })
+
+
+    this.socket.on('playedCardPlentyNull', obj => {
+      let allPlayers = this.state.players;
+      let player = allPlayers[obj.player];
+      
+      player.played_card_plenty++;
+      player.card_plenty--;
+      player.has_played_development_card = true;
+
+      this.setState({players: allPlayers, isPlayingCardPlenty: false});
+      
+    })
+
+
+    this.socket.on('playedCardPlenty', obj => {
+      let allPlayers = this.state.players;
+      let player = allPlayers[obj.player];
+      let board = allPlayers[0];
+
+      board.card_brick = board.card_brick - obj.cardsTaken.card_brick
+      board.card_grain = board.card_grain - obj.cardsTaken.card_grain
+      board.card_lumber = board.card_lumber - obj.cardsTaken.card_lumber
+      board.card_ore = board.card_ore - obj.cardsTaken.card_ore
+      board.card_wool = board.card_wool - obj.cardsTaken.card_wool
+      player.card_brick = player.card_brick + obj.cardsTaken.card_brick
+      player.card_grain = player.card_grain + obj.cardsTaken.card_grain
+      player.card_lumber = player.card_lumber + obj.cardsTaken.card_lumber
+      player.card_ore = player.card_ore + obj.cardsTaken.card_ore
+      player.card_wool = player.card_wool + obj.cardsTaken.card_wool
+
+      player.played_card_plenty++;
+      player.card_plenty--;
+      player.has_played_development_card = true;
+
+      this.setState({players: allPlayers, isPlayingCardPlenty: false});
+      
+    })
+
+
+
+    this.socket.on('playedCardVictory', obj => {
+      let allPlayers = this.state.players;
+      let player = allPlayers[obj.player];
+      
+      player.played_card_victory++;
+      player.card_victory--;
+
+      this.setState({players: allPlayers});
+      
+    })
+
+
+
+
+
+      
+
+
+
     }
 
 
@@ -1351,6 +1665,12 @@ class Game extends React.Component {
 
           <div>{'Property: Road: ' + this.state.players[this.state.identity].owns_road + ', Sett: ' + this.state.players[this.state.identity].owns_settlement + ', City: ' + this.state.players[this.state.identity].owns_city}</div>
 
+          <button onClick={() => {console.log(this.state.players)}}>Check Player States</button>
+          <button onClick={() => {console.log(this.state.roads)}}>Check Road States</button>
+          <button onClick={() => {console.log(this.state.settlements)}}>Check Settlement States</button>
+          <button onClick={() => {console.log(this.state.tiles)}}>Check Tile States</button>
+          <button onClick={this.cheatResetDevCard}>Reset Dev Card State</button>
+
 
       <h3>Player Actions Menu</h3>
       { this.state.canRollForFirst ? <button onClick={this.rollForFirst}>Roll</button> : null}
@@ -1369,9 +1689,15 @@ class Game extends React.Component {
       {(this.state.isBuying && this.state.ableToBuyDevelopmentCard) ? <button type="button" id="buydevcard" onClick={this.buyingDevelopmentCard}>Buy Development Card</button> : null}
 
       {(this.state.ableToPlayCardKnight && this.state.isPlayingDevCard) ? <button type="button" id="playcardknight" onClick={this.playingCardKnight}>Play Card: Knight</button> : null}
+
       {(this.state.ableToPlayCardRoad && this.state.isPlayingDevCard) ? <button type="button" id="playcardroad" onClick={this.playingCardRoad}>Play Card: Road Building</button> : null}
+
       {(this.state.ableToPlayCardMonopoly && this.state.isPlayingDevCard) ? <button type="button" id="playcardmonopoly" onClick={this.playingCardMonopoly}>Play Card: Monopoly</button> : null}
+
       {(this.state.ableToPlayCardPlenty && this.state.isPlayingDevCard) ? <button type="button" id="playcardplenty" onClick={this.playingCardPlenty}>Play Card: Plenty</button> : null}
+
+      {(this.state.isPlayingCardPlenty) ? <button type="button" id="submitcardplenty" onClick={this.submitCardPlenty}>{'Submit Selection: ' + JSON.stringify(this.state.wantedCards)}</button> : null}
+
       {(this.state.ableToPlayCardVictory && this.state.isPlayingDevCard) ? <button type="button" id="playcardvictory" onClick={this.playingCardVictory}>Play Card: Victory Point</button> : null} 
 
 

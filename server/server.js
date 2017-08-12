@@ -216,4 +216,84 @@ io.on('connection', socket => {
     socket.on('settingRoad', obj => {
         io.sockets.in(obj.room).emit('settingRoad', obj);
     })
+
+
+  socket.on('playedCardKnight', obj => {
+    let message = {
+      text: 'Player' + obj.player + ' plays: ' + obj.card + ', robber moves to tile ' + obj.location,
+      user: "COMPUTER"
+    };
+
+    io.sockets.in(obj.room).emit('message', message);
+    io.sockets.in(obj.room).emit('playedCardKnight', obj);
+  })
+
+
+
+  socket.on('playedCardRoadNull', obj => {
+    let message = {
+      text: 'Player' + obj.player + ' plays: ' + obj.card + ', with no effect.',
+      user: "COMPUTER"
+    };
+
+    io.sockets.in(obj.room).emit('message', message);
+    io.sockets.in(obj.room).emit('playedCardRoadNull', obj);
+  })
+
+
+
+  socket.on('playedCardRoad', obj => {
+    let message = {
+      text: 'Player' + obj.player + ' plays: ' + obj.card + ', and builds roads at ' + JSON.stringify(obj.roadsBought),
+      user: "COMPUTER"
+    };
+
+    io.sockets.in(obj.room).emit('message', message);
+    io.sockets.in(obj.room).emit('playedCardRoad', obj);
+  })
+
+
+  socket.on('playedCardMonopoly', obj => {
+    let message = {
+        text: 'Player' + obj.player + ' plays: ' + obj.card + ', and gets all ' + obj.resourceType,
+        user: "COMPUTER"
+    };
+
+    io.sockets.in(obj.room).emit('message', message);
+    io.sockets.in(obj.room).emit('playedCardMonopoly', obj);
+  })
+
+
+  socket.on('playedCardPlentyNull', obj => {
+    let message = {
+        text: 'Player' + obj.player + ' plays: ' + obj.card + ', with no effect.',
+        user: "COMPUTER"
+    };
+
+    io.sockets.in(obj.room).emit('message', message);
+    io.sockets.in(obj.room).emit('playedCardPlentyNull', obj);
+  })
+
+  socket.on('playedCardPlenty', obj => {
+    let message = {
+        text: 'Player' + obj.player + ' plays: ' + obj.card + ', and gets resources ' + JSON.stringify(obj.cardsTaken),
+        user: "COMPUTER"
+    };
+
+    io.sockets.in(obj.room).emit('message', message);
+    io.sockets.in(obj.room).emit('playedCardPlenty', obj);
+  })
+
+  socket.on('playedCardVictory', obj => {
+    let message = {
+        text: 'Player' + obj.player + ' plays: ' + obj.card,
+        user: "COMPUTER"
+    };
+
+    io.sockets.in(obj.room).emit('message', message);
+    io.sockets.in(obj.room).emit('playedCardVictory', obj);
+  })
+
+
+
 })
