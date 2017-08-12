@@ -150,7 +150,6 @@ io.on('connection', socket => {
             io.sockets.in(room).emit('diceRoll', obj.total);
         } else {
             socket.emit('robber', obj.player);
-            let robber = {}
             message.text = 'player'+obj.player+ ' needs to move the robber';
             io.sockets.in(room).emit('message', message);
         }
@@ -171,7 +170,7 @@ io.on('connection', socket => {
 
     socket.on('buyRoad', obj => {
         let message = {
-            message:'Player' + obj.player + ' buys a road.',
+            text: 'Player' + obj.player + ' buys a road.',
             user:'COMPUTER'
         }
 
@@ -181,7 +180,7 @@ io.on('connection', socket => {
 
     socket.on('buySettlement', obj => {
         let message = {
-            message : 'Player' + obj.player + ' buys a settlement.',
+            text: 'Player' + obj.player + ' buys a settlement.',
             user: 'COMPUTER'
         }
 
@@ -191,7 +190,7 @@ io.on('connection', socket => {
 
     socket.on('buyCity', obj => {
         let message = {
-            message: 'Player' + obj.player + ' buys a city.',
+            text:  'Player' + obj.player + ' buys a city.',
             user: 'COMPUTER'
         }
 
@@ -201,7 +200,7 @@ io.on('connection', socket => {
 
     socket.on('buyDev', obj => {
         let message = {
-            message: 'Player' + obj.player + ' buys a development card.',
+            text:  'Player' + obj.player + ' buys a development card.',
             user: "COMPUTER"
         };
 
@@ -216,19 +215,6 @@ io.on('connection', socket => {
     socket.on('settingRoad', obj => {
         io.sockets.in(obj.room).emit('settingRoad', obj);
     })
-
-
-  socket.on('playedCardKnight', obj => {
-    let message = {
-      text: 'Player' + obj.player + ' plays: ' + obj.card + ', robber moves to tile ' + obj.location,
-      user: "COMPUTER"
-    };
-
-    io.sockets.in(obj.room).emit('message', message);
-    io.sockets.in(obj.room).emit('playedCardKnight', obj);
-  })
-
-
 
   socket.on('playedCardRoadNull', obj => {
     let message = {
@@ -263,37 +249,36 @@ io.on('connection', socket => {
     io.sockets.in(obj.room).emit('playedCardMonopoly', obj);
   })
 
-
-  socket.on('playedCardPlentyNull', obj => {
-    let message = {
-        text: 'Player' + obj.player + ' plays: ' + obj.card + ', with no effect.',
-        user: "COMPUTER"
-    };
-
+  socket.on('playingDev', obj =>{
+      let message = {
+          text: "Player" + obj.player + " plays " + obj.dev + "!",
+          user: "COMPUTER"
+      }
     io.sockets.in(obj.room).emit('message', message);
-    io.sockets.in(obj.room).emit('playedCardPlentyNull', obj);
   })
 
   socket.on('playedCardPlenty', obj => {
+      let message = {
+          text: 'Player' + obj.player + " takes a " + obj.resource.slice(5) + "!",
+          user: "COMPUTER"
+      }
+      io.sockets.in(obj.room).emit('message', message);
+      io.sockets.in(obj.room).emit('playedCardPlenty', obj);
+  })
+
+
+
+//////////////////////////////////////////
+    socket.on('cheatSkipSetup', obj => {
     let message = {
-        text: 'Player' + obj.player + ' plays: ' + obj.card + ', and gets resources ' + JSON.stringify(obj.cardsTaken),
+        text: 'Skipping Setup phase!',
         user: "COMPUTER"
     };
 
     io.sockets.in(obj.room).emit('message', message);
-    io.sockets.in(obj.room).emit('playedCardPlenty', obj);
+    io.sockets.in(obj.room).emit('cheatSkipSetup');
   })
-
-  socket.on('playedCardVictory', obj => {
-    let message = {
-        text: 'Player' + obj.player + ' plays: ' + obj.card,
-        user: "COMPUTER"
-    };
-
-    io.sockets.in(obj.room).emit('message', message);
-    io.sockets.in(obj.room).emit('playedCardVictory', obj);
-  })
-
+///////////////////////////////////////////
 
 
 })
