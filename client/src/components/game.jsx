@@ -929,23 +929,24 @@ class Game extends React.Component {
     return possibleSettlements;
   }
 
-  calculateScore() {
-    let score = this.state.player[this.state.identity].played_card_victory + this.state.player[this.state.identity].owns_settlement.length + (2 * this.state.player[this.state.identity].owns_city.length);
+  calculateScore(playerId) {
+    let score = this.state.players[playerId].played_card_victory + this.state.players[playerId].card_victory + this.state.players[playerId].owns_settlement.length + (2 * this.state.players[playerId].owns_city.length);
 
-    if (this.state.player[this.state.identity].has_longest_road) {
+    if (this.state.players[playerId].has_longest_road) {
       score = score + 2;
     }
 
-    if (this.state.player[this.state.identity].has_biggest_army) {
+    if (this.state.players[playerId].has_biggest_army) {
       score = score + 2;
     }
 
-    if (score>= 10) {
+    if (score >= 10) {
+      console.log('PlayerId has reached 10 points!');
       // endGame(); // need to write this function
     }
 
-    // return the score visible to others
-    return score - player.card_victory;
+    // return the score visible for others
+    return score - this.state.players[playerId].card_victory;
   }
 
   
