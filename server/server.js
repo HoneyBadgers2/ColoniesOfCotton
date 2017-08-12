@@ -156,10 +156,17 @@ io.on('connection', socket => {
     })
 
     socket.on('moveRobber', obj => {
+        io.sockets.in(obj.room).emit('message', {text: "Player" + obj.player + " moves the Robber!", user: "COMPUTER"})
         io.sockets.in(obj.room).emit('moveRobber', obj.tile);
     })
 
     socket.on('rob', obj => {
+        let message = {
+            text: "Player" + obj.player + " takes a resource from Player" + obj.target + "!",
+            user: "COMPUTER"
+        };
+        socket.broadcast.to(obj.room).emit('message', message);
+        socket.emit('message', {user: "COMPUTER", text: "You stole a " + obj.resource.slice(5)})
         io.sockets.in(obj.room).emit('rob', obj);
     })
 
