@@ -59,6 +59,8 @@ class Game extends React.Component {
           isBuyingRoad: false,
           isBuyingSettlement: false,
           isBuyingCity: false,
+          isBuying: false,
+          isPlayingDevCard: false,
         }
         this.scene = undefined;
         this.engine = undefined;
@@ -70,7 +72,9 @@ class Game extends React.Component {
         this.colorPiece = this.colorPiece.bind(this);
 
 
-        /////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////
+        this.togglePlayingDev = this.togglePlayingDev.bind(this);
+        this.toggleBuying = this.toggleBuying.bind(this);
         this.toggleSetupCorner= this.toggleSetupCorner.bind(this);
         this.toggleSetupRoad = this.toggleSetupRoad.bind(this);
         this.checkPossibleActions = this.checkPossibleActions.bind(this);
@@ -195,13 +199,13 @@ class Game extends React.Component {
     createMat(player) {
       var mat = new StandardMaterial("Color", this.scene);
       if (player === 1) {
-        mat.diffuseColor = new Color3(1, 0, 0);
+        mat.diffuseColor = new Color3(0.569, 0, 0);
       } else if (player === 2) {
-        mat.diffuseColor = new Color3(1, 0, 1);
+        mat.diffuseColor = new Color3(0.875, 0.620, 0.106);
       } else if (player === 3) {
-        mat.diffuseColor = new Color3(0, 0, 1);
+        mat.diffuseColor = new Color3(0.063, 0.145, 0.259);
       } else if (player === 4) {
-        mat.diffuseColor = new Color3(0, 1, 0);
+        mat.diffuseColor = new Color3(0.071, 0.337, 0.047);
       }
 
       return mat;
@@ -404,6 +408,14 @@ class Game extends React.Component {
 
     }
 
+    toggleBuying() {
+      this.setState({isBuying: !this.state.isBuying});
+    }
+
+    togglePlayingDev(){
+      this.setState({isPlayingDevCard: !this.state.isPlayingDevCard});
+    }
+
     buyingSettlement(settlementId) {
       if (this.verifyCorner(settlementId)) {
         this.toggleBuySettlement();
@@ -492,7 +504,8 @@ class Game extends React.Component {
         nextPlayer = 1;
       }
       this.setState({
-        active: false
+        active: false,
+        hasRolled: false
       })
       let obj = {
         room: this.state.room,
@@ -1041,14 +1054,6 @@ class Game extends React.Component {
     /////////////////////////// END CHEATS ///////////////////////////
     /////////////////////////// END CHEATS ///////////////////////////
 
-
-
-
-
-
-
-
-
     componentDidMount() {
 
 
@@ -1079,7 +1084,6 @@ class Game extends React.Component {
         player.owns_settlement.push(cornerID);
         settlement.owner = playerID;
         if(player.owns_settlement.length === 2){
-          debugger;
           for(let i = 1; i < 20; i++){
             let tile = this.state.tiles[i];
             if(tile.connecting_house_slots.indexOf(cornerID) !== -1){
@@ -1290,8 +1294,8 @@ class Game extends React.Component {
           this.setState({
             active: true
           });
-
         }
+        this.checkPossibleActions();
       })
 
       this.socket.on('first', player => {
@@ -1334,44 +1338,41 @@ class Game extends React.Component {
     render() {
 
         return ( <div>
+          <button onClick={()=> {console.log(this.state)}}>SEE EVERYTHING!</button>
           <h2> Now in -game(game.jsx Component) </h2>
           <div>{'Player# ' + this.state.identity + ' , in room: ' + this.state.room}</div>
-          <div>{'Resources: BRI: ' + this.state.players[this.state.identity].card_brick + ', GRA: ' + this.state.players[this.state.identity].card_grain + ', LUM: ' + this.state.players[this.state.identity].card_lumber + ', ORE: ' + this.state.players[this.state.identity].card_ore + ', WOO: ' + this.state.players[this.state.identity].card_wool}</div>
+          <div>
+          <div style={{display: 'inline-block', marginRight: "10px", border: "2px solid black"}} id="card_brick">{"Brick:"  + this.state.players[this.state.identity].card_brick}</div>
+          <div style={{display: 'inline-block', margin: "10px", border: "2px solid black"}} id="card_grain">{"Grain:"  + this.state.players[this.state.identity].card_grain}</div>
+          <div style={{display: 'inline-block', margin: "10px", border: "2px solid black"}} id="card_lumber">{"Lumber:"  + this.state.players[this.state.identity].card_lumber}</div>
+          <div style={{display: 'inline-block', margin: "10px", border: "2px solid black"}} id="card_wool">{"Wool:"  + this.state.players[this.state.identity].card_wool}</div>
+          <div style={{display: 'inline-block', margin: "10px", border: "2px solid black"}} id="card_ore">{"Ore:"  + this.state.players[this.state.identity].card_ore}</div>
+          </div>
+
           <div>{'Property: Road: ' + this.state.players[this.state.identity].owns_road + ', Sett: ' + this.state.players[this.state.identity].owns_settlement + ', City: ' + this.state.players[this.state.identity].owns_city}</div>
 
 
       <h3>Player Actions Menu</h3>
       { this.state.canRollForFirst ? <button onClick={this.rollForFirst}>Roll</button> : null}
-      <button onClick={this.toggleSetupCorner}>TOGGLE</button>
-      {this.state.active ? 
-      <div>
-      {(!this.state.hasRolled) ? <button type="button" onClick={this.diceRoll}>Roll Dice</button> : null}
-      {(this.state.ableToBuyRoad) ? <button type="button" id="buyroad" onClick={this.toggleBuyRoad}>Buy Road</button> : null}
-      {(this.state.ableToBuySettlement) ? <button type="button" id="buysettlement" onClick={this.toggleBuySettlement}>Buy Settlement</button> : null}
-      {(this.state.ableToBuyCity) ? <button type="button" id="buycity" onClick={this.toggleBuyCity}>Buy City</button> : null}
-      {(this.state.ableToBuyDevelopmentCard) ? <button type="button" id="buydevcard" onClick={this.buyingDevelopmentCard}>Buy Development Card</button> : null}
-      {(this.state.ableToOfferTrade) ? <button type="button" id="offertrade" onClick={() => {console.log('trade here')}}>Offer Trade</button> : null}
-      {(this.state.hasRolled) ? <button onClick={this.endTurn}>End Turn</button> : null}
-      </div> : null
-      }
 
 
-      {/* {(this.state.ableToPlayCardKnight) ? <button type="button" id="playcardknight" onClick={this.playingCardKnight}>Play Card: Knight</button> : null}
+      {(!this.state.hasRolled && this.state.active) ? <button type="button" onClick={this.diceRoll}>Roll Dice</button> : null}
 
-      {(this.state.ableToPlayCardRoad) ? <button type="button" id="playcardroad" onClick={this.playingCardRoad}>Play Card: Road Building</button> : null}
+      {(this.state.hasRolled && this.state.active) ? <button type="button" id="offertrade" onClick={() => {console.log('trade here')}}>Offer Trade</button> : null}
+      {(this.state.hasRolled && this.state.active) ? <button onClick={this.endTurn}>End Turn</button> : null}
+      {(this.state.hasRolled && this.state.active) ? <button onClick={this.toggleBuying}>Buy</button> : null}
+      {(this.state.hasRolled && this.state.active) ? <button onClick={this.togglePlayingDev}>Play Dev Card</button> : null}
 
-      {(this.state.ableToPlayCardMonopoly) ? <button type="button" id="playcardmonopoly" onClick={this.playingCardMonopoly}>Play Card: Monopoly</button> : null}
+      {(this.state.isBuying && this.state.ableToBuyRoad) ? <button type="button" id="buysettlement" onClick={this.toggleBuyRoad}>Buy Road</button> : null}
+      {(this.state.isBuying && this.state.ableToBuySettlement) ? <button type="button" id="buysettlement" onClick={this.toggleBuySettlement}>Buy Settlement</button> : null}
+      {(this.state.isBuying && this.state.ableToBuyCity) ? <button type="button" id="buycity" onClick={this.toggleBuyCity}>Buy City</button> : null}
+      {(this.state.isBuying && this.state.ableToBuyDevelopmentCard) ? <button type="button" id="buydevcard" onClick={this.buyingDevelopmentCard}>Buy Development Card</button> : null}
 
-      {(this.state.ableToPlayCardPlenty) ? <button type="button" id="playcardplenty" onClick={this.playingCardPlenty}>Play Card: Plenty</button> : null}
-
-      {(this.state.ableToPlayCardVictory) ? <button type="button" id="playcardvictory" onClick={this.playingCardVictory}>Play Card: Victory Point</button> : null}
-
-      {(this.state.isInMenu) ? <button type="button" id="cancelaction" onClick={this.takeAction}>Cancel Action (isInMenu)</button> : null}
-
-      {(this.state.ableToCancelAction) ? <button type="button" id="cancelaction" onClick={this.takeAction}>Cancel Action (ableToCancel)</button> : null} */}
-
-
-
+      {(this.state.ableToPlayCardKnight && this.state.isPlayingDevCard) ? <button type="button" id="playcardknight" onClick={this.playingCardKnight}>Play Card: Knight</button> : null}
+      {(this.state.ableToPlayCardRoad && this.state.isPlayingDevCard) ? <button type="button" id="playcardroad" onClick={this.playingCardRoad}>Play Card: Road Building</button> : null}
+      {(this.state.ableToPlayCardMonopoly && this.state.isPlayingDevCard) ? <button type="button" id="playcardmonopoly" onClick={this.playingCardMonopoly}>Play Card: Monopoly</button> : null}
+      {(this.state.ableToPlayCardPlenty && this.state.isPlayingDevCard) ? <button type="button" id="playcardplenty" onClick={this.playingCardPlenty}>Play Card: Plenty</button> : null}
+      {(this.state.ableToPlayCardVictory && this.state.isPlayingDevCard) ? <button type="button" id="playcardvictory" onClick={this.playingCardVictory}>Play Card: Victory Point</button> : null} 
 
 
 
