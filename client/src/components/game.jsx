@@ -43,7 +43,7 @@ class Game extends React.Component {
           turn: 0,
           moveRobber: false,
           robber: false,
-          robbedTile: null,
+          robbedTile: 1,
           ableToBuyRoad: false,
           ableToBuySettlement: false,
           ableToBuyCity: false,
@@ -565,6 +565,7 @@ class Game extends React.Component {
 
 
     playingCardKnight(tileId) {
+      this.toggleUI();
       let players = this.state.players;
       let player = players[0];
       player.card_knight --;
@@ -667,64 +668,99 @@ class Game extends React.Component {
     }
 
     moveRobber(tileId) {
-
+    if(tileId !== this.state.robbedTile){
       let obj = {
         tile: tileId,
-        room: this.state.room
+        room: this.state.room,
+        player: this.state.identity
       }
       this.state.moveRobber = false;
-      this.state.robber = true;
+      let index = tileId;
+      let tile = this.state.tiles[index];
+      let corners = tile.connecting_house_slots
+      let arr = [];
+
+      for (let x = 0; x <corners.length; x++) {
+        let corner = this.state.settlements[corners[x]];
+
+        if (corner.owner) {
+          arr.push(corner.owner);
+        }
+      }
+      if(arr.length > 0){
+        this.state.robber = true;
+      } else {
+        this.setState({messages: [...this.state.messages, {text: "No one to rob from!", user: "COMPUTER"}]})
+        this.toggleUI();
+      }
       this.socket.emit('moveRobber', obj)
+    } else {
+      let message = {
+        text: "You can't place the robber where it is already.",
+        user: "COMPUTER"
+      }
+
+      this.setState({messages: [...this.state.messages, message]});
+    }
     }
 
     robber(event) {
       if (this.state.robber) {
+        debugger;
         let index = this.state.robbedTile;
         let tile = this.state.tiles[index];
-        let corners = this.state.tiles.connecting_house_slots
+        let corners = tile.connecting_house_slots
         let arr = [];
 
         for (let x = 0; x <corners.length; x++) {
-          let corner = this.state.tiles[corners[x]];
+          let corner = this.state.settlements[corners[x]];
 
           if (corner.owner) {
             arr.push(corner.owner);
           }
         }
+        if(arr.length > 0){
+          if (arr.indexOf(Number(event.target.id)) !== -1) {
+            let target = this.state.players[event.target.id]
+            let available = [];
 
-        if (arr.indexOf(event.target.value) !== -1) {
-          let target = this.state.players[event.target.value]
-          let available = [];
-          if (target.card_brick) {
-            available.push('card_brick');
+            for(let i = 0; i < target.card_brick; i++){
+              available.push('card_brick');
+            }
+
+            for(let i = 0; i < target.card_wool; i++){
+              available.push('card_wool');
+            }
+
+            for(let i = 0; i < target.card_lumber; i++){
+              available.push('card_lumber');
+            }
+
+            for(let i = 0; i < target.card_grain; i++){
+              available.push('card_grain');
+            }
+
+            for(let i = 0; i < target.card_ore; i++){
+              available.push('card_ore');
+            }
+
+          
+
+
+            let RNG = Math.floor(Math.random() * available.length);
+            let resource = available[RNG];
+            let obj = {};
+            obj.room = this.state.room;
+            obj.resource = resource;
+            obj.target = event.target.id;
+            obj.player = this.state.identity;
+            this.socket.emit('rob', obj);
+            this.toggleUI();
           }
-
-          if (target.card_wool) {
-            available.push('card_wool');
-          }
-
-          if (target.card_lumber) {
-            available.push('card_lumber');
-          }
-
-          if (target.card_grain) {
-            available.push('card_grain');
-          }
-
-          if (target.card_ore) {
-            available.push('card_ore');
-          }
-
-          let RNG = Math.floor(Math.random() * available.length);
-          let resource = available[RNG];
-          let obj = {};
-          obj.room = this.state.room;
-          obj.resource = resource;
-          obj.target = event.target.value;
-          obj.player = this.state.identity;
-          this.socket.emit('rob', obj)
+        } else {
+          this.toggleUI();
         }
-      }
+        }
     }
 
 
@@ -1453,6 +1489,7 @@ class Game extends React.Component {
       })
 
       this.socket.on('robber', player => {
+        this.toggleUI();
         this.state.moveRobber = true;
       })
 
@@ -1659,6 +1696,7 @@ class Game extends React.Component {
     render() {
 
         return ( <div>
+           <button id={1} onClick={this.robber}>Steal from Player 1</button> 
           <button onClick={()=> {console.log(this.state)}}>SEE EVERYTHING!</button>
           <h2> Now in -game(game.jsx Component) </h2>
           <div>{'Player# ' + this.state.identity + ' , in room: ' + this.state.room}</div>
