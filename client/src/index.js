@@ -4,3 +4,4 @@ import Game from './components/game.jsx';
 import App from './components/App.jsx';
 
 ReactDOM.render(<Game />, document.getElementById('app'));
+document.addEventListener('contextmenu', event => event.preventDefault());

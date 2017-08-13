@@ -48,7 +48,6 @@ class Game extends React.Component {
       ableToBuySettlement: false,
       ableToBuyCity: false,
       ableToBuyDevelopmentCard: false,
-      ableToOfferTrade: false,
       ableToPlayCardKnight: false,
       ableToPlayCardRoad: false,
       ableToPlayCardMonopoly: false,
@@ -69,6 +68,7 @@ class Game extends React.Component {
       needResourceBar: false,
       interfaceToggled: false,
       instruction: null,
+      tradeMenuOpen: false
     }
     this.scene = undefined;
     this.engine = undefined;
@@ -83,6 +83,10 @@ class Game extends React.Component {
     ////////////////////////////////////////////////////
     this.cheatSkipSetup = this.cheatSkipSetup.bind(this);
 ///////////////////////////////////////////////////////////////////
+    this.tradeWithBank = this.tradeWithBank.bind(this);
+    this.changeOffering = this.changeOffering.bind(this);
+    this.changeWanting = this.changeWanting.bind(this);
+    this.openTradeMenu = this.openTradeMenu.bind(this);
     this.toggleResourceBar = this.toggleResourceBar.bind(this);
     this.playCardPlenty = this.playCardPlenty.bind(this);
     this.toggleUI = this.toggleUI.bind(this);
@@ -104,7 +108,6 @@ class Game extends React.Component {
     this.buyingSettlement = this.buyingSettlement.bind(this);
     this.buyingCity = this.buyingCity.bind(this);
     this.buyingDevelopmentCard = this.buyingDevelopmentCard.bind(this);
-    this.startTrade = this.startTrade.bind(this);
     this.endTurn = this.endTurn.bind(this);
     this.diceRoll = this.diceRoll.bind(this);
     this.robber = this.robber.bind(this);
@@ -123,7 +126,6 @@ class Game extends React.Component {
     this.canBuySettlement = this.canBuySettlement.bind(this);
     this.canBuyCity = this.canBuyCity.bind(this);
     this.canBuyDevelopmentCard = this.canBuyDevelopmentCard.bind(this);
-    this.canOfferTrade = this.canOfferTrade.bind(this);
     this.canPlayCardKnight = this.canPlayCardKnight.bind(this);
     this.canPlayCardRoad = this.canPlayCardRoad.bind(this);
     this.canPlayCardMonopoly = this.canPlayCardMonopoly.bind(this);
@@ -180,7 +182,6 @@ class Game extends React.Component {
     if (this.state.isBuyingCity) {
       let tile = mesh.name.slice(0, 5);
       let id = Number(mesh.name.slice(5));
-      console.log('buying City at house', tile, 'at id', id);
       if (tile === 'House') {
         this.buyingCity(id);
       }
@@ -195,7 +196,6 @@ class Game extends React.Component {
     }
 
     if(this.state.isPlayingCardRoad < 2 && mesh.name.slice(0,4) === 'Road' && mesh.visibility === 0.8){
-      console.log('running');
       let obj = {
         room: this.state.room,
         player: this.state.identity,
@@ -221,7 +221,6 @@ class Game extends React.Component {
           }
         }
         if(this.state.isPlayingCardRoad === 1){
-          debugger;
           let arr = this.findPossibleRoads();
 
           for(let j = 0; j < arr.length; j++){
@@ -234,16 +233,114 @@ class Game extends React.Component {
         }
       });
     }
+  }
 
+  tradeWithBank(){
+    let players = this.state.players;
+    let player = players[this.state.identity];
+    let wanting = player.active_trade.wanting;
+    let offering = player.active_trade.offering;
+    let totalOffering = 0;
+    let totalWanting = 0;
+    let giving = null;
+    let taking = null;
+    let port = null;
+    let wild = null;
 
+    for(let prop in offering){
+      totalOffering += offering[prop];
 
+      if(offering[prop] === 2){
+        port = prop;
+      } else if (offering[prop] === 3){
+        wild = prop;
+      } else if(offering[prop] === 4){
+        giving = prop;
+      }
+    }
 
+    for(let prop in wanting){
+      totalWanting += wanting[prop];
+      if(wanting[prop] === 1){
+        taking = prop;
+      }
+    }
+
+    if(totalOffering === 2 && totalWanting === 1 && port === 'card_wool' && taking && (this.state.settlements[40].owner === this.state.identity || this.state.settlements[41].owner === this.state.identity)){
+      let obj = {
+        room: this.state.room,
+        player: this.state.identity,
+        giving: giving,
+        taking: taking,
+        amount: 4
+      };
+
+      this.socket.emit('tradeWithBank', obj);
+    } else if(totalOffering === 2 && totalWanting === 1 && port === 'card_grain' && taking && (this.state.settlements[30].owner === this.state.identity || this.state.settlements[31].owner === this.state.identity)){
+      let obj = {
+        room: this.state.room,
+        player: this.state.identity,
+        giving: giving,
+        taking: taking,
+        amount: 4
+      };
+
+      this.socket.emit('tradeWithBank', obj);
+    } else if(totalOffering === 2 && totalWanting === 1 && port === 'card_ore' && taking && (this.state.settlements[34].owner === this.state.identity || this.state.settlements[35].owner === this.state.identity)){
+      let obj = {
+        room: this.state.room,
+        player: this.state.identity,
+        giving: port,
+        taking: taking,
+        amount: 2
+      };
+      this.socket.emit('tradeWithBank', obj);
+    } else if(totalOffering === 2 && totalWanting === 1 && port === 'card_lumber' && taking && (this.state.settlements[25].owner === this.state.identity || this.state.settlements[54].owner === this.state.identity)){
+      let obj = {
+        room: this.state.room,
+        player: this.state.identity,
+        giving: port,
+        taking: taking,
+        amount: 2
+      };
+      this.socket.emit('tradeWithBank', obj);
+    } else if(totalOffering === 2 && totalWanting === 1 && port === 'card_brick' && taking && (this.state.settlements[50].owner === this.state.identity || this.state.settlements[51].owner === this.state.identity)){
+      let obj = {
+        room: this.state.room,
+        player: this.state.identity,
+        giving: port,
+        taking: taking,
+        amount: 2
+      };
+      this.socket.emit('tradeWithBank', obj);
+    } else if(totalOffering === 3 && totalWanting === 1 && wild && taking && (this.state.settlements[27].owner === this.state.identity || this.state.settlements[28].owner === this.state.identity || this.state.settlements[37].owner === this.state.identity || this.state.settlements[38].owner === this.state.identity || this.state.settlements[44].owner === this.state.identity || this.state.settlements[45].owner === this.state.identity || this.state.settlements[47].owner === this.state.identity || this.state.settlements[48].owner === this.state.identity)){
+      let obj = {
+        room: this.state.room,
+        player: this.state.identity,
+        giving: wild,
+        taking: taking,
+        amount: 3
+      };
+      this.socket.emit('tradeWithBank', obj);
+    } else if(totalOffering === 4 && totalWanting === 1 && giving && taking){
+      let obj = {
+        room: this.state.room,
+        player: this.state.identity,
+        giving: giving,
+        taking: taking,
+        amount: 4
+      };
+      this.socket.emit('tradeWithBank', obj);
+    }
   }
 
   toggleUI(){
     this.setState({interfaceToggled: !this.state.interfaceToggled});
   }
 
+  openTradeMenu(){
+    this.setState({tradeMenuOpen: !this.state.tradeMenuOpen})
+  }
 
   playCardPlenty(){
     let players = this.state.players;
@@ -332,6 +429,34 @@ class Game extends React.Component {
     if (this.state.isBuyingSettlement && param !== 'Settlement') {
       this.toggleBuySettlement();
     }
+  }
+
+  changeWanting(event){
+    let players = this.state.players;
+    let player = players[this.state.identity];
+    let active_trade = player.active_trade;
+    let wanting = active_trade.wanting;
+    let resource = event.target.id;
+    if(event.button === 0){
+      wanting[resource] ++
+    } else if (event.button === 2 && wanting[resource] > 0){
+      wanting[resource] --
+    }
+    this.setState({players: players});
+  }
+
+  changeOffering(event){
+    let players = this.state.players;
+    let player = players[this.state.identity];
+    let active_trade = player.active_trade;
+    let offering = active_trade.offering;
+    let resource = event.target.id;
+    if(event.button === 0 && player[resource] > offering[resource]){
+      offering[resource] ++
+    } else if (event.button === 2 && offering[resource] > 0){
+      offering[resource] --
+    }
+    this.setState({players: players});
   }
 
 
@@ -569,7 +694,6 @@ class Game extends React.Component {
         player: this.state.identity,
         city: cityId
       };
-      console.log('emitting buyCity with', obj);
       this.socket.emit('buyCity', obj);
     } else {
       let message = {
@@ -608,12 +732,6 @@ class Game extends React.Component {
       dev: randomCard
     }
     this.socket.emit('buyDev', obj);
-  }
-
-  startTrade() {
-    //display input form for desired resources
-    //display input form for resources to give
-    //await response from other users?
   }
 
 
@@ -966,7 +1084,6 @@ class Game extends React.Component {
     }
 
     if (score >= 10) {
-      console.log('PlayerId has reached 10 points!');
       // endGame(); // need to write this function
     }
 
@@ -1019,14 +1136,6 @@ class Game extends React.Component {
       this.state.players[this.state.identity].card_wool>= 1);
   }
 
-  canOfferTrade() {
-    return (this.state.players[this.state.identity].card_brick>= 1 ||
-      this.state.players[this.state.identity].card_lumber>= 1 ||
-      this.state.players[this.state.identity].card_grain>= 1 ||
-      this.state.players[this.state.identity].card_wool>= 1 ||
-      this.state.players[this.state.identity].card_ore>= 1);
-  }
-
   canPlayCardKnight() {
     return (!this.state.players[this.state.identity].has_played_development_card && this.state.players[this.state.identity].card_knight>= 1);
   }
@@ -1054,7 +1163,6 @@ class Game extends React.Component {
       ableToBuySettlement: this.canBuySettlement(),
       ableToBuyCity: this.canBuyCity(),
       ableToBuyDevelopmentCard: this.canBuyDevelopmentCard(),
-      ableToOfferTrade: this.canOfferTrade(),
       ableToPlayCardKnight: this.canPlayCardKnight(),
       ableToPlayCardRoad: this.canPlayCardRoad(),
       ableToPlayCardMonopoly: this.canPlayCardMonopoly(),
@@ -1292,7 +1400,6 @@ class Game extends React.Component {
     })
 
     this.socket.on('playedDev', obj => {
-      console.log('decrementing this players dev cards');
       let players = this.state.players;
       let player = players[obj.player];
       player[obj.card]--
@@ -1569,7 +1676,6 @@ class Game extends React.Component {
     })
 
     this.socket.on('moveRobber', tile => {
-      console.log(tile);
       let index = this.state.robbedTile;
       let temp = this.state.tiles;
       if (index) {
@@ -1603,6 +1709,23 @@ class Game extends React.Component {
       }
     }
 
+  })
+
+  this.socket.on('tradeWithBank', obj => {
+    let players = this.state.players;
+    let player = players[obj.player];
+    let board = players[0];
+
+    board[obj.taking] --;
+    player[obj.taking] ++;
+    player.total_resources += 1;
+
+    board[obj.giving] += obj.amount;
+    player[obj.giving] -= obj.amount;
+
+    player.total_resources -= obj.amount;
+
+    this.setState({players: players});
   })
 
 
@@ -1750,6 +1873,27 @@ class Game extends React.Component {
       </div> : null
     }
 
+    {this.state.tradeMenuOpen ?
+    <div>
+        <div>
+        <div>Offering</div>
+        <span className="icon Brick" id="card_brick" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_brick}</span>
+        <span className="icon Wheat" id="card_grain" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_grain}</span>
+        <span className="icon Wood" id="card_lumber" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_lumber}</span>
+        <span className="icon Sheep" id="card_wool" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_wool}</span>
+        <span className="icon Rock" id="card_ore" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_ore}</span>
+        <div>Wanting</div>
+        <span className="icon Brick" id="card_brick" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_brick}</span>
+        <span className="icon Wheat" id="card_grain" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_grain}</span>
+        <span className="icon Wood" id="card_lumber" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_lumber}</span>
+        <span className="icon Sheep" id="card_wool" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_wool}</span>
+        <span className="icon Rock" id="card_ore" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_ore}</span>
+        </div>
+        <button>Offer Trade</button> <button onClick={this.tradeWithBank}>Trade With Bank</button> <button>CANCEL</button>
+    </div>
+    
+    : null}
+
     {this.state.isPlayingDevCard ?
       <div>
       <span className="resourceBar">
@@ -1771,7 +1915,7 @@ class Game extends React.Component {
 
 
     {(!this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button type="button" onClick={this.diceRoll}>Roll Dice</button> : null}
-    {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button type="button" id="offertrade" onClick={() => {console.log('trade here')}}>Offer Trade</button> : null}
+    {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button type="button"  onClick={this.openTradeMenu}>Trade</button> : null}
     {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.endTurn}>End Turn</button> : null}
     {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.toggleBuying}>Buy</button> : null}
     {(!this.state.players[this.state.identity].has_played_development_card && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.togglePlayingDev}>Play Dev Card</button> : null}
