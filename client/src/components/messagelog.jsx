@@ -5,44 +5,44 @@ const style = {
 }
 
 class Messagelog extends React.Component {
-    constructor(props) {
-      super(props)
-      this.state = {
-        gamestate: this.props.gamestate
-      }
+  constructor(props) {
+    super(props)
+    this.state = {
+      gamestate: this.props.gamestate
     }
+  }
 
-    componentWillReceiveProps(nextprops) {}
+  componentWillReceiveProps(nextprops) { }
 
 
-    render() {
-      return ( <div >
-        <h2 > MESSAGE LOG </h2> <div style = {
-          style
-        } > {
+  render() {
+    return (<div >
+      <h2 > MESSAGE LOG </h2> <div style={
+        style
+      } > {
           this.props.messages.map((message, index) => {
-              return ( <div key = {
-                  index
-                } > {
-                  message.user
-                }: {
-                  message.text
-                } </div>)
-              })
-          } </div> <input style = {
-            {
-              width: '100%'
-            }
+            return (<div key={
+              index
+            } > {
+                message.user
+              }: {
+                message.text
+              } </div>)
+          })
+        } </div> <input style={
+          {
+            width: '100%'
           }
-          type = 'text'
-          placeholder = "Write a message!"
-          onKeyUp = {
+        }
+          type='text'
+          placeholder="Write a message!"
+          onKeyUp={
             this.props.handleSubmitMessage
           }
-          /> </div>
-        )
-      }
+      /> </div>
+    )
+  }
 
-    }
+}
 
-    export default Messagelog;
+export default Messagelog;

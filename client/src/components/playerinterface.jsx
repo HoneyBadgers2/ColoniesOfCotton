@@ -16,7 +16,7 @@ class Playerinteface extends React.Component {
       gamestate: nextprops.gamestate,
     });
   }
-  
+
   takeAction(event) {
     var item = event.target.id;
     if (item === 'buyroad') {
@@ -49,7 +49,7 @@ class Playerinteface extends React.Component {
     } else if (item === 'playcardvictory') {
       // console.log('button: player wants to: ', item);
       this.props.playcardmethod(item);
-    } 
+    }
 
 
   }

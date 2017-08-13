@@ -6,7 +6,7 @@ import Boardview from './boardview';
 import {
   Scene
 }
-from 'react-babylonjs';
+  from 'react-babylonjs';
 import {
   SceneLoader,
   ShaderMaterial,
@@ -23,7 +23,7 @@ import {
   Texture,
   Engine
 }
-from 'babylonjs';
+  from 'babylonjs';
 
 class Game extends React.Component {
   constructor(props) {
@@ -64,7 +64,7 @@ class Game extends React.Component {
       isPlayingCardRoad: 2,
       isPlayingCardMonopoly: false,
       isPlayingCardPlenty: 2,
-      wantedCards: {card_brick: 0, card_grain: 0, card_lumber: 0, card_ore: 0, card_wool: 0},
+      wantedCards: { card_brick: 0, card_grain: 0, card_lumber: 0, card_ore: 0, card_wool: 0 },
       needResourceBar: false,
       interfaceToggled: false,
       instruction: null,
@@ -82,7 +82,7 @@ class Game extends React.Component {
 
     ////////////////////////////////////////////////////
     this.cheatSkipSetup = this.cheatSkipSetup.bind(this);
-///////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////
     this.tradeWithBank = this.tradeWithBank.bind(this);
     this.changeOffering = this.changeOffering.bind(this);
     this.changeWanting = this.changeWanting.bind(this);
@@ -96,7 +96,7 @@ class Game extends React.Component {
     this.playingCardMonopoly = this.playingCardMonopoly.bind(this);
     this.togglePlayingDev = this.togglePlayingDev.bind(this);
     this.toggleBuying = this.toggleBuying.bind(this);
-    this.toggleSetupCorner= this.toggleSetupCorner.bind(this);
+    this.toggleSetupCorner = this.toggleSetupCorner.bind(this);
     this.toggleSetupRoad = this.toggleSetupRoad.bind(this);
     this.checkPossibleActions = this.checkPossibleActions.bind(this);
     this.toggleOff = this.toggleOff.bind(this);
@@ -142,24 +142,24 @@ class Game extends React.Component {
 
 
   onMeshPicked(mesh, scene) {
-    if(this.state.setupCorner){
+    if (this.state.setupCorner) {
       let meshType = mesh.name.slice(0, 5);
       let id = Number(mesh.name.slice(5));
       if (meshType === 'House' && mesh.visibility === 0.8) {
         this.settingSettlement(id);
         this.toggleSetupCorner('off');
         this.toggleSetupRoad(id);
-        this.setState({setupCorner: false, setupRoad: true});
+        this.setState({ setupCorner: false, setupRoad: true });
       }
     }
 
-    if(this.state.setupRoad){
+    if (this.state.setupRoad) {
       let meshType = mesh.name.slice(0, 4);
       let id = Number(mesh.name.slice(4));
-      if(meshType === 'Road' && mesh.visibility === 0.8) {
+      if (meshType === 'Road' && mesh.visibility === 0.8) {
         this.settingRoad(id);
         this.toggleSetupRoad();
-        this.setState({setupRoad: false});
+        this.setState({ setupRoad: false });
       }
     }
 
@@ -195,7 +195,7 @@ class Game extends React.Component {
       }
     }
 
-    if(this.state.isPlayingCardRoad < 2 && mesh.name.slice(0,4) === 'Road' && mesh.visibility === 0.8){
+    if (this.state.isPlayingCardRoad < 2 && mesh.name.slice(0, 4) === 'Road' && mesh.visibility === 0.8) {
       let obj = {
         room: this.state.room,
         player: this.state.identity,
@@ -211,23 +211,23 @@ class Game extends React.Component {
       let road = roads[roadID];
       road.owner = this.state.identity;
       let mat = this.createMat(this.state.identity);
-      this.colorPiece('Road'+roadID, mat);
+      this.colorPiece('Road' + roadID, mat);
 
-      this.setState({isPlayingCardRoad: this.state.isPlayingCardRoad + 1, players: players, roads: roads}, () => {
-        for(let i = 1; i < 73; i++){
+      this.setState({ isPlayingCardRoad: this.state.isPlayingCardRoad + 1, players: players, roads: roads }, () => {
+        for (let i = 1; i < 73; i++) {
           let mesh = this.scene.getMeshByID('Road' + i);
-          if(this.state.roads[i].owner === null){
+          if (this.state.roads[i].owner === null) {
             mesh.visibility = 0;
           }
         }
-        if(this.state.isPlayingCardRoad === 1){
+        if (this.state.isPlayingCardRoad === 1) {
           let arr = this.findPossibleRoads();
 
-          for(let j = 0; j < arr.length; j++){
+          for (let j = 0; j < arr.length; j++) {
             let mesh = this.scene.getMeshByID('Road' + arr[j]);
             mesh.visibility = 0.8;
           }
-        } else if (this.state.isPlayingCardRoad === 2){
+        } else if (this.state.isPlayingCardRoad === 2) {
           this.checkPossibleActions();
           this.toggleUI();
         }
@@ -235,7 +235,7 @@ class Game extends React.Component {
     }
   }
 
-  tradeWithBank(){
+  tradeWithBank() {
     let players = this.state.players;
     let player = players[this.state.identity];
     let wanting = player.active_trade.wanting;
@@ -247,26 +247,26 @@ class Game extends React.Component {
     let port = null;
     let wild = null;
 
-    for(let prop in offering){
+    for (let prop in offering) {
       totalOffering += offering[prop];
 
-      if(offering[prop] === 2){
+      if (offering[prop] === 2) {
         port = prop;
-      } else if (offering[prop] === 3){
+      } else if (offering[prop] === 3) {
         wild = prop;
-      } else if(offering[prop] === 4){
+      } else if (offering[prop] === 4) {
         giving = prop;
       }
     }
 
-    for(let prop in wanting){
+    for (let prop in wanting) {
       totalWanting += wanting[prop];
-      if(wanting[prop] === 1){
+      if (wanting[prop] === 1) {
         taking = prop;
       }
     }
 
-    if(totalOffering === 2 && totalWanting === 1 && port === 'card_wool' && taking && (this.state.settlements[40].owner === this.state.identity || this.state.settlements[41].owner === this.state.identity)){
+    if (totalOffering === 2 && totalWanting === 1 && port === 'card_wool' && taking && (this.state.settlements[40].owner === this.state.identity || this.state.settlements[41].owner === this.state.identity)) {
       let obj = {
         room: this.state.room,
         player: this.state.identity,
@@ -276,7 +276,7 @@ class Game extends React.Component {
       };
 
       this.socket.emit('tradeWithBank', obj);
-    } else if(totalOffering === 2 && totalWanting === 1 && port === 'card_grain' && taking && (this.state.settlements[30].owner === this.state.identity || this.state.settlements[31].owner === this.state.identity)){
+    } else if (totalOffering === 2 && totalWanting === 1 && port === 'card_grain' && taking && (this.state.settlements[30].owner === this.state.identity || this.state.settlements[31].owner === this.state.identity)) {
       let obj = {
         room: this.state.room,
         player: this.state.identity,
@@ -286,7 +286,7 @@ class Game extends React.Component {
       };
 
       this.socket.emit('tradeWithBank', obj);
-    } else if(totalOffering === 2 && totalWanting === 1 && port === 'card_ore' && taking && (this.state.settlements[34].owner === this.state.identity || this.state.settlements[35].owner === this.state.identity)){
+    } else if (totalOffering === 2 && totalWanting === 1 && port === 'card_ore' && taking && (this.state.settlements[34].owner === this.state.identity || this.state.settlements[35].owner === this.state.identity)) {
       let obj = {
         room: this.state.room,
         player: this.state.identity,
@@ -295,7 +295,7 @@ class Game extends React.Component {
         amount: 2
       };
       this.socket.emit('tradeWithBank', obj);
-    } else if(totalOffering === 2 && totalWanting === 1 && port === 'card_lumber' && taking && (this.state.settlements[25].owner === this.state.identity || this.state.settlements[54].owner === this.state.identity)){
+    } else if (totalOffering === 2 && totalWanting === 1 && port === 'card_lumber' && taking && (this.state.settlements[25].owner === this.state.identity || this.state.settlements[54].owner === this.state.identity)) {
       let obj = {
         room: this.state.room,
         player: this.state.identity,
@@ -304,7 +304,7 @@ class Game extends React.Component {
         amount: 2
       };
       this.socket.emit('tradeWithBank', obj);
-    } else if(totalOffering === 2 && totalWanting === 1 && port === 'card_brick' && taking && (this.state.settlements[50].owner === this.state.identity || this.state.settlements[51].owner === this.state.identity)){
+    } else if (totalOffering === 2 && totalWanting === 1 && port === 'card_brick' && taking && (this.state.settlements[50].owner === this.state.identity || this.state.settlements[51].owner === this.state.identity)) {
       let obj = {
         room: this.state.room,
         player: this.state.identity,
@@ -313,7 +313,7 @@ class Game extends React.Component {
         amount: 2
       };
       this.socket.emit('tradeWithBank', obj);
-    } else if(totalOffering === 3 && totalWanting === 1 && wild && taking && (this.state.settlements[27].owner === this.state.identity || this.state.settlements[28].owner === this.state.identity || this.state.settlements[37].owner === this.state.identity || this.state.settlements[38].owner === this.state.identity || this.state.settlements[44].owner === this.state.identity || this.state.settlements[45].owner === this.state.identity || this.state.settlements[47].owner === this.state.identity || this.state.settlements[48].owner === this.state.identity)){
+    } else if (totalOffering === 3 && totalWanting === 1 && wild && taking && (this.state.settlements[27].owner === this.state.identity || this.state.settlements[28].owner === this.state.identity || this.state.settlements[37].owner === this.state.identity || this.state.settlements[38].owner === this.state.identity || this.state.settlements[44].owner === this.state.identity || this.state.settlements[45].owner === this.state.identity || this.state.settlements[47].owner === this.state.identity || this.state.settlements[48].owner === this.state.identity)) {
       let obj = {
         room: this.state.room,
         player: this.state.identity,
@@ -322,7 +322,7 @@ class Game extends React.Component {
         amount: 3
       };
       this.socket.emit('tradeWithBank', obj);
-    } else if(totalOffering === 4 && totalWanting === 1 && giving && taking){
+    } else if (totalOffering === 4 && totalWanting === 1 && giving && taking) {
       let obj = {
         room: this.state.room,
         player: this.state.identity,
@@ -334,36 +334,36 @@ class Game extends React.Component {
     }
   }
 
-  toggleUI(){
-    this.setState({interfaceToggled: !this.state.interfaceToggled});
+  toggleUI() {
+    this.setState({ interfaceToggled: !this.state.interfaceToggled });
   }
 
-  openTradeMenu(){
-    this.setState({tradeMenuOpen: !this.state.tradeMenuOpen})
+  openTradeMenu() {
+    this.setState({ tradeMenuOpen: !this.state.tradeMenuOpen })
   }
 
-  playCardPlenty(){
+  playCardPlenty() {
     let players = this.state.players;
     let player = this.state.players[this.state.identity];
     player.has_played_development_card = true;
-    this.setState({instruction: "Pick Two Resources", isPlayingDevCard: false})
+    this.setState({ instruction: "Pick Two Resources", isPlayingDevCard: false })
     this.toggleUI();
     this.toggleResourceBar();
-    this.socket.emit('playingDev', {room: this.state.room, player: this.state.identity, dev: "Year of Plenty", card: "card_plenty"})
-    this.setState({isPlayingCardPlenty: 0, players: players});
+    this.socket.emit('playingDev', { room: this.state.room, player: this.state.identity, dev: "Year of Plenty", card: "card_plenty" })
+    this.setState({ isPlayingCardPlenty: 0, players: players });
   }
 
-  handleResourceClick(event){
-    if(this.state.isPlayingCardPlenty < 2){
-      if(this.state.players[0][event.target.id  ] > 0){
+  handleResourceClick(event) {
+    if (this.state.isPlayingCardPlenty < 2) {
+      if (this.state.players[0][event.target.id] > 0) {
         let obj = {
-          resource: event.target.id ,
+          resource: event.target.id,
           player: this.state.identity,
           room: this.state.room
         }
         this.socket.emit('playedCardPlenty', obj);
-        this.setState({isPlayingCardPlenty: this.state.isPlayingCardPlenty + 1}, () => {
-          if(this.state.isPlayingCardPlenty === 2){
+        this.setState({ isPlayingCardPlenty: this.state.isPlayingCardPlenty + 1 }, () => {
+          if (this.state.isPlayingCardPlenty === 2) {
             this.toggleUI();
             this.toggleResourceBar();
             this.checkPossibleActions();
@@ -371,10 +371,10 @@ class Game extends React.Component {
         })
 
       }
-    } 
-    
+    }
 
-    if(this.state.isPlayingCardMonopoly){
+
+    if (this.state.isPlayingCardMonopoly) {
       let obj = {
         player: this.state.identity,
         room: this.state.room,
@@ -382,7 +382,7 @@ class Game extends React.Component {
       }
 
       this.socket.emit('playedCardMonopoly', obj);
-      this.setState({needResourceBar: false});
+      this.setState({ needResourceBar: false });
       this.toggleUI();
       this.checkPossibleActions();
     }
@@ -431,32 +431,32 @@ class Game extends React.Component {
     }
   }
 
-  changeWanting(event){
+  changeWanting(event) {
     let players = this.state.players;
     let player = players[this.state.identity];
     let active_trade = player.active_trade;
     let wanting = active_trade.wanting;
     let resource = event.target.id;
-    if(event.button === 0){
-      wanting[resource] ++
-    } else if (event.button === 2 && wanting[resource] > 0){
-      wanting[resource] --
+    if (event.button === 0) {
+      wanting[resource]++
+    } else if (event.button === 2 && wanting[resource] > 0) {
+      wanting[resource]--
     }
-    this.setState({players: players});
+    this.setState({ players: players });
   }
 
-  changeOffering(event){
+  changeOffering(event) {
     let players = this.state.players;
     let player = players[this.state.identity];
     let active_trade = player.active_trade;
     let offering = active_trade.offering;
     let resource = event.target.id;
-    if(event.button === 0 && player[resource] > offering[resource]){
-      offering[resource] ++
-    } else if (event.button === 2 && offering[resource] > 0){
-      offering[resource] --
+    if (event.button === 0 && player[resource] > offering[resource]) {
+      offering[resource]++
+    } else if (event.button === 2 && offering[resource] > 0) {
+      offering[resource]--
     }
-    this.setState({players: players});
+    this.setState({ players: players });
   }
 
 
@@ -472,14 +472,14 @@ class Game extends React.Component {
 
 
     this.initEnvironment(canvas, scene);
-    SceneLoader.ImportMesh("", "", "boardTemplate.babylon", scene, function(newMeshes) {
+    SceneLoader.ImportMesh("", "", "boardTemplate.babylon", scene, function (newMeshes) {
       for (var mesh of newMeshes) {
         if (mesh.name !== 'NonClickRobber') {
           mesh.convertToFlatShadedMesh();
         }
 
         if (mesh.name.includes('NonClick')) {
-           mesh.isPickable = false;
+          mesh.isPickable = false;
         }
 
         if (mesh.name.includes('City') || mesh.name.includes('House') || mesh.name.includes('Road')) {
@@ -501,60 +501,60 @@ class Game extends React.Component {
 
   initEnvironment(canvas, scene) {
 
-      var light = new HemisphericLight('hemi', new Vector3(0, 1, 0), scene);
-      light.intensity = 1.35;
+    var light = new HemisphericLight('hemi', new Vector3(0, 1, 0), scene);
+    light.intensity = 1.35;
 
 
-      var camera = new ArcRotateCamera('Camera', 0, 1.05, 20, Vector3.Zero(), scene)
-      camera.lowerRadiusLimit = 10
-      camera.upperRadiusLimit = 35
-      camera.upperBetaLimit = Math.PI / 2
-      camera.attachControl(canvas, false)
+    var camera = new ArcRotateCamera('Camera', 0, 1.05, 20, Vector3.Zero(), scene)
+    camera.lowerRadiusLimit = 10
+    camera.upperRadiusLimit = 35
+    camera.upperBetaLimit = Math.PI / 2
+    camera.attachControl(canvas, false)
 
 
-      scene.registerBeforeRender(function() {
-        light.position = camera.position;
-        var brick = scene.getMeshByID('NonClickBrickIcon');
-        if (brick !== null) {
-          brick.rotation.y += 0.02;
-        }
-        var random = scene.getMeshByID('NonClickRandomIcon');
-        if (random !== null) {
-          random.rotation.y += 0.02;
-        }
-        var random1 = scene.getMeshByID('NonClickRandomIcon.001');
-        if (random1 !== null) {
-          random1.rotation.y += 0.02;
-        }
-        var random2 = scene.getMeshByID('NonClickRandomIcon.002');
-        if (random2 !== null) {
-          random2.rotation.y += 0.02;
-        }
-        var random3 = scene.getMeshByID('NonClickRandomIcon.003');
-        if (random3 !== null) {
-          random3.rotation.y += 0.02;
-        }
-        var hay = scene.getMeshByID('NonClickHayIcon');
-        if (hay !== null) {
-          hay.rotation.y += 0.02;
-        }
-        var rock = scene.getMeshByID('NonClickRockIcon');
-        if (rock !== null) {
-          rock.rotation.y += 0.02;
-        }
-        var sheep = scene.getMeshByID('NonClickSheepIcon');
-        if (sheep !== null) {
-          sheep.rotation.y += 0.02;
-        }
-        var tree = scene.getMeshByID('NonClickTreeIcon');
-        if (tree !== null) {
-          tree.rotation.y += 0.02;
-        }
-      });
+    scene.registerBeforeRender(function () {
+      light.position = camera.position;
+      var brick = scene.getMeshByID('NonClickBrickIcon');
+      if (brick !== null) {
+        brick.rotation.y += 0.02;
+      }
+      var random = scene.getMeshByID('NonClickRandomIcon');
+      if (random !== null) {
+        random.rotation.y += 0.02;
+      }
+      var random1 = scene.getMeshByID('NonClickRandomIcon.001');
+      if (random1 !== null) {
+        random1.rotation.y += 0.02;
+      }
+      var random2 = scene.getMeshByID('NonClickRandomIcon.002');
+      if (random2 !== null) {
+        random2.rotation.y += 0.02;
+      }
+      var random3 = scene.getMeshByID('NonClickRandomIcon.003');
+      if (random3 !== null) {
+        random3.rotation.y += 0.02;
+      }
+      var hay = scene.getMeshByID('NonClickHayIcon');
+      if (hay !== null) {
+        hay.rotation.y += 0.02;
+      }
+      var rock = scene.getMeshByID('NonClickRockIcon');
+      if (rock !== null) {
+        rock.rotation.y += 0.02;
+      }
+      var sheep = scene.getMeshByID('NonClickSheepIcon');
+      if (sheep !== null) {
+        sheep.rotation.y += 0.02;
+      }
+      var tree = scene.getMeshByID('NonClickTreeIcon');
+      if (tree !== null) {
+        tree.rotation.y += 0.02;
+      }
+    });
 
 
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
   settingSettlement(id) {
     let obj = {};
     obj.room = this.state.room;
@@ -564,8 +564,8 @@ class Game extends React.Component {
     this.socket.emit('settingSettlement', obj);
   }
 
-  toggleResourceBar(){
-    this.setState({needResourceBar: !this.state.needResourceBar});
+  toggleResourceBar() {
+    this.setState({ needResourceBar: !this.state.needResourceBar });
   }
 
   settingRoad(id) {
@@ -574,34 +574,34 @@ class Game extends React.Component {
     let obj = {};
 
     let numberOfSettlementsOwned = this.state.players[this.state.identity].owns_settlement.length;
-    if(numberOfSettlementsOwned === 1){
-      for(let i = 1; i < this.state.players.length; i++){
-        if(this.state.players[i].owns_settlement.length < 1){
+    if (numberOfSettlementsOwned === 1) {
+      for (let i = 1; i < this.state.players.length; i++) {
+        if (this.state.players[i].owns_settlement.length < 1) {
           last = false;
         }
       }
-      if(last){
+      if (last) {
         nextPlayer = this.state.identity;
       } else {
         nextPlayer = this.state.identity + 1;
-        if(nextPlayer === 5){
+        if (nextPlayer === 5) {
           nextPlayer = 1;
         }
       }
     }
 
-    if(numberOfSettlementsOwned === 2){
-      for(let i = 1; i < this.state.players.length; i++){
-        if(this.state.players[i].owns_settlement.length < 2){
+    if (numberOfSettlementsOwned === 2) {
+      for (let i = 1; i < this.state.players.length; i++) {
+        if (this.state.players[i].owns_settlement.length < 2) {
           last = false;
         }
       }
-      if(last){
+      if (last) {
         nextPlayer = this.state.identity;
         obj.start = true;
       } else {
         nextPlayer = this.state.identity - 1;
-        if(nextPlayer === 0){
+        if (nextPlayer === 0) {
           nextPlayer = 4;
         }
       }
@@ -611,7 +611,7 @@ class Game extends React.Component {
     obj.player = this.state.identity;
     obj.road = id;
     obj.next = nextPlayer
-    
+
     this.socket.emit('settingRoad', obj);
   }
 
@@ -652,16 +652,16 @@ class Game extends React.Component {
   }
 
   toggleBuying() {
-    this.setState({isBuying: !this.state.isBuying});
-    if(this.state.isPlayingDevCard){
-      this.setState({isPlayingDevCard: false})
+    this.setState({ isBuying: !this.state.isBuying });
+    if (this.state.isPlayingDevCard) {
+      this.setState({ isPlayingDevCard: false })
     }
   }
 
-  togglePlayingDev(){
-    this.setState({isPlayingDevCard: !this.state.isPlayingDevCard});
-    if(this.state.isBuying){
-      this.setState({isBuying: false})
+  togglePlayingDev() {
+    this.setState({ isPlayingDevCard: !this.state.isPlayingDevCard });
+    if (this.state.isBuying) {
+      this.setState({ isBuying: false })
     }
   }
 
@@ -707,20 +707,21 @@ class Game extends React.Component {
   }
 
   buyingDevelopmentCard() {
+    console.log('buyingDev');
     let possibleDevCards = [];
-    for (let i = 0; i <this.state.players[0].card_knight; i++) {
+    for (let i = 0; i < this.state.players[0].card_knight; i++) {
       possibleDevCards.push('card_knight');
     }
-    for (let i = 0; i <this.state.players[0].card_road; i++) {
+    for (let i = 0; i < this.state.players[0].card_road; i++) {
       possibleDevCards.push('card_knight');
     }
-    for (let i = 0; i <this.state.players[0].card_monopoly; i++) {
+    for (let i = 0; i < this.state.players[0].card_monopoly; i++) {
       possibleDevCards.push('card_knight');
     }
-    for (let i = 0; i <this.state.players[0].card_plenty; i++) {
+    for (let i = 0; i < this.state.players[0].card_plenty; i++) {
       possibleDevCards.push('card_knight');
     }
-    for (let i = 0; i <this.state.players[0].card_victory; i++) {
+    for (let i = 0; i < this.state.players[0].card_victory; i++) {
       possibleDevCards.push('card_knight');
     }
 
@@ -728,6 +729,7 @@ class Game extends React.Component {
     let randomCard = possibleDevCards[RNG];
 
     let obj = {
+      room: this.state.room,
       player: this.state.identity,
       dev: randomCard
     }
@@ -741,7 +743,7 @@ class Game extends React.Component {
     let players = this.state.players;
     let player = players[0];
     player.has_played_development_card = true;
-    this.setState({players: players, moveRobber: true, isPlayingDevCard: false});
+    this.setState({ players: players, moveRobber: true, isPlayingDevCard: false });
     let obj = {
       player: this.state.identity,
       room: this.state.room,
@@ -757,7 +759,7 @@ class Game extends React.Component {
     let players = this.state.players;
     let player = players[0];
     player.has_played_development_card = true;
-    this.setState({players: players, isPlayingCardRoad: 0, isPlayingDevCard: false});
+    this.setState({ players: players, isPlayingCardRoad: 0, isPlayingDevCard: false });
 
     let obj = {
       player: this.state.identity,
@@ -767,7 +769,7 @@ class Game extends React.Component {
     }
     this.socket.emit('playingDev', obj);
     let arr = this.findPossibleRoads();
-    for(let i = 0; i < arr.length; i++){
+    for (let i = 0; i < arr.length; i++) {
       let mesh = this.scene.getMeshByID('Road' + arr[i]);
       mesh.visibility = 0.8;
     }
@@ -828,43 +830,43 @@ class Game extends React.Component {
     obj.player = this.state.identity;
     obj.total = total;
     this.socket.emit('diceRoll', obj);
-    this.setState({hasRolled: true});
+    this.setState({ hasRolled: true });
   }
 
   moveRobber(tileId) {
-  if(tileId !== this.state.robbedTile){
-    let obj = {
-      tile: tileId,
-      room: this.state.room,
-      player: this.state.identity
-    }
-    this.state.moveRobber = false;
-    let index = tileId;
-    let tile = this.state.tiles[index];
-    let corners = tile.connecting_house_slots
-    let arr = [];
-
-    for (let x = 0; x <corners.length; x++) {
-      let corner = this.state.settlements[corners[x]];
-      if (corner.owner && this.state.players[corner.owner].total_resources > 0) {
-        arr.push(corner.owner);
+    if (tileId !== this.state.robbedTile) {
+      let obj = {
+        tile: tileId,
+        room: this.state.room,
+        player: this.state.identity
       }
-    }
-    if(arr.length > 0){
-      this.state.robber = true;
-    } else {
-      this.setState({messages: [...this.state.messages, {text: "No one to rob from!", user: "COMPUTER"}]})
-      this.toggleUI();
-    }
-    this.socket.emit('moveRobber', obj)
-  } else {
-    let message = {
-      text: "You can't place the robber where it is already.",
-      user: "COMPUTER"
-    }
+      this.state.moveRobber = false;
+      let index = tileId;
+      let tile = this.state.tiles[index];
+      let corners = tile.connecting_house_slots
+      let arr = [];
 
-    this.setState({messages: [...this.state.messages, message]});
-  }
+      for (let x = 0; x < corners.length; x++) {
+        let corner = this.state.settlements[corners[x]];
+        if (corner.owner && this.state.players[corner.owner].total_resources > 0) {
+          arr.push(corner.owner);
+        }
+      }
+      if (arr.length > 0) {
+        this.state.robber = true;
+      } else {
+        this.setState({ messages: [...this.state.messages, { text: "No one to rob from!", user: "COMPUTER" }] })
+        this.toggleUI();
+      }
+      this.socket.emit('moveRobber', obj)
+    } else {
+      let message = {
+        text: "You can't place the robber where it is already.",
+        user: "COMPUTER"
+      }
+
+      this.setState({ messages: [...this.state.messages, message] });
+    }
   }
 
   robber(event) {
@@ -874,39 +876,39 @@ class Game extends React.Component {
       let corners = tile.connecting_house_slots
       let arr = [];
 
-      for (let x = 0; x <corners.length; x++) {
+      for (let x = 0; x < corners.length; x++) {
         let corner = this.state.settlements[corners[x]];
 
         if (corner.owner) {
           arr.push(corner.owner);
         }
       }
-      if(arr.length > 0){
+      if (arr.length > 0) {
         if (arr.indexOf(Number(event.target.id)) !== -1 && this.state.players[Number(event.target.id)].total_resources > 0) {
           let target = this.state.players[event.target.id]
           let available = [];
 
-          for(let i = 0; i < target.card_brick; i++){
+          for (let i = 0; i < target.card_brick; i++) {
             available.push('card_brick');
           }
 
-          for(let i = 0; i < target.card_wool; i++){
+          for (let i = 0; i < target.card_wool; i++) {
             available.push('card_wool');
           }
 
-          for(let i = 0; i < target.card_lumber; i++){
+          for (let i = 0; i < target.card_lumber; i++) {
             available.push('card_lumber');
           }
 
-          for(let i = 0; i < target.card_grain; i++){
+          for (let i = 0; i < target.card_grain; i++) {
             available.push('card_grain');
           }
 
-          for(let i = 0; i < target.card_ore; i++){
+          for (let i = 0; i < target.card_ore; i++) {
             available.push('card_ore');
           }
 
-        
+
 
 
           let RNG = Math.floor(Math.random() * available.length);
@@ -922,23 +924,23 @@ class Game extends React.Component {
       } else {
         this.toggleUI();
       }
-      }
+    }
   }
 
 
   handleSubmitMessage(event) {
-      let obj = {
-        user: this.state.identity,
-        room: this.state.room,
-        text: event.target.value
-      }
-
-      if (event.keyCode === 13) {
-        this.socket.emit('message', obj);
-        event.target.value = '';
-      }
+    let obj = {
+      user: this.state.identity,
+      room: this.state.room,
+      text: event.target.value
     }
-    //////////////////////////////// HELPER FUNCTIONS ////////////////////////////////
+
+    if (event.keyCode === 13) {
+      this.socket.emit('message', obj);
+      event.target.value = '';
+    }
+  }
+  //////////////////////////////// HELPER FUNCTIONS ////////////////////////////////
   verifyCorner(cornerId) {
     if (this.state.settlements[cornerId].owner !== null) {
       return false
@@ -947,13 +949,13 @@ class Game extends React.Component {
     const adjCorners = this.getAdjCornersToCorner(cornerId);
     const adjRoads = this.getAdjRoadsToCorner(cornerId);
 
-    for (let i = 0; i <adjCorners.length; i++) {
+    for (let i = 0; i < adjCorners.length; i++) {
       if (adjCorners[i].owner !== null) {
         return false;
       }
     }
 
-    for (let i = 0; i <adjRoads.length; i++) {
+    for (let i = 0; i < adjRoads.length; i++) {
       if (adjRoads[i].owner === this.state.identity) {
         return true;
       }
@@ -970,7 +972,7 @@ class Game extends React.Component {
     const adjRoads = this.getAdjRoadsToRoad(roadId);
 
 
-    for (let i = 0; i <adjRoads.length; i++) {
+    for (let i = 0; i < adjRoads.length; i++) {
       if (adjRoads[i].owner === this.state.identity) {
         let common = this.getCommonCornerToTwoRoads(adjRoads[i].id, roadId);
         if (common.owner === this.state.identity || common.owner === null) {
@@ -986,7 +988,7 @@ class Game extends React.Component {
   getAdjCornersToCorner(cornerId) {
     let arr = this.state.settlements[cornerId].adj_house_slots;
     let output = [];
-    for (var i = 0; i <arr.length; i++) {
+    for (var i = 0; i < arr.length; i++) {
       output.push(this.state.settlements[arr[i]]);
     }
     return output;
@@ -995,7 +997,7 @@ class Game extends React.Component {
   getAdjRoadsToCorner(cornerId) {
     let arr = this.state.settlements[cornerId].connecting_road_slots;
     let output = [];
-    for (let i = 0; i <arr.length; i++) {
+    for (let i = 0; i < arr.length; i++) {
       output.push(this.state.roads[arr[i]]);
     }
     return output;
@@ -1004,7 +1006,7 @@ class Game extends React.Component {
   getAdjCornerToRoad(roadId) {
     let arr = this.state.roads[roadId].connecting_house_slots;
     let output = [];
-    for (let i = 0; i <arr.length; i++) {
+    for (let i = 0; i < arr.length; i++) {
       output.push(this.state.settlements[arr[i]]);
     }
     return output;
@@ -1013,7 +1015,7 @@ class Game extends React.Component {
   getAdjRoadsToRoad(roadId) {
     let arr = this.state.roads[roadId].adj_road_slots;
     let output = [];
-    for (let i = 0; i <arr.length; i++) {
+    for (let i = 0; i < arr.length; i++) {
       output.push(this.state.roads[arr[i]]);
     }
     return output;
@@ -1023,7 +1025,7 @@ class Game extends React.Component {
     let firstCorners = this.state.roads[road1].connecting_house_slots;
     let secondCorners = this.state.roads[road2].connecting_house_slots;
 
-    for (let i = 0; i <firstCorners.length; i++) {
+    for (let i = 0; i < firstCorners.length; i++) {
       if (secondCorners.indexOf(firstCorners[i]) !== -1) {
         return this.state.settlements[firstCorners[i]];
       }
@@ -1036,9 +1038,9 @@ class Game extends React.Component {
     let ownedRoads = this.state.players[this.state.identity].owns_road;
     let possibleRoads = [];
     if (ownedRoads) {
-      for (let i = 0; i <ownedRoads.length; i++) {
+      for (let i = 0; i < ownedRoads.length; i++) {
 
-        for (let j = 0; j <allRoads[ownedRoads[i]].adj_road_slots.length; j++) {
+        for (let j = 0; j < allRoads[ownedRoads[i]].adj_road_slots.length; j++) {
           let road = allRoads[ownedRoads[i]].adj_road_slots[j];
           if (this.verifyRoad(road)) {
             if (possibleRoads.indexOf(road) === -1) {
@@ -1058,8 +1060,8 @@ class Game extends React.Component {
     let ownedRoads = this.state.players[this.state.identity].owns_road;
     let possibleSettlements = [];
 
-    for (let i = 0; i <ownedRoads.length; i++) {
-      for (let j = 0; j <allRoads[ownedRoads[i]].connecting_house_slots.length; j++) {
+    for (let i = 0; i < ownedRoads.length; i++) {
+      for (let j = 0; j < allRoads[ownedRoads[i]].connecting_house_slots.length; j++) {
         if (this.verifyCorner(allRoads[ownedRoads[i]].connecting_house_slots[j])) {
           let corner = allRoads[ownedRoads[i]].connecting_house_slots[j];
           if (possibleSettlements.indexOf(corner) === -1) {
@@ -1091,7 +1093,7 @@ class Game extends React.Component {
     return score - this.state.players[playerId].card_victory;
   }
 
-  
+
 
 
 
@@ -1099,10 +1101,10 @@ class Game extends React.Component {
     let possibleRoads = this.findPossibleRoads();
 
     // check if affordable && piece available && there is a valid spot available
-    if (this.state.players[this.state.identity].card_brick>= 1 &&
-      this.state.players[this.state.identity].card_lumber>= 1 &&
-      this.state.players[this.state.identity].owns_road.length <14 &&
-      possibleRoads.length> 0) {
+    if (this.state.players[this.state.identity].card_brick >= 1 &&
+      this.state.players[this.state.identity].card_lumber >= 1 &&
+      this.state.players[this.state.identity].owns_road.length < 14 &&
+      possibleRoads.length > 0) {
       return true;
     }
     return false;
@@ -1112,52 +1114,52 @@ class Game extends React.Component {
     let possibleSettlements = this.findPossibleSettlements()
 
     // check if affordable && piece available && there is a valid spot available
-    if (this.state.players[this.state.identity].card_brick>= 1 &&
-      this.state.players[this.state.identity].card_lumber>= 1 &&
-      this.state.players[this.state.identity].card_grain>= 1 &&
-      this.state.players[this.state.identity].card_wool>= 1 &&
-      this.state.players[this.state.identity].owns_settlement.length <5 &&
-      possibleSettlements.length> 0) {
+    if (this.state.players[this.state.identity].card_brick >= 1 &&
+      this.state.players[this.state.identity].card_lumber >= 1 &&
+      this.state.players[this.state.identity].card_grain >= 1 &&
+      this.state.players[this.state.identity].card_wool >= 1 &&
+      this.state.players[this.state.identity].owns_settlement.length < 5 &&
+      possibleSettlements.length > 0) {
       return true;
     }
     return false;
   }
 
   canBuyCity() {
-    return (this.state.players[this.state.identity].card_ore>= 3 &&
-      this.state.players[this.state.identity].card_grain>= 2 &&
-      this.state.players[this.state.identity].owns_city.length <4 &&
-      this.state.players[this.state.identity].owns_settlement.length> 0);
+    return (this.state.players[this.state.identity].card_ore >= 3 &&
+      this.state.players[this.state.identity].card_grain >= 2 &&
+      this.state.players[this.state.identity].owns_city.length < 4 &&
+      this.state.players[this.state.identity].owns_settlement.length > 0);
   }
 
   canBuyDevelopmentCard() {
-    return (this.state.players[this.state.identity].card_ore>= 1 &&
-      this.state.players[this.state.identity].card_grain>= 1 &&
-      this.state.players[this.state.identity].card_wool>= 1);
+    return (this.state.players[this.state.identity].card_ore >= 1 &&
+      this.state.players[this.state.identity].card_grain >= 1 &&
+      this.state.players[this.state.identity].card_wool >= 1);
   }
 
   canPlayCardKnight() {
-    return (!this.state.players[this.state.identity].has_played_development_card && this.state.players[this.state.identity].card_knight>= 1);
+    return (!this.state.players[this.state.identity].has_played_development_card && this.state.players[this.state.identity].card_knight >= 1);
   }
 
   canPlayCardRoad() {
-    return (!this.state.players[this.state.identity].has_played_development_card && this.state.players[this.state.identity].card_road>= 1);
+    return (!this.state.players[this.state.identity].has_played_development_card && this.state.players[this.state.identity].card_road >= 1);
   }
 
   canPlayCardMonopoly() {
-    return (!this.state.players[this.state.identity].has_played_development_card && this.state.players[this.state.identity].card_monopoly>= 1);
+    return (!this.state.players[this.state.identity].has_played_development_card && this.state.players[this.state.identity].card_monopoly >= 1);
   }
 
   canPlayCardPlenty() {
-    return (!this.state.players[this.state.identity].has_played_development_card && this.state.players[this.state.identity].card_plenty>= 1);
+    return (!this.state.players[this.state.identity].has_played_development_card && this.state.players[this.state.identity].card_plenty >= 1);
   }
 
   canPlayCardVictory() {
-    return (this.state.players[this.state.identity].card_victory>= 1);
+    return (this.state.players[this.state.identity].card_victory >= 1);
   }
 
 
-  checkPossibleActions(){
+  checkPossibleActions() {
     this.setState({
       ableToBuyRoad: this.canBuyRoad(),
       ableToBuySettlement: this.canBuySettlement(),
@@ -1241,24 +1243,24 @@ class Game extends React.Component {
   cheatResetDevCard() {
     let allPlayers = this.state.players;
     allPlayers[this.state.identity].has_played_development_card = false;
-    this.setState({players: allPlayers});
+    this.setState({ players: allPlayers });
   }
 
   toggleBuyRoad() {
     this.toggleOff('Road');
     this.setState({
-        isBuyingRoad: !this.state.isBuyingRoad
-      },
-      function() {
+      isBuyingRoad: !this.state.isBuyingRoad
+    },
+      function () {
         if (this.state.isBuyingRoad) {
           let arr = this.findPossibleRoads();
-          for (let i = 0; i <arr.length; i++) {
+          for (let i = 0; i < arr.length; i++) {
             let mesh = this.scene.getMeshByID('Road' + arr[i]);
             mesh.visibility = 0.8
           }
         } else {
           let arr = this.findPossibleRoads();
-          for (let i = 0; i <arr.length; i++) {
+          for (let i = 0; i < arr.length; i++) {
             let mesh = this.scene.getMeshByID('Road' + arr[i]);
             mesh.visibility = 0
           }
@@ -1269,19 +1271,19 @@ class Game extends React.Component {
   toggleBuySettlement() {
     this.toggleOff('Settlement');
     this.setState({
-        isBuyingSettlement: !this.state.isBuyingSettlement
-      },
-      function() {
+      isBuyingSettlement: !this.state.isBuyingSettlement
+    },
+      function () {
         if (this.state.isBuyingSettlement) {
           let arr = this.findPossibleSettlements();
 
-          for (let i = 0; i <arr.length; i++) {
+          for (let i = 0; i < arr.length; i++) {
             let mesh = this.scene.getMeshByID('House' + arr[i]);
             mesh.visibility = 0.8
           }
         } else {
           let arr = this.findPossibleSettlements();
-          for (let i = 0; i <arr.length; i++) {
+          for (let i = 0; i < arr.length; i++) {
             let mesh = this.scene.getMeshByID('House' + arr[i]);
             mesh.visibility = 0
           }
@@ -1311,72 +1313,72 @@ class Game extends React.Component {
     })
   }
 
-  toggleSetupCorner(param){
-    if(param === 'on'){
-      for(let i = 1; i < 55; i++){
+  toggleSetupCorner(param) {
+    if (param === 'on') {
+      for (let i = 1; i < 55; i++) {
         let corner = this.state.settlements[i];
-        let mesh = this.scene.getMeshByID('House'+i);
+        let mesh = this.scene.getMeshByID('House' + i);
 
         let adj = this.getAdjCornersToCorner(i);
         let available = true;
-        if(corner.owner !== null){
+        if (corner.owner !== null) {
           available = false;
         } else {
-          for(let j = 0; j < adj.length; j++){
-            if(adj[j].owner !== null){
+          for (let j = 0; j < adj.length; j++) {
+            if (adj[j].owner !== null) {
               available = false;
             }
           }
         }
 
-        if(available){
+        if (available) {
           mesh.visibility = 0.8
         } else {
-          if(corner.owner === null){
+          if (corner.owner === null) {
             mesh.visibility = 0;
           }
         }
       }
-    } else if(param === 'off'){
-      for(let i = 1; i < 55; i++){
+    } else if (param === 'off') {
+      for (let i = 1; i < 55; i++) {
         let corner = this.state.settlements[i];
-        let mesh = this.scene.getMeshByID('House'+i);
-        if(corner.owner === null){
+        let mesh = this.scene.getMeshByID('House' + i);
+        if (corner.owner === null) {
           mesh.visibility = 0;
         }
       }
     }
   }
 
-  toggleSetupRoad(id, param){
-    if(id){
+  toggleSetupRoad(id, param) {
+    if (id) {
       let adj = this.getAdjRoadsToCorner(id);
-      for(let i = 0; i < adj.length; i++){
+      for (let i = 0; i < adj.length; i++) {
         let mesh = this.scene.getMeshByID('Road' + adj[i].id);
-        if(adj[i].owner === null){
+        if (adj[i].owner === null) {
           mesh.visibility = 0.8;
         }
       }
     } else {
-      for(let i = 1; i < 73; i++){
+      for (let i = 1; i < 73; i++) {
         let road = this.state.roads[i];
-        let mesh = this.scene.getMeshByID('Road'+i);
-        if(road.owner === null){
-          mesh.visibility = 0; 
+        let mesh = this.scene.getMeshByID('Road' + i);
+        if (road.owner === null) {
+          mesh.visibility = 0;
         }
       }
-      
+
     }
   }
-//////////////////////////////////////////////////
+  //////////////////////////////////////////////////
   cheatSkipSetup() {
     let obj = {};
     obj.room = this.state.room;
     this.socket.emit('cheatSkipSetup', obj);
   }
 
-//////////////////////////////////////////////////
-/////////// START SOCKET LISTENERS ///////////
+  //////////////////////////////////////////////////
+  /////////// START SOCKET LISTENERS ///////////
   componentDidMount() {
 
 
@@ -1394,9 +1396,9 @@ class Game extends React.Component {
       player.owns_road.push(roadID);
       road.owner = playerID;
 
-      this.setState({players: players, roads: roads});
+      this.setState({ players: players, roads: roads });
       let mat = this.createMat(playerID);
-      this.colorPiece('Road'+roadID, mat);
+      this.colorPiece('Road' + roadID, mat);
     })
 
     this.socket.on('playedDev', obj => {
@@ -1404,10 +1406,9 @@ class Game extends React.Component {
       let player = players[obj.player];
       player[obj.card]--
 
-      this.setState({players: players});
+      this.setState({ players: players });
     })
     this.socket.on('start', body => {
-      console.log('STARTING GAME');
       this.setState({
         canRollForFirst: true,
         room: body.game_session_id,
@@ -1425,12 +1426,12 @@ class Game extends React.Component {
       let board = players[0];
       let player = players[obj.player];
 
-      board[resource] --;
-      player[resource] ++;
-      player.total_resources ++;
-      
+      board[resource]--;
+      player[resource]++;
+      player.total_resources++;
 
-      this.setState({players: players})
+
+      this.setState({ players: players })
     })
 
     this.socket.on('settingSettlement', obj => {
@@ -1445,22 +1446,22 @@ class Game extends React.Component {
 
       player.owns_settlement.push(cornerID);
       settlement.owner = playerID;
-      if(player.owns_settlement.length === 2){
-        for(let i = 1; i < 20; i++){
+      if (player.owns_settlement.length === 2) {
+        for (let i = 1; i < 20; i++) {
           let tile = this.state.tiles[i];
-          if(tile.connecting_house_slots.indexOf(cornerID) !== -1){
+          if (tile.connecting_house_slots.indexOf(cornerID) !== -1) {
             let resource = 'card_' + tile.terrain;
-            players[0][resource] --;
-            player[resource] ++;
+            players[0][resource]--;
+            player[resource]++;
             player.total_resources++;
           }
         }
       }
 
-      this.setState({players: players, settlements: settlements});
+      this.setState({ players: players, settlements: settlements });
 
       let mat = this.createMat(playerID);
-      this.colorPiece('House'+cornerID, mat);
+      this.colorPiece('House' + cornerID, mat);
     })
 
     this.socket.on('settingRoad', obj => {
@@ -1476,17 +1477,17 @@ class Game extends React.Component {
       player.owns_road.push(roadID);
       road.owner = playerID;
 
-      this.setState({players: players, roads: roads});
+      this.setState({ players: players, roads: roads });
       let mat = this.createMat(playerID);
-      this.colorPiece('Road'+roadID, mat);
-      if(!obj.start){
-        if(obj.next === this.state.identity){
-          this.setState({setupCorner: true}, function(){this.toggleSetupCorner('on')});
+      this.colorPiece('Road' + roadID, mat);
+      if (!obj.start) {
+        if (obj.next === this.state.identity) {
+          this.setState({ setupCorner: true }, function () { this.toggleSetupCorner('on') });
         }
       }
-      if(obj.start){
-        if(obj.next === this.state.identity){
-          this.setState({active: true});
+      if (obj.start) {
+        if (obj.next === this.state.identity) {
+          this.setState({ active: true });
         }
       }
     })
@@ -1522,10 +1523,10 @@ class Game extends React.Component {
     })
 
     this.socket.on('diceRoll', total => {
-      for (var i = 0; i <this.state.tiles.length; i++) {
+      for (var i = 0; i < this.state.tiles.length; i++) {
         let tile = this.state.tiles[i];
         if (tile.dice_trigger_value === total && !tile.has_robber) {
-          for (var j = 0; j <tile.connecting_house_slots.length; j++) {
+          for (var j = 0; j < tile.connecting_house_slots.length; j++) {
             let index = tile.connecting_house_slots[j];
             let corner = this.state.settlements[index];
             if (corner.owner !== null) {
@@ -1536,7 +1537,7 @@ class Game extends React.Component {
 
               board[card]--;
               player[card]++;
-              player.total_resources ++
+              player.total_resources++
               this.setState({
                 turn: this.state.turn + 1
               });
@@ -1665,8 +1666,8 @@ class Game extends React.Component {
     })
 
     this.socket.on('first', player => {
-      if(this.state.identity === player){
-        this.setState({setupCorner: true}, function(){this.toggleSetupCorner('on')});
+      if (this.state.identity === player) {
+        this.setState({ setupCorner: true }, function () { this.toggleSetupCorner('on') });
       }
     })
 
@@ -1693,146 +1694,146 @@ class Game extends React.Component {
       });
     })
 
-  this.socket.on('playedCardMonopoly', obj => {
+    this.socket.on('playedCardMonopoly', obj => {
       let players = this.state.players;
       let player = this.state.players[obj.player];
       let resource = obj.resource;
 
-    for(let i = 1; i < players.length; i++){
-      if(i !== obj.player){
-        while(players[i][resource] > 0){
-          players[i][resource] --
-          players[i].total_resources --
-          player[resource] ++
-          player.total_resources ++
+      for (let i = 1; i < players.length; i++) {
+        if (i !== obj.player) {
+          while (players[i][resource] > 0) {
+            players[i][resource]--
+            players[i].total_resources--
+            player[resource]++
+            player.total_resources++
+          }
         }
       }
-    }
 
-  })
-
-  this.socket.on('tradeWithBank', obj => {
-    let players = this.state.players;
-    let player = players[obj.player];
-    let board = players[0];
-
-    board[obj.taking] --;
-    player[obj.taking] ++;
-    player.total_resources += 1;
-
-    board[obj.giving] += obj.amount;
-    player[obj.giving] -= obj.amount;
-
-    player.total_resources -= obj.amount;
-
-    this.setState({players: players});
-  })
-
-
-  this.socket.on('playedCardVictory', obj => {
-    let allPlayers = this.state.players;
-    let player = allPlayers[obj.player];
-    
-    player.played_card_victory++;
-    player.card_victory--;
-
-    this.setState({players: allPlayers});
-    
-  })
-
-///////////////////////////////////////
-  this.socket.on('cheatSkipSetup', obj => {
-
-    let allPlayers = this.state.players;
-    allPlayers[1].owns_road = [58, 61];
-    allPlayers[2].owns_road = [68, 71];
-    allPlayers[3].owns_road = [37, 40];
-    allPlayers[4].owns_road = [44, 47];
-
-    allPlayers[1].owns_settlement = [43, 45];
-    allPlayers[2].owns_settlement = [50, 52];
-    allPlayers[3].owns_settlement = [28, 30];
-    allPlayers[4].owns_settlement = [33, 35];
-
-    let allRoads = this.state.roads;
-    allRoads[58].owner = 1;
-    allRoads[61].owner = 1;
-    allRoads[68].owner = 2;
-    allRoads[71].owner = 2;
-    allRoads[37].owner = 3;
-    allRoads[40].owner = 3;
-    allRoads[44].owner = 4;
-    allRoads[47].owner = 4;
-
-    let allSettlements = this.state.settlements;
-    allSettlements[43].owner = 1;
-    allSettlements[45].owner = 1;
-    allSettlements[50].owner = 2;
-    allSettlements[52].owner = 2;
-    allSettlements[28].owner = 3;
-    allSettlements[30].owner = 3;
-    allSettlements[33].owner = 4;
-    allSettlements[35].owner = 4;
-
-    this.colorPiece('House43', this.createMat(1));
-    this.colorPiece('House45', this.createMat(1));
-    this.colorPiece('Road58', this.createMat(1));
-    this.colorPiece('Road61', this.createMat(1));
-
-    this.colorPiece('House50', this.createMat(2));
-    this.colorPiece('House52', this.createMat(2));
-    this.colorPiece('Road68', this.createMat(2));
-    this.colorPiece('Road71', this.createMat(2));
-
-    this.colorPiece('House28', this.createMat(3));
-    this.colorPiece('House30', this.createMat(3));
-    this.colorPiece('Road37', this.createMat(3));
-    this.colorPiece('Road40', this.createMat(3));
-
-    this.colorPiece('House33', this.createMat(4));
-    this.colorPiece('House35', this.createMat(4));
-    this.colorPiece('Road44', this.createMat(4));
-    this.colorPiece('Road47', this.createMat(4));
-
-    this.setState({
-      players: allPlayers,
-      roads: allRoads,
-      settlements: allSettlements,
-      canRollForFirst: false
     })
 
-    if (this.state.identity === 1) {
-      this.setState({active: true});
-    }
-    
-  })
-////////////////////////////////////////////
+    this.socket.on('tradeWithBank', obj => {
+      let players = this.state.players;
+      let player = players[obj.player];
+      let board = players[0];
+
+      board[obj.taking]--;
+      player[obj.taking]++;
+      player.total_resources += 1;
+
+      board[obj.giving] += obj.amount;
+      player[obj.giving] -= obj.amount;
+
+      player.total_resources -= obj.amount;
+
+      this.setState({ players: players });
+    })
+
+
+    this.socket.on('playedCardVictory', obj => {
+      let allPlayers = this.state.players;
+      let player = allPlayers[obj.player];
+
+      player.played_card_victory++;
+      player.card_victory--;
+
+      this.setState({ players: allPlayers });
+
+    })
+
+    ///////////////////////////////////////
+    this.socket.on('cheatSkipSetup', obj => {
+
+      let allPlayers = this.state.players;
+      allPlayers[1].owns_road = [58, 61];
+      allPlayers[2].owns_road = [68, 71];
+      allPlayers[3].owns_road = [37, 40];
+      allPlayers[4].owns_road = [44, 47];
+
+      allPlayers[1].owns_settlement = [43, 45];
+      allPlayers[2].owns_settlement = [50, 52];
+      allPlayers[3].owns_settlement = [28, 30];
+      allPlayers[4].owns_settlement = [33, 35];
+
+      let allRoads = this.state.roads;
+      allRoads[58].owner = 1;
+      allRoads[61].owner = 1;
+      allRoads[68].owner = 2;
+      allRoads[71].owner = 2;
+      allRoads[37].owner = 3;
+      allRoads[40].owner = 3;
+      allRoads[44].owner = 4;
+      allRoads[47].owner = 4;
+
+      let allSettlements = this.state.settlements;
+      allSettlements[43].owner = 1;
+      allSettlements[45].owner = 1;
+      allSettlements[50].owner = 2;
+      allSettlements[52].owner = 2;
+      allSettlements[28].owner = 3;
+      allSettlements[30].owner = 3;
+      allSettlements[33].owner = 4;
+      allSettlements[35].owner = 4;
+
+      this.colorPiece('House43', this.createMat(1));
+      this.colorPiece('House45', this.createMat(1));
+      this.colorPiece('Road58', this.createMat(1));
+      this.colorPiece('Road61', this.createMat(1));
+
+      this.colorPiece('House50', this.createMat(2));
+      this.colorPiece('House52', this.createMat(2));
+      this.colorPiece('Road68', this.createMat(2));
+      this.colorPiece('Road71', this.createMat(2));
+
+      this.colorPiece('House28', this.createMat(3));
+      this.colorPiece('House30', this.createMat(3));
+      this.colorPiece('Road37', this.createMat(3));
+      this.colorPiece('Road40', this.createMat(3));
+
+      this.colorPiece('House33', this.createMat(4));
+      this.colorPiece('House35', this.createMat(4));
+      this.colorPiece('Road44', this.createMat(4));
+      this.colorPiece('Road47', this.createMat(4));
+
+      this.setState({
+        players: allPlayers,
+        roads: allRoads,
+        settlements: allSettlements,
+        canRollForFirst: false
+      })
+
+      if (this.state.identity === 1) {
+        this.setState({ active: true });
+      }
+
+    })
+    ////////////////////////////////////////////
 
   }
-/////////// END SOCKET LISTENERS ///////////
+  /////////// END SOCKET LISTENERS ///////////
 
 
 
 
   render() {
 
-    return ( <div>
-      
-      <button id={1} onClick={this.robber}>Steal from Player 1</button> 
-      <button onClick={()=> {console.log(this.state)}}>SEE EVERYTHING!</button>
+    return (<div>
+
+      <button id={1} onClick={this.robber}>Steal from Player 1</button>
+      <button onClick={() => { console.log(this.state) }}>SEE EVERYTHING!</button>
       <button onClick={this.cheatSkipSetup}>Skip Setup Phase</button>
 
       <h2> Now in-game (game.jsx Component) </h2>
-      <Scene onSceneMount = {this.onSceneMount} onMeshPicked = {this.onMeshPicked} visible = {true}/>  
+      <Scene onSceneMount={this.onSceneMount} onMeshPicked={this.onMeshPicked} visible={true} />
 
       <div>{'Player# ' + this.state.identity + ' , in room: ' + this.state.room}</div>
       <div>My Total Resources: {this.state.players[this.state.identity].total_resources}</div>
       <span className="resourceBar">
-      <span className="icon Brick" id="card_brick" disabled={true}></span><span className="value">{this.state.players[this.state.identity].card_brick}</span>
-      <span className="icon Wheat" id="card_grain"></span><span className="value">{this.state.players[this.state.identity].card_grain}</span>
-      <span className="icon Wood" id="card_lumber"></span><span className="value">{this.state.players[this.state.identity].card_lumber}</span>
-      <span className="icon Sheep" id="card_wool"></span><span className="value">{this.state.players[this.state.identity].card_wool}</span>
-      <span className="icon Rock" id="card_ore"></span><span className="value">{this.state.players[this.state.identity].card_ore}</span>
+        <span className="icon Brick" id="card_brick" disabled={true}></span><span className="value">{this.state.players[this.state.identity].card_brick}</span>
+        <span className="icon Wheat" id="card_grain"></span><span className="value">{this.state.players[this.state.identity].card_grain}</span>
+        <span className="icon Wood" id="card_lumber"></span><span className="value">{this.state.players[this.state.identity].card_lumber}</span>
+        <span className="icon Sheep" id="card_wool"></span><span className="value">{this.state.players[this.state.identity].card_wool}</span>
+        <span className="icon Rock" id="card_ore"></span><span className="value">{this.state.players[this.state.identity].card_ore}</span>
       </span>
 
 
@@ -1858,69 +1859,69 @@ class Game extends React.Component {
 
 
 
-    <h3>Player Actions Menu</h3>
+      <h3>Player Actions Menu</h3>
 
-    {this.state.canRollForFirst ? <button onClick={this.rollForFirst}>Roll</button> : null}
+      {this.state.canRollForFirst ? <button onClick={this.rollForFirst}>Roll</button> : null}
 
-    {this.state.needResourceBar ?
-      <div>
-        <h3>{this.state.instruction}</h3>
-        <span className="icon Brick" id="card_brick" onClick={this.handleResourceClick}></span>
-        <span className="icon Wheat" id="card_grain" onClick={this.handleResourceClick}></span>
-        <span className="icon Wood" id="card_lumber" onClick={this.handleResourceClick}></span>
-        <span className="icon Sheep" id="card_wool" onClick={this.handleResourceClick}></span>
-        <span className="icon Rock" id="card_ore" onClick={this.handleResourceClick}></span>
-      </div> : null
-    }
-
-    {this.state.tradeMenuOpen ?
-    <div>
+      {this.state.needResourceBar ?
         <div>
-        <div>Offering</div>
-        <span className="icon Brick" id="card_brick" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_brick}</span>
-        <span className="icon Wheat" id="card_grain" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_grain}</span>
-        <span className="icon Wood" id="card_lumber" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_lumber}</span>
-        <span className="icon Sheep" id="card_wool" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_wool}</span>
-        <span className="icon Rock" id="card_ore" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_ore}</span>
-        <div>Wanting</div>
-        <span className="icon Brick" id="card_brick" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_brick}</span>
-        <span className="icon Wheat" id="card_grain" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_grain}</span>
-        <span className="icon Wood" id="card_lumber" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_lumber}</span>
-        <span className="icon Sheep" id="card_wool" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_wool}</span>
-        <span className="icon Rock" id="card_ore" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_ore}</span>
+          <h3>{this.state.instruction}</h3>
+          <span className="icon Brick" id="card_brick" onClick={this.handleResourceClick}></span>
+          <span className="icon Wheat" id="card_grain" onClick={this.handleResourceClick}></span>
+          <span className="icon Wood" id="card_lumber" onClick={this.handleResourceClick}></span>
+          <span className="icon Sheep" id="card_wool" onClick={this.handleResourceClick}></span>
+          <span className="icon Rock" id="card_ore" onClick={this.handleResourceClick}></span>
+        </div> : null
+      }
+
+      {this.state.tradeMenuOpen ?
+        <div>
+          <div>
+            <div>Offering</div>
+            <span className="icon Brick" id="card_brick" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_brick}</span>
+            <span className="icon Wheat" id="card_grain" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_grain}</span>
+            <span className="icon Wood" id="card_lumber" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_lumber}</span>
+            <span className="icon Sheep" id="card_wool" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_wool}</span>
+            <span className="icon Rock" id="card_ore" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_ore}</span>
+            <div>Wanting</div>
+            <span className="icon Brick" id="card_brick" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_brick}</span>
+            <span className="icon Wheat" id="card_grain" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_grain}</span>
+            <span className="icon Wood" id="card_lumber" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_lumber}</span>
+            <span className="icon Sheep" id="card_wool" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_wool}</span>
+            <span className="icon Rock" id="card_ore" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_ore}</span>
+          </div>
+          <button>Offer Trade</button> <button onClick={this.tradeWithBank}>Trade With Bank</button> <button>CANCEL</button>
         </div>
-        <button>Offer Trade</button> <button onClick={this.tradeWithBank}>Trade With Bank</button> <button>CANCEL</button>
-    </div>
-    
-    : null}
 
-    {this.state.isPlayingDevCard ?
-      <div>
-      <span className="resourceBar">
-          {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardknight" onClick={this.playingCardKnight} disabled={!this.state.ableToPlayCardKnight}>Play Card: Knight</button><span className="value">{this.state.players[this.state.identity].card_knight}</span></span> : null}
-          {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardroad" onClick={this.playingCardRoad} disabled={!this.state.ableToPlayCardRoad}>Play Card: Road Building</button><span className="value">{this.state.players[this.state.identity].card_road}</span></span> : null}
-          {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardmonopoly" onClick={this.playingCardMonopoly} disabled={!this.state.ableToPlayCardMonopoly}>Play Card: Monopoly</button><span className="value">{this.state.players[this.state.identity].card_monopoly}</span></span>: null}
-          {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardplenty" onClick={this.playCardPlenty} disabled={!this.state.ableToPlayCardPlenty}>Play Card: Plenty</button><span className="value">{this.state.players[this.state.identity].card_plenty}</span></span> : null}
-      </span></div> : null
-    }
+        : null}
 
-    {this.state.isBuying ?
-    <div>
-    <span className="resourceBar">
-      {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buysettlement" onClick={this.toggleBuyRoad} disabled={!this.state.ableToBuyRoad}>Buy Road</button> : null}
-      {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buysettlement" onClick={this.toggleBuySettlement} disabled={!this.state.ableToBuySettlement}>Buy Settlement</button> : null}
-      {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buycity" onClick={this.toggleBuyCity} disabled={!this.state.ableToBuyCity}>Buy City</button> : null}
-      {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buydevcard" onClick={this.buyingDevelopmentCard} disabled={!this.state.ableToBuyDevelopmentCard}>Buy Development Card</button> : null}
-    </span></div>:null}
+      {this.state.isPlayingDevCard ?
+        <div>
+          <span className="resourceBar">
+            {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardknight" onClick={this.playingCardKnight} disabled={!this.state.ableToPlayCardKnight}>Play Card: Knight</button><span className="value">{this.state.players[this.state.identity].card_knight}</span></span> : null}
+            {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardroad" onClick={this.playingCardRoad} disabled={!this.state.ableToPlayCardRoad}>Play Card: Road Building</button><span className="value">{this.state.players[this.state.identity].card_road}</span></span> : null}
+            {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardmonopoly" onClick={this.playingCardMonopoly} disabled={!this.state.ableToPlayCardMonopoly}>Play Card: Monopoly</button><span className="value">{this.state.players[this.state.identity].card_monopoly}</span></span> : null}
+            {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardplenty" onClick={this.playCardPlenty} disabled={!this.state.ableToPlayCardPlenty}>Play Card: Plenty</button><span className="value">{this.state.players[this.state.identity].card_plenty}</span></span> : null}
+          </span></div> : null
+      }
+
+      {this.state.isBuying ?
+        <div>
+          <span className="resourceBar">
+            {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buysettlement" onClick={this.toggleBuyRoad} disabled={!this.state.ableToBuyRoad}>Buy Road</button> : null}
+            {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buysettlement" onClick={this.toggleBuySettlement} disabled={!this.state.ableToBuySettlement}>Buy Settlement</button> : null}
+            {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buycity" onClick={this.toggleBuyCity} disabled={!this.state.ableToBuyCity}>Buy City</button> : null}
+            {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buydevcard" onClick={this.buyingDevelopmentCard} disabled={!this.state.ableToBuyDevelopmentCard}>Buy Development Card</button> : null}
+          </span></div> : null}
 
 
-    {(!this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button type="button" onClick={this.diceRoll}>Roll Dice</button> : null}
-    {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button type="button"  onClick={this.openTradeMenu}>Trade</button> : null}
-    {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.endTurn}>End Turn</button> : null}
-    {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.toggleBuying}>Buy</button> : null}
-    {(!this.state.players[this.state.identity].has_played_development_card && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.togglePlayingDev}>Play Dev Card</button> : null}
+      {(!this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button type="button" onClick={this.diceRoll}>Roll Dice</button> : null}
+      {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button type="button" onClick={this.openTradeMenu}>Trade</button> : null}
+      {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.endTurn}>End Turn</button> : null}
+      {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.toggleBuying}>Buy</button> : null}
+      {(!this.state.players[this.state.identity].has_played_development_card && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.togglePlayingDev}>Play Dev Card</button> : null}
 
-    <Messagelog messages = {this.state.messages} handleSubmitMessage = {this.handleSubmitMessage}/>  
+      <Messagelog messages={this.state.messages} handleSubmitMessage={this.handleSubmitMessage} />
       {this.state.players.map((player, index) => {
         if (this.state.roads.length > 0 && this.state.players[player.id].id !== this.state.identity && player.id !== 0) {
           return (
@@ -1931,30 +1932,30 @@ class Game extends React.Component {
               </div>
 
               <div>
-              <span><strong>Dev Cards: </strong></span><span>{player.card_knight + player.card_road + player.card_monopoly + player.card_plenty + player.card_victory}</span>
+                <span><strong>Dev Cards: </strong></span><span>{player.card_knight + player.card_road + player.card_monopoly + player.card_plenty + player.card_victory}</span>
               </div>
 
               <div>
-              <span><strong>Property Owned: </strong></span><span>{'Roads: ' + player.owns_road.length + ', Settlements: ' + player.owns_settlement.length + ', Cities: ' + player.owns_city.length}</span>
+                <span><strong>Property Owned: </strong></span><span>{'Roads: ' + player.owns_road.length + ', Settlements: ' + player.owns_settlement.length + ', Cities: ' + player.owns_city.length}</span>
               </div>
 
               <div>
-              <span><strong>Knights Played: </strong></span><span>{player.played_card_knight}</span>
+                <span><strong>Knights Played: </strong></span><span>{player.played_card_knight}</span>
               </div>
 
               <div>
-              <span><strong>Points: </strong></span><span>{this.calculateScore(player.id)}</span>
+                <span><strong>Points: </strong></span><span>{this.calculateScore(player.id)}</span>
               </div>
-              
+
 
             </div>
           )
 
         }
       })}
-          
-          <div>By: Team HoneyBadgers</div>
-     </div>)
+
+      <div>By: Team HoneyBadgers</div>
+    </div>)
   }
 
 

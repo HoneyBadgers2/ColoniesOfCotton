@@ -1,11 +1,13 @@
-import React, { Component} from 'react';
-import {Scene} from 'react-babylonjs';
-import {SceneLoader, ShaderMaterial, HemisphericLight, PointLight, Vector3, Color3, PhysicsEngine, OimoJSPlugin,
-    StandardMaterial, Mesh, CubeTexture, ArcRotateCamera, Texture, Engine } from 'babylonjs';
+import React, { Component } from 'react';
+import { Scene } from 'react-babylonjs';
+import {
+    SceneLoader, ShaderMaterial, HemisphericLight, PointLight, Vector3, Color3, PhysicsEngine, OimoJSPlugin,
+    StandardMaterial, Mesh, CubeTexture, ArcRotateCamera, Texture, Engine
+} from 'babylonjs';
 
 
 export default class App extends Component {
-     constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             meshes: null
@@ -28,15 +30,15 @@ export default class App extends Component {
 
 
 
-     }
+    }
 
-    
+
     onMeshPicked(mesh, scene) {
         // This will be called when a mesh is picked in the canvas
-       let robber = scene.getMeshByID('Robber'); 
-       robber.visibility = 0;
-        if(mesh != null){
-            
+        let robber = scene.getMeshByID('Robber');
+        robber.visibility = 0;
+        if (mesh != null) {
+
             //TODO: Put code into a condition and will be use to put materials on roads and houses/cities. 
             //Material color will be dependent on whose turn it is.
             var mat = new StandardMaterial("Color", scene);
@@ -52,13 +54,13 @@ export default class App extends Component {
 
 
             //Makes a house appear when click makes a city appear when click twice
-            if (mesh.name.includes('House')){             
-               this.placeHouseAndCity(mesh, mat, scene);    
-            //    this.showPossibleRoadAndHousePlacement(mesh);
- 
+            if (mesh.name.includes('House')) {
+                this.placeHouseAndCity(mesh, mat, scene);
+                //    this.showPossibleRoadAndHousePlacement(mesh);
+
             }
 
-            if (mesh.name.includes('Road')){
+            if (mesh.name.includes('Road')) {
                 this.placeRoad(mesh, mat);
                 // this.showPossibleRoadAndHousePlacement(mesh);
 
@@ -66,67 +68,67 @@ export default class App extends Component {
             }
 
             //Move the robber on a resource tile
-            if(mesh.name.includes('Rock') || mesh.name.includes('Hay') || 
-               mesh.name.includes('Brick') || mesh.name.includes('Sheep') || 
-               mesh.name.includes('Tree')) {
-                if(!mesh.name.includes('Ship')){
-                 this.moveRobber(mesh, scene);
+            if (mesh.name.includes('Rock') || mesh.name.includes('Hay') ||
+                mesh.name.includes('Brick') || mesh.name.includes('Sheep') ||
+                mesh.name.includes('Tree')) {
+                if (!mesh.name.includes('Ship')) {
+                    this.moveRobber(mesh, scene);
                 }
             }
 
-          
+
 
         }
-       
-        
+
+
     }
 
-    placeHouseAndCity(mesh, mat, scene){
-        mesh.material = mat;             
-        if(mesh.visibility > 0) {
+    placeHouseAndCity(mesh, mat, scene) {
+        mesh.material = mat;
+        if (mesh.visibility > 0) {
             var city = 'City' + this.getIDFromMesh(mesh.name);
-            var city = scene.getMeshByID(city);  
-            city.material = mat;   
+            var city = scene.getMeshByID(city);
+            city.material = mat;
             city.visibility = 1;
-        } 
-            mesh.visibility = 1;  
+        }
+        mesh.visibility = 1;
 
     }
 
     moveRobber(mesh, scene) {
-        var robber = scene.getMeshByID('Robber'); 
+        var robber = scene.getMeshByID('Robber');
         robber.position.x = mesh.position.x;
         robber.position.z = mesh.position.z;
     }
 
     placeRoad(mesh, mat) {
-        mesh.visibility = 1;   
+        mesh.visibility = 1;
         mesh.material = mat;
     }
 
-    showPossibleRoadAndHousePlacement(mesh){
+    showPossibleRoadAndHousePlacement(mesh) {
         mesh.visibility = 0.5;
     }
 
-    getIDFromMesh(mesh){
+    getIDFromMesh(mesh) {
         return mesh.name.slice(-2);
     }
 
-    
+
     onSceneMount(e) {
-        const { canvas, scene, engine} = e;   
-        this.scene = scene;   
+        const { canvas, scene, engine } = e;
+        this.scene = scene;
         this.engine = engine;
         this.initEnvironment(canvas, scene);
-        SceneLoader.ImportMesh("", "", "boardTemplate.babylon", scene, function (newMeshes) {   
-            for(var mesh of newMeshes) {
+        SceneLoader.ImportMesh("", "", "boardTemplate.babylon", scene, function (newMeshes) {
+            for (var mesh of newMeshes) {
                 mesh.convertToFlatShadedMesh();
-                if(mesh.name.includes('City') || mesh.name.includes('House') || mesh.name.includes('Road')) {       
-                    mesh.visibility = 0.0;                                
-                } 
-            }              
+                if (mesh.name.includes('City') || mesh.name.includes('House') || mesh.name.includes('Road')) {
+                    mesh.visibility = 0.0;
+                }
+            }
         });
-       
+
 
         engine.runRenderLoop(() => {
             if (scene) {
@@ -134,40 +136,40 @@ export default class App extends Component {
             }
         });
 
-    
+
     }
 
     initEnvironment(canvas, scene) {
-        
+
         var light = new HemisphericLight('hemi', new Vector3(0, 1, 0), scene);
         light.intensity = 1.35;
-       
+
 
         var camera = new ArcRotateCamera('Camera', 0, 1.05, 20, Vector3.Zero(), scene)
         camera.lowerRadiusLimit = 10
         camera.upperRadiusLimit = 35
         camera.upperBetaLimit = Math.PI / 2
         camera.attachControl(canvas, false)
-        
+
 
         scene.registerBeforeRender(function () {
-                light.position = camera.position;
+            light.position = camera.position;
         });
 
-      
+
     }
 
-     render() {
-         return (
-             <div>
-                 <Scene              
-                    onSceneMount={this.onSceneMount} 
+    render() {
+        return (
+            <div>
+                <Scene
+                    onSceneMount={this.onSceneMount}
                     onMeshPicked={this.onMeshPicked}
                     visible={true} />
-                    <div>
-                        <button>BUY</button><button>TRADE</button><button>PLAY DEV</button><button>END TURN</button>
-                    </div>
-             </div>
-         )
-     }
+                <div>
+                    <button>BUY</button><button>TRADE</button><button>PLAY DEV</button><button>END TURN</button>
+                </div>
+            </div>
+        )
+    }
 }
