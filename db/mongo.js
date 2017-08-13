@@ -5,7 +5,7 @@ require('dotenv').load();
 
 
 // Mongoose Connection
-mongoose.connect('mongodb://arenr:Vardeeg94@ds135983.mlab.com:35983/catanasfuck');
+mongoose.connect();
 const db = mongoose.connection;
 
 // DB Connection 
