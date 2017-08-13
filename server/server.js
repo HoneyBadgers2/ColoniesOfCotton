@@ -266,6 +266,15 @@ io.on('connection', socket => {
       io.sockets.in(obj.room).emit('playedCardPlenty', obj);
   })
 
+  socket.on('tradeWithBank', obj => {
+      let message = {
+          text: "Player" + obj.player + " trades " + obj.amount + " " + obj.giving.slice(5) + " for 1 " + obj.taking.slice(5),
+          user: "COMPUTER"
+      }
+      io.sockets.in(obj.room).emit('message', message);
+      io.sockets.in(obj.room).emit('tradeWithBank', obj);
+  })
+
 //////////////////////////////////////////
     socket.on('cheatSkipSetup', obj => {
     let message = {

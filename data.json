@@ -31,7 +31,23 @@
             "card_monopoly": 2,
             "card_plenty": 2,
             "card_victory": 5,
-            "total_development_cards": 0
+            "total_development_cards": 0,
+            "active_trade": {
+                "offering": {
+                    "card_brick": 0,
+                    "card_wool": 0,
+                    "card_grain": 0,
+                    "card_ore": 0,
+                    "card_lumber": 0
+                },
+                "wanting": {
+                    "card_brick": 0,
+                    "card_wool": 0,
+                    "card_grain": 0,
+                    "card_ore": 0,
+                    "card_lumber": 0
+                }
+            }
         },
         {
             "id": 1,
@@ -52,11 +68,11 @@
             "played_card_victory": 0,
             "has_longest_road": false,
             "has_biggest_army": false,
-            "card_brick": 0,
-            "card_grain": 0,
-            "card_lumber": 0,
-            "card_ore": 0,
-            "card_wool": 0,
+            "card_brick": 4,
+            "card_grain": 1,
+            "card_lumber": 1,
+            "card_ore": 1,
+            "card_wool": 1,
             "total_resources": 0,
             "card_knight": 1,
             "card_road": 1,
@@ -64,7 +80,22 @@
             "card_plenty": 1,
             "card_victory": 1,
             "total_development_cards": 5,
-            "active_trade": null
+            "active_trade": {
+                "offering": {
+                    "card_brick": 0,
+                    "card_wool": 0,
+                    "card_grain": 0,
+                    "card_ore": 0,
+                    "card_lumber": 0
+                },
+                "wanting": {
+                    "card_brick": 0,
+                    "card_wool": 0,
+                    "card_grain": 0,
+                    "card_ore": 0,
+                    "card_lumber": 0
+                }
+            }
         },
         {
             "id": 2,
@@ -85,19 +116,34 @@
             "played_card_victory": 0,
             "has_longest_road": false,
             "has_biggest_army": false,
-            "card_brick": 0,
-            "card_grain": 0,
-            "card_lumber": 0,
-            "card_ore": 0,
-            "total_resources": 0,
-            "card_wool": 0,
+            "card_brick": 3,
+            "card_grain": 3,
+            "card_lumber": 3,
+            "card_ore": 3,
+            "total_resources": 15,
+            "card_wool": 3,
             "card_knight": 1,
             "card_road": 1,
             "card_monopoly": 1,
             "card_plenty": 1,
             "card_victory": 1,
             "total_development_cards": 5,
-            "active_trade": null
+            "active_trade": {
+                "offering": {
+                    "card_brick": 0,
+                    "card_wool": 0,
+                    "card_grain": 0,
+                    "card_ore": 0,
+                    "card_lumber": 0
+                },
+                "wanting": {
+                    "card_brick": 0,
+                    "card_wool": 0,
+                    "card_grain": 0,
+                    "card_ore": 0,
+                    "card_lumber": 0
+                }
+            }
         },
         {
             "id": 3,
@@ -130,7 +176,22 @@
             "card_plenty": 1,
             "card_victory": 1,
             "total_development_cards": 5,
-            "active_trade": null
+            "active_trade": {
+                "offering": {
+                    "card_brick": 0,
+                    "card_wool": 0,
+                    "card_grain": 0,
+                    "card_ore": 0,
+                    "card_lumber": 0
+                },
+                "wanting": {
+                    "card_brick": 0,
+                    "card_wool": 0,
+                    "card_grain": 0,
+                    "card_ore": 0,
+                    "card_lumber": 0
+                }
+            }
         },
         {
             "id": 4,
@@ -163,7 +224,22 @@
             "card_plenty": 1,
             "card_victory": 1,
             "total_development_cards": 5,
-            "active_trade": null
+            "active_trade": {
+                "offering": {
+                    "card_brick": 0,
+                    "card_wool": 0,
+                    "card_grain": 0,
+                    "card_ore": 0,
+                    "card_lumber": 0
+                },
+                "wanting": {
+                    "card_brick": 0,
+                    "card_wool": 0,
+                    "card_grain": 0,
+                    "card_ore": 0,
+                    "card_lumber": 0
+                }
+            }
         }
     ],
     "tiles":[
