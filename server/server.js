@@ -172,7 +172,12 @@ io.on('connection', socket => {
 
 
     socket.on('endTurn', obj => {
-        io.sockets.in(obj.room).emit('endTurn', obj.player)
+        let message = {
+            text: "Player" + obj.player + "'s turn!",
+            user: "COMPUTER" 
+        }
+        io.sockets.in(obj.room).emit('message', message);
+        io.sockets.in(obj.room).emit('endTurn', obj.player);
     })
 
     socket.on('buyRoad', obj => {
@@ -223,26 +228,14 @@ io.on('connection', socket => {
         io.sockets.in(obj.room).emit('settingRoad', obj);
     })
 
-  socket.on('playedCardRoadNull', obj => {
-    let message = {
-      text: 'Player' + obj.player + ' plays: ' + obj.card + ', with no effect.',
-      user: "COMPUTER"
-    };
 
-    io.sockets.in(obj.room).emit('message', message);
-    io.sockets.in(obj.room).emit('playedCardRoadNull', obj);
-  })
-
-
-
-  socket.on('playedCardRoad', obj => {
-    let message = {
-      text: 'Player' + obj.player + ' plays: ' + obj.card + ', and builds roads at ' + JSON.stringify(obj.roadsBought),
-      user: "COMPUTER"
-    };
-
-    io.sockets.in(obj.room).emit('message', message);
-    io.sockets.in(obj.room).emit('playedCardRoad', obj);
+    socket.on('roadBuilding', obj => {
+      let message = {
+          text: 'Player' + obj.player + ' builds a road!',
+          user: 'COMPUTER'
+      }
+        io.sockets.in(obj.room).emit('message', message);
+        socket.broadcast.to(obj.room).emit('roadBuilding', obj);
   })
 
 
@@ -261,6 +254,7 @@ io.on('connection', socket => {
           user: "COMPUTER"
       }
     io.sockets.in(obj.room).emit('message', message);
+    io.sockets.in(obj.room).emit('playedDev', {player: obj.player, card: obj.card});
   })
 
   socket.on('playedCardPlenty', obj => {
