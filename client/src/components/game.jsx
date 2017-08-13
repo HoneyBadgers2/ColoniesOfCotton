@@ -352,6 +352,11 @@ class Game extends React.Component {
         if (mesh.name !== 'NonClickRobber') {
           mesh.convertToFlatShadedMesh();
         }
+
+        if (mesh.name.includes('NonClick')) {
+           mesh.isPickable = false;
+        }
+
         if (mesh.name.includes('City') || mesh.name.includes('House') || mesh.name.includes('Road')) {
           mesh.visibility = 0.0;
         }
@@ -384,39 +389,39 @@ class Game extends React.Component {
 
       scene.registerBeforeRender(function() {
         light.position = camera.position;
-        var brick = scene.getMeshByID('BrickIcon');
+        var brick = scene.getMeshByID('NonClickBrickIcon');
         if (brick !== null) {
           brick.rotation.y += 0.02;
         }
-        var random = scene.getMeshByID('RandomIcon');
+        var random = scene.getMeshByID('NonClickRandomIcon');
         if (random !== null) {
           random.rotation.y += 0.02;
         }
-        var random1 = scene.getMeshByID('RandomIcon.001');
+        var random1 = scene.getMeshByID('NonClickRandomIcon.001');
         if (random1 !== null) {
           random1.rotation.y += 0.02;
         }
-        var random2 = scene.getMeshByID('RandomIcon.002');
+        var random2 = scene.getMeshByID('NonClickRandomIcon.002');
         if (random2 !== null) {
           random2.rotation.y += 0.02;
         }
-        var random3 = scene.getMeshByID('RandomIcon.003');
+        var random3 = scene.getMeshByID('NonClickRandomIcon.003');
         if (random3 !== null) {
           random3.rotation.y += 0.02;
         }
-        var hay = scene.getMeshByID('HayIcon');
+        var hay = scene.getMeshByID('NonClickHayIcon');
         if (hay !== null) {
           hay.rotation.y += 0.02;
         }
-        var rock = scene.getMeshByID('RockIcon');
+        var rock = scene.getMeshByID('NonClickRockIcon');
         if (rock !== null) {
           rock.rotation.y += 0.02;
         }
-        var sheep = scene.getMeshByID('SheepIcon');
+        var sheep = scene.getMeshByID('NonClickSheepIcon');
         if (sheep !== null) {
           sheep.rotation.y += 0.02;
         }
-        var tree = scene.getMeshByID('TreeIcon');
+        var tree = scene.getMeshByID('NonClickTreeIcon');
         if (tree !== null) {
           tree.rotation.y += 0.02;
         }
