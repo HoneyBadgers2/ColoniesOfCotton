@@ -63,7 +63,8 @@
             "card_monopoly": 1,
             "card_plenty": 1,
             "card_victory": 1,
-            "total_development_cards": 5
+            "total_development_cards": 5,
+            "active_trade": null
         },
         {
             "id": 2,
@@ -95,7 +96,8 @@
             "card_monopoly": 1,
             "card_plenty": 1,
             "card_victory": 1,
-            "total_development_cards": 5
+            "total_development_cards": 5,
+            "active_trade": null
         },
         {
             "id": 3,
@@ -127,7 +129,8 @@
             "card_monopoly": 1,
             "card_plenty": 1,
             "card_victory": 1,
-            "total_development_cards": 5
+            "total_development_cards": 5,
+            "active_trade": null
         },
         {
             "id": 4,
@@ -159,7 +162,8 @@
             "card_monopoly": 1,
             "card_plenty": 1,
             "card_victory": 1,
-            "total_development_cards": 5
+            "total_development_cards": 5,
+            "active_trade": null
         }
     ],
     "tiles":[

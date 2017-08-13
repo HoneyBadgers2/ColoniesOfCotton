@@ -48,7 +48,6 @@ class Game extends React.Component {
       ableToBuySettlement: false,
       ableToBuyCity: false,
       ableToBuyDevelopmentCard: false,
-      ableToOfferTrade: false,
       ableToPlayCardKnight: false,
       ableToPlayCardRoad: false,
       ableToPlayCardMonopoly: false,
@@ -69,6 +68,7 @@ class Game extends React.Component {
       needResourceBar: false,
       interfaceToggled: false,
       instruction: null,
+      tradeMenuOpen: false
     }
     this.scene = undefined;
     this.engine = undefined;
@@ -83,6 +83,7 @@ class Game extends React.Component {
     ////////////////////////////////////////////////////
     this.cheatSkipSetup = this.cheatSkipSetup.bind(this);
 ///////////////////////////////////////////////////////////////////
+    this.openTradeMenu = this.openTradeMenu.bind(this);
     this.toggleResourceBar = this.toggleResourceBar.bind(this);
     this.playCardPlenty = this.playCardPlenty.bind(this);
     this.toggleUI = this.toggleUI.bind(this);
@@ -104,7 +105,6 @@ class Game extends React.Component {
     this.buyingSettlement = this.buyingSettlement.bind(this);
     this.buyingCity = this.buyingCity.bind(this);
     this.buyingDevelopmentCard = this.buyingDevelopmentCard.bind(this);
-    this.startTrade = this.startTrade.bind(this);
     this.endTurn = this.endTurn.bind(this);
     this.diceRoll = this.diceRoll.bind(this);
     this.robber = this.robber.bind(this);
@@ -123,7 +123,6 @@ class Game extends React.Component {
     this.canBuySettlement = this.canBuySettlement.bind(this);
     this.canBuyCity = this.canBuyCity.bind(this);
     this.canBuyDevelopmentCard = this.canBuyDevelopmentCard.bind(this);
-    this.canOfferTrade = this.canOfferTrade.bind(this);
     this.canPlayCardKnight = this.canPlayCardKnight.bind(this);
     this.canPlayCardRoad = this.canPlayCardRoad.bind(this);
     this.canPlayCardMonopoly = this.canPlayCardMonopoly.bind(this);
@@ -244,6 +243,9 @@ class Game extends React.Component {
     this.setState({interfaceToggled: !this.state.interfaceToggled});
   }
 
+  openTradeMenu(){
+    this.setState({tradeMenuOpen: !this.state.tradeMenuOpen})
+  }
 
   playCardPlenty(){
     let players = this.state.players;
@@ -608,12 +610,6 @@ class Game extends React.Component {
       dev: randomCard
     }
     this.socket.emit('buyDev', obj);
-  }
-
-  startTrade() {
-    //display input form for desired resources
-    //display input form for resources to give
-    //await response from other users?
   }
 
 
@@ -1019,14 +1015,6 @@ class Game extends React.Component {
       this.state.players[this.state.identity].card_wool>= 1);
   }
 
-  canOfferTrade() {
-    return (this.state.players[this.state.identity].card_brick>= 1 ||
-      this.state.players[this.state.identity].card_lumber>= 1 ||
-      this.state.players[this.state.identity].card_grain>= 1 ||
-      this.state.players[this.state.identity].card_wool>= 1 ||
-      this.state.players[this.state.identity].card_ore>= 1);
-  }
-
   canPlayCardKnight() {
     return (!this.state.players[this.state.identity].has_played_development_card && this.state.players[this.state.identity].card_knight>= 1);
   }
@@ -1054,7 +1042,6 @@ class Game extends React.Component {
       ableToBuySettlement: this.canBuySettlement(),
       ableToBuyCity: this.canBuyCity(),
       ableToBuyDevelopmentCard: this.canBuyDevelopmentCard(),
-      ableToOfferTrade: this.canOfferTrade(),
       ableToPlayCardKnight: this.canPlayCardKnight(),
       ableToPlayCardRoad: this.canPlayCardRoad(),
       ableToPlayCardMonopoly: this.canPlayCardMonopoly(),
@@ -1750,6 +1737,13 @@ class Game extends React.Component {
       </div> : null
     }
 
+    {this.state.tradeMenuOpen ?
+    <div>
+      TRADE MENU IS HERE
+    </div>
+    
+    : null}
+
     {this.state.isPlayingDevCard ?
       <div>
       <span className="resourceBar">
@@ -1771,7 +1765,7 @@ class Game extends React.Component {
 
 
     {(!this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button type="button" onClick={this.diceRoll}>Roll Dice</button> : null}
-    {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button type="button" id="offertrade" onClick={() => {console.log('trade here')}}>Offer Trade</button> : null}
+    {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button type="button"  onClick={this.openTradeMenu}>Offer Trade</button> : null}
     {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.endTurn}>End Turn</button> : null}
     {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.toggleBuying}>Buy</button> : null}
     {(!this.state.players[this.state.identity].has_played_development_card && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.togglePlayingDev}>Play Dev Card</button> : null}
