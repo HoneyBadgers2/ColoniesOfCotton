@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Game from './components/game.jsx';
+import Lobby from './components/Lobby.jsx';
 import App from './components/App.jsx';
 
-ReactDOM.render(<Game />, document.getElementById('app'));
+ReactDOM.render(<Lobby />, document.getElementById('app'));
 document.addEventListener('contextmenu', event => event.preventDefault());

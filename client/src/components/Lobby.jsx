@@ -58,7 +58,6 @@ addNewRoomDescription(e) {
 createNewRoom(){
   axios.post('/newGame', {
     game_session_id: this.state.newRoomName,
-    game_description: this.state.newRoomDescription,
     players: data.players,
     settlements: data.settlements,
     tiles: data.tiles,
@@ -111,11 +110,11 @@ changeJoinRoom(e, option){
           </Table.Row>
         </Table.Header>
         <Table.Body>
+          {console.log(this.state.roomsList)}
           {this.state.roomsList.map(function (room, i){
-            console.log
             return(
               <Table.Row key={i}>
-                <Table.Cell>{room.game_session_id}</Table.Cell>
+                <Table.Cell>{room.key}</Table.Cell>
                 <Table.Cell>0</Table.Cell>
               </Table.Row>
             )

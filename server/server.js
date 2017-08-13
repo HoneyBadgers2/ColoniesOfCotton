@@ -13,6 +13,7 @@ const initial = require('../data.json');
 
 App.use(express.static('client'));
 App.use(parser.urlencoded({extended: false}));
+App.use(parser.json());
 server.listen(3000, (err) => {
     if(err){
         console.log('error');
@@ -86,7 +87,8 @@ function initiateGame(gamedata) {
 
 App.post('/newGame', function (req, res){
     db.Game.create({
-        game_session_id: req.body.game_session_id,        players: data.players,
+        game_session_id: req.body.game_session_id,        
+        players: data.players,
         settlements: data.settlements,
         tiles: data.tiles,
         roads: data.roads
