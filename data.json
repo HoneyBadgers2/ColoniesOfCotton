@@ -58,12 +58,12 @@
             "card_ore": 0,
             "card_wool": 0,
             "total_resources": 0,
-            "card_knight": 0,
-            "card_road": 0,
-            "card_monopoly": 0,
-            "card_plenty": 0,
-            "card_victory": 0,
-            "total_development_cards": 0
+            "card_knight": 1,
+            "card_road": 1,
+            "card_monopoly": 1,
+            "card_plenty": 1,
+            "card_victory": 1,
+            "total_development_cards": 5
         },
         {
             "id": 2,
@@ -90,12 +90,12 @@
             "card_ore": 0,
             "total_resources": 0,
             "card_wool": 0,
-            "card_knight": 0,
-            "card_road": 0,
-            "card_monopoly": 0,
-            "card_plenty": 0,
-            "card_victory": 0,
-            "total_development_cards": 0
+            "card_knight": 1,
+            "card_road": 1,
+            "card_monopoly": 1,
+            "card_plenty": 1,
+            "card_victory": 1,
+            "total_development_cards": 5
         },
         {
             "id": 3,
@@ -122,12 +122,12 @@
             "card_ore": 0,
             "total_resources": 0,
             "card_wool": 0,
-            "card_knight": 0,
-            "card_road": 0,
-            "card_monopoly": 0,
-            "card_plenty": 0,
-            "card_victory": 0,
-            "total_development_cards": 0
+            "card_knight": 1,
+            "card_road": 1,
+            "card_monopoly": 1,
+            "card_plenty": 1,
+            "card_victory": 1,
+            "total_development_cards": 5
         },
         {
             "id": 4,
@@ -154,12 +154,12 @@
             "card_ore": 0,
             "total_resources": 0,
             "card_wool": 0,
-            "card_knight": 0,
-            "card_road": 0,
-            "card_monopoly": 0,
-            "card_plenty": 0,
-            "card_victory": 0,
-            "total_development_cards": 0
+            "card_knight": 1,
+            "card_road": 1,
+            "card_monopoly": 1,
+            "card_plenty": 1,
+            "card_victory": 1,
+            "total_development_cards": 5
         }
     ],
     "tiles":[
@@ -1117,7 +1117,7 @@
             "id": 36,
             "owner": null,
             "connecting_house_slots": [27, 28],
-            "adj_road_slots": [35, 38]
+            "adj_road_slots": [35, 37]
         },
         {
             "id": 37,
