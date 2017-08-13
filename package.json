@@ -28,15 +28,16 @@
     "babylonjs": "^3.1.0-alpha1",
     "body-parser": "^1.17.2",
     "dotenv": "^4.0.0",
-    "express": "^4.15.3",
+    "express": "^4.15.4",
     "mongoose": "^4.11.6",
     "nodemon": "^1.11.0",
     "path": "^0.12.7",
     "react": "^15.6.1",
     "react-babylonjs": "0.0.8",
     "react-dom": "^15.6.1",
-    "sequelize": "^4.4.2",
+    "semantic-ui-react": "^0.71.4",
+    "sequelize": "^4.4.3",
     "socket.io": "^2.0.3",
-    "webpack": "^3.4.1"
+    "webpack": "^3.5.4"
   }
 }

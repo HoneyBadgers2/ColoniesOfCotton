@@ -1748,7 +1748,8 @@ class Game extends React.Component {
 
 
  
-            <Scene onSceneMount = {this.onSceneMount} onMeshPicked = {this.onMeshPicked} visible = {true}/>  
+            
+             onSceneMount = {this.onSceneMount} onMeshPicked = {this.onMeshPicked} visible = {true}/>  
             <Messagelog messages = {this.state.messages} handleSubmitMessage = {this.handleSubmitMessage}/>  
             
             <h1> THIS IS THE BOTTOM </h1>     </div>)

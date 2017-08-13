@@ -2,6 +2,8 @@ const express = require('express');
 const http = require('http');
 const parser = require('body-parser');
 const socketIo = require('socket.io');
+const db = require('../db/mongo');
+const data = require('../data.json');
 
 const PORT = 3000;
 const App = express();
@@ -11,6 +13,7 @@ const initial = require('../data.json');
 
 App.use(express.static('client'));
 App.use(parser.urlencoded({extended: false}));
+App.use(parser.json())
 server.listen(3000, (err) => {
     if(err){
         console.log('error');
@@ -79,9 +82,29 @@ function initiateGame(gamedata) {
 
 }
 
+// Post and retrieve games. 
 
+App.post('/newGame', function (req, res){
+    db.Game.create({
+        game_session_id: req.body.game_session_id,        players: data.players,
+        settlements: data.settlements,
+        tiles: data.tiles,
+        roads: data.roads
+    }).then(function (data){
+    res.status(201).send(data)
+    }).catch(function (err){
+    return console.log(err)
+    })
+}); 
 
-
+App.get('/games', function (req, res){
+    db.Game.find({})
+    .then(function (data){
+    res.status(200).send(data)
+    }).catch(function (err){
+    return console.log(err)
+    })
+});
 
 
 var room = 0;

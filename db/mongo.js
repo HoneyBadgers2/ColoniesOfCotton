@@ -1,18 +1,17 @@
 //Dependencies
 const mongoose = require ('mongoose');
-require('dotenv').config();
-require('dotenv').load();
+
 
 
 //Mongoose Connection
-// mongoose.connect(process.env.DB_URL);
-// const db = mongoose.connection;
+mongoose.connect();
+const db = mongoose.connection;
 
 //DB Connection 
-// db.on('error', console.error.bind(console, 'The DB just shit the bed. Here is your connection error:'));
-// db.once('open', function () {
-//   console.log('Database has created a succesful connection.')
-// });
+db.on('error', console.error.bind(console, 'The DB just shit the bed. Here is your connection error:'));
+db.once('open', function () {
+  console.log('Database has created a succesful connection.')
+});
 
 
 // Board Schema
@@ -20,11 +19,14 @@ const BoardSchema = mongoose.Schema ({
   id: Number,
   user_number_label: String,
   display_name: String,
+  turn_order: Number,
   turn_counter: Number,
+  is_active_player: Boolean,
+  has_played_development_card: Boolean,
   player_points: Number,
-  owns_road: Number,
-  owns_settlement: Number,
-  owns_city: Number,
+  owns_road: [],
+  owns_settlement: [],
+  owns_city: [],
   played_card_knight: Number,
   played_card_road: Number,
   played_card_monopoly: Number,
@@ -45,41 +47,33 @@ const BoardSchema = mongoose.Schema ({
 });
 
 // Board Model 
-const Player = mongoose.model('Player', BoardSchema);
+// const Player = mongoose.model('Player', BoardSchema);
 
 // Road Schema 
 const RoadSchema = mongoose.Schema({
   id: Number,
   owner: String,
-  cor_1: Number,
-  cor_2: Number,
-  surf_1: Number,
-  surf_2: Number,
-  surf_3: Number,
-  surf_4: Number
+  connecting_house_slots: [],
+  adj_road_slots: []
 });
 
 // Road Model
-const Road = mongoose.model('Road', RoadSchema);
+// const Road = mongoose.model('Road', RoadSchema);
 
 // Settlement Schema
 const SettlementSchema = mongoose.Schema({
   id: Number,
   owner: String,
-  house_type: String,
+  house_type: Number,
   port_id: Number,
   port_input_type: String,
   port_input_value: Number,
-  cor_1: Number,
-  cor_2: Number,
-  cor_3: Number,
-  surf_1: Number,
-  surf_2: Number,
-  surf_3: Number
+  adj_house_slots: [],
+  connecting_road_slots: []
 });
 
 // Settlement Model 
-const Settlement = mongoose.model('Settlement', SettlementSchema);
+// const Settlement = mongoose.model('Settlement', SettlementSchema);
 
 // Tile Schema
 const TileSchema = mongoose.Schema({
@@ -87,22 +81,13 @@ const TileSchema = mongoose.Schema({
   terrain: String,
   dice_trigger_value: Number,
   has_robber: Boolean,
-  surf_1: Number,
-  surf_2: Number,
-  surf_3: Number,
-  surf_4: Number,
-  surf_5: Number,
-  surf_6: Number,
-  cor_1: Number,
-  cor_2: Number,
-  cor_3: Number,
-  cor_4: Number,
-  cor_5: Number,
-  cor_6: Number
+  connecting_road_slots: [],
+  connecting_house_slots: [],
+  connecting_tiles: []
 });
 
 // Tile Model 
-const Tile = mongoose.model('Tile', TileSchema);
+// const Tile = mongoose.model('Tile', TileSchema);
 
 // User Schema
 const UserSchema = mongoose.Schema({
@@ -114,7 +99,25 @@ const UserSchema = mongoose.Schema({
 });
 
 // User Model
-const User = mongoose.model('User', UserSchema);
+// const User = mongoose.model('User', UserSchema);
 
+// Stringified Data
+const StringDataSchema = mongoose.Schema({
+  room_id: Number,
+  data: String
+});
 
-module.exports = {mongoose, Player, Settlement, Road, Tile, User};
+// Strigified Data Model
+// const StringData = mongoose.model('StringData', StringDataSchema);
+
+const gameSchema = mongoose.Schema({
+  game_session_id: { type: String, unique: true },
+  players: [BoardSchema],
+  tiles: [TileSchema],
+  settlements: [SettlementSchema],
+  roads: [RoadSchema]
+});
+
+const Game = mongoose.model('Game', gameSchema);
+
+module.exports = {mongoose, Game};
