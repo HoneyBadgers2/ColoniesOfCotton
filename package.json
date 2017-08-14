@@ -37,6 +37,7 @@
     "react": "^15.6.1",
     "react-babylonjs": "0.0.8",
     "react-dom": "^15.6.1",
+    "react-router-dom": "^4.1.2",
     "semantic-ui-react": "^0.71.4",
     "sequelize": "^4.4.2",
     "socket.io": "^2.0.3",

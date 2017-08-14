@@ -110,26 +110,18 @@ App.get('/games', function (req, res){
     })
 });
 
-
-
-var room = 0;
-var highest = 0;
-var counter = 0;
-var first = null;
-var rolls = 0;
-
 io.on('connection', socket => {
-    counter ++;
-    socket.emit('identity', counter);
-    socket.join(room.toString());
+    socket.on('joining', roomName => {
+        console.log(roomName)
+        socket.join(roomName);
+        io.sockets.in(roomName).emit('joined', roomName);
+    })
 
-    if(counter === 4){
+    socket.on('start', (roomName) => {
         const game = initiateGame(initial);
-        game.game_session_id = room.toString();
-        counter = 0;
-        io.sockets.in(room.toString()).emit('start', game);
-        room ++;
-    }
+        
+        io.sockets.in(roomName).emit('start', game);
+    })
 
     socket.on('message', body => {
         let room = body.room;
@@ -148,22 +140,19 @@ io.on('connection', socket => {
     socket.on('firstRoll', obj => {
         let player = obj.player
         let total = obj.roll
-        rolls ++
         let message = {
             text: "Player" + player + " rolled a " + total,
             user: "COMPUTER"
         }
         
         io.sockets.in(obj.room).emit('message', message);
-        if(total > highest){
-            highest = total
-            first = player
-        }
-        if(rolls === 4){
-            io.sockets.in(obj.room).emit('message', {user: "COMPUTER", text: "Player" + first + " goes first."})
-            io.sockets.in(obj.room).emit('first', first);
-            rolls = 0;
-        }
+        io.sockets.in(obj.room).emit('firstRoll', obj);
+    })
+
+
+    socket.on('first', obj => {
+        io.sockets.in(obj.room).emit('message', {user: "COMPUTER", text: "Player" + obj.first + " goes first."})
+        io.sockets.in(obj.room).emit('first', obj.first);
     })
 
 
