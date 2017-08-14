@@ -11,6 +11,8 @@ const server = http.createServer(App);
 const io = socketIo(server);
 const initial = require('../data.json');
 
+//comment
+
 App.use(express.static('client'));
 App.use(parser.urlencoded({extended: false}));
 App.use(parser.json());
