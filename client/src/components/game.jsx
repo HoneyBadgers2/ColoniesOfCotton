@@ -1,8 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
-import Playerinterface from './playerinterface';
 import Messagelog from './messagelog';
-import Boardview from './boardview';
 import {Scene} from 'react-babylonjs';
 import {
   SceneLoader,
@@ -2379,7 +2377,7 @@ class Game extends React.Component {
             {this.state.players[this.state.identity].posted_trade.offering.card_wool > 0 && <span><Image size='mini' src={'../../PNGs/wool.png'} style={{display: "inline-block"}}/>{this.state.players[this.state.identity].posted_trade.offering.card_wool}</span>}
             {this.state.players[this.state.identity].posted_trade.offering.card_ore > 0 && <span><Image size='mini' src={'../../PNGs/ore.png'} style={{display: "inline-block"}}/>{this.state.players[this.state.identity].posted_trade.offering.card_ore}</span>}
           </span>
-          <Button onClick={this.cancelTradePost}>Remove Trade Offer</Button>
+          <Button negative size='small' onClick={this.cancelTradePost}>Remove Trade Offer</Button>
         </div> 
         : null}
         
@@ -2387,7 +2385,7 @@ class Game extends React.Component {
 
 
       {this.state.tradeMenuOpen ?
-        <div>
+        <div className="resourceBar">
           <div>
             <div><strong>Offering:</strong></div>
             <span className="resourceBar">
@@ -2416,9 +2414,9 @@ class Game extends React.Component {
             <span>{this.state.players[this.state.identity].active_trade.wanting.card_ore}</span>
             </span>
           </div>
-          <Button onClick={this.postTrade}>Offer Trade</Button>
-          <Button onClick={this.tradeWithBank}>Trade With Bank</Button>
-          <Button negative onClick={this.cancelTradeMenu}>Cancel Trading</Button>
+          <Button size="small" onClick={this.postTrade}>Offer Trade</Button>
+          <Button size="small" onClick={this.tradeWithBank}>Trade With Bank</Button>
+          <Button negative size="small" onClick={this.cancelTradeMenu}>Cancel Trading</Button>
         </div>
 
         : null}
@@ -2441,11 +2439,11 @@ class Game extends React.Component {
       <div>
         <strong>{this.state.instruction}</strong>
         <div className="resourceBar">
-        <Image size='mini' src={'../../PNGs/brick.png'} id="card_brick" onClick={this.handleResourceClick}/>
-        <Image size='mini' src={'../../PNGs/grain.png'} id="card_grain" onClick={this.handleResourceClick}/>
-        <Image size='mini' src={'../../PNGs/lumber.png'} id="card_lumber" onClick={this.handleResourceClick}/>
-        <Image size='mini' src={'../../PNGs/wool.png'} id="card_wool" onClick={this.handleResourceClick}/>
-        <Image size='mini' src={'../../PNGs/ore.png'} id="card_ore" onClick={this.handleResourceClick}/>
+        <Image size='mini' src={'../../PNGs/brick.png'} id="card_brick" onClick={this.handleResourceClick} style={{display: "inline-block"}}/>
+        <Image size='mini' src={'../../PNGs/grain.png'} id="card_grain" onClick={this.handleResourceClick} style={{display: "inline-block"}}/>
+        <Image size='mini' src={'../../PNGs/lumber.png'} id="card_lumber" onClick={this.handleResourceClick} style={{display: "inline-block"}}/>
+        <Image size='mini' src={'../../PNGs/wool.png'} id="card_wool" onClick={this.handleResourceClick} style={{display: "inline-block"}}/>
+        <Image size='mini' src={'../../PNGs/ore.png'} id="card_ore" onClick={this.handleResourceClick} style={{display: "inline-block"}}/>
         </div>
       </div> : null
     }
@@ -2457,17 +2455,21 @@ class Game extends React.Component {
           {(!this.state.interfaceToggled) ? <span><Button type="button" id="playcardroad" onClick={this.playingCardRoad} disabled={!this.state.ableToPlayCardRoad}>Play Card: Road Building</Button><span>{this.state.players[this.state.identity].card_road}</span></span> : null}
           {(!this.state.interfaceToggled) ? <span><Button type="button" id="playcardmonopoly" onClick={this.playingCardMonopoly} disabled={!this.state.ableToPlayCardMonopoly}>Play Card: Monopoly</Button><span>{this.state.players[this.state.identity].card_monopoly}</span></span>: null}
           {(!this.state.interfaceToggled) ? <span><Button type="button" id="playcardplenty" onClick={this.playCardPlenty} disabled={!this.state.ableToPlayCardPlenty}>Play Card: Plenty</Button><span>{this.state.players[this.state.identity].card_plenty}</span></span> : null}
-      </span></div> : null
+      </span>
+      </div> : null
     }
 
     {this.state.isBuying ?
     <div>
     <span className="resourceBar">
+    <Button.Group vertical>
       {(!this.state.interfaceToggled) ? <Button type="button" id="buysettlement" onClick={this.toggleBuyRoad} disabled={!this.state.ableToBuyRoad}>Buy Road</Button> : null}
       {(!this.state.interfaceToggled) ? <Button type="button" id="buysettlement" onClick={this.toggleBuySettlement} disabled={!this.state.ableToBuySettlement}>Buy Settlement</Button> : null}
       {(!this.state.interfaceToggled) ? <Button type="button" id="buycity" onClick={this.toggleBuyCity} disabled={!this.state.ableToBuyCity}>Buy City</Button> : null}
       {(!this.state.interfaceToggled) ? <Button type="button" id="buydevcard" onClick={this.buyingDevelopmentCard} disabled={!this.state.ableToBuyDevelopmentCard}>Buy Development Card</Button> : null}
-    </span></div>:null}
+    </Button.Group>
+    </span>
+    </div>:null}
     
     <Button.Group vertical>
       {(!this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <Button type="button" onClick={this.diceRoll}>Roll Dice</Button> : null}
