@@ -24,6 +24,10 @@ class Game extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      connections: null,
+      highest: null,
+      starter: null,
+      rollsForFirst: 0,
       setupCorner: false,
       setupRoad: false,
       identity: 1,
@@ -693,6 +697,7 @@ class Game extends React.Component {
       player: this.state.identity,
       roll: total
     }
+    console.log('First Roll Object is', obj);
     this.socket.emit('firstRoll', obj);
     this.setState({
       canRollForFirst: false
@@ -1514,8 +1519,10 @@ class Game extends React.Component {
   /////////// START SOCKET LISTENERS ///////////
   componentDidMount() {
 
-
     this.socket = io('/');
+    this.socket.emit('joining', this.props.match.params.room)
+
+
     this.socket.on('cancelAgreement', obj => {
       let players = this.state.players;
       let player = players[obj.player];
@@ -1610,13 +1617,13 @@ class Game extends React.Component {
     this.socket.on('start', body => {
       this.setState({
         canRollForFirst: true,
-        room: body.game_session_id,
         players: body.players,
         tiles: body.tiles,
         settlements: body.settlements,
         roads: body.roads
       });
     })
+
 
     this.socket.on('playedCardPlenty', obj => {
       let resource = obj.resource;
@@ -1708,12 +1715,22 @@ class Game extends React.Component {
       });
       this.checkPossibleActions();
     })
+    
 
-    this.socket.on('identity', identity => {
-      this.setState({
-        identity: identity
-      })
+    this.socket.on('joined', (roomName)=> {
+      this.state.connections = this.state.connections || 0;
+      this.state.connections ++
+      console.log('joined heard');
+      console.log(roomName);
+      this.setState({connections: this.state.connections, room: roomName}, () => {
+          this.setState({identity: this.state.connections});
+
+        if(this.state.connections === 4){
+          this.socket.emit('start', this.state.room);
+        }
+      });
     })
+
 
     this.socket.on('message', body => {
       this.setState({
@@ -1748,6 +1765,19 @@ class Game extends React.Component {
         }
       }
       this.checkPossibleActions();
+    })
+
+    this.socket.on('firstRoll', obj => {
+      this.setState({rollsForFirst: this.state.rollsForFirst+1}, () => {
+        if(obj.roll > this.state.highest){
+          this.state.highest = obj.roll;
+          this.state.starter = obj.player;
+        }
+        debugger;
+        if(this.state.rollsForFirst === 4 && this.state.starter === this.state.identity){
+          this.socket.emit('first', {first: this.state.starter, room: this.state.room})
+        }
+      });
     })
 
 
