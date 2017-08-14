@@ -17,9 +17,11 @@ When you check out the deployables branch, in yor project directory, run the fol
 ```cat .git/config```
 
 You should see this somewhere in there:
-```[remote "heroku"]
+```
+  [remote "heroku"]
 	url = https://git.heroku.com/murmuring-hollows-40420.git
-	fetch = +refs/heads/*:refs/remotes/heroku/*```
+	fetch = +refs/heads/*:refs/remotes/heroku/*
+  ```
 
   If it isn't in there, add it.
 
