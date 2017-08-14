@@ -5,16 +5,18 @@ const socketIo = require('socket.io');
 const db = require('../db/mongo');
 const data = require('../data.json');
 
-const PORT = 3000;
+const port = process.env.PORT || 3000;
 const App = express();
 const server = http.createServer(App);
 const io = socketIo(server);
 const initial = require('../data.json');
 
+//comment
+
 App.use(express.static('client'));
 App.use(parser.urlencoded({extended: false}));
 App.use(parser.json());
-server.listen(3000, (err) => {
+server.listen(port, (err) => {
     if(err){
         console.log('error');
     } else {
