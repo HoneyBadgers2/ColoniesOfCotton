@@ -10,7 +10,7 @@ const AuthLock = new Auth0Lock (
     '98FmkgSB8sTW3vMPk6JSSneB9z3ns1xT',
     'miken619.auth0.com',{
         auth: {
-            redirectUrl: 'http://localhost:3000',
+            redirectUrl: 'https://murmuring-hollows-40420.herokuapp.com/',
             responseType: 'token id_token',
             params: {
                 scope: 'openid email'
