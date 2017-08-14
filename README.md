@@ -25,4 +25,11 @@ You should see this somewhere in there:
 
   If it isn't in there, add it.
 
+ 1) ```nano .git/config```
+ 2) Add the lines into the file
+ 3) ```CTRL + X``` (to close the editor)
+ 4) You will be asked if you want to save your changes. Type the following without quotes: ```"Y"```
+ 5) ```ENTER```
+ 6) ```cat .git/config``` (to check again and see that it's saved in there)
+
   Then, your deploys should work.
