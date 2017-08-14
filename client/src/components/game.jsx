@@ -83,6 +83,12 @@ class Game extends React.Component {
     ////////////////////////////////////////////////////
     this.cheatSkipSetup = this.cheatSkipSetup.bind(this);
     ///////////////////////////////////////////////////////////////////
+    this.cancelTradeMenu = this.cancelTradeMenu.bind(this);
+    this.cancelAgreement = this.cancelAgreement.bind(this);
+    this.finalizeTrade = this.finalizeTrade.bind(this);
+    this.agreeToTrade = this.agreeToTrade.bind(this);
+    this.cancelTradePost = this.cancelTradePost.bind(this);
+    this.postTrade = this.postTrade.bind(this);
     this.tradeWithBank = this.tradeWithBank.bind(this);
     this.changeOffering = this.changeOffering.bind(this);
     this.changeWanting = this.changeWanting.bind(this);
@@ -338,6 +344,44 @@ class Game extends React.Component {
     this.setState({ interfaceToggled: !this.state.interfaceToggled });
   }
 
+  finalizeTrade(event){
+    console.log(event.target.id);
+
+    let obj = {
+      room: this.state.room,
+      player: this.state.identity,
+      trader: event.target.id,
+      trade: this.state.players[this.state.identity].posted_trade
+    }
+    console.log(obj);
+    let players = this.socket.emit('finalizeTrade', obj);
+  }
+
+  cancelTradeMenu(){
+    let players = this.state.players;
+    let player = players[this.state.identity];
+
+    let wanting = player.active_trade.wanting;
+    let offering = player.active_trade.offering;
+
+    for(var prop in wanting){
+      wanting[prop] = 0;
+      offering[prop] = 0;
+    }
+
+    this.setState({players: players, tradeMenuOpen: false});
+
+  }
+
+  cancelTradePost(){
+    let obj = {
+      room: this.state.room,
+      player: this.state.identity,
+    }
+
+    this.socket.emit('cancelTradePost', obj);
+  }
+
   openTradeMenu() {
     this.setState({ tradeMenuOpen: !this.state.tradeMenuOpen })
   }
@@ -429,6 +473,15 @@ class Game extends React.Component {
     if (this.state.isBuyingSettlement && param !== 'Settlement') {
       this.toggleBuySettlement();
     }
+  }
+
+  cancelAgreement(){
+    let obj = {
+      room: this.state.room,
+      player: this.state.identity
+    }
+
+    this.socket.emit('cancelAgreement', obj);
   }
 
   changeWanting(event) {
@@ -630,6 +683,32 @@ class Game extends React.Component {
     });
   }
 
+  agreeToTrade(){
+    let active;
+    let player = this.state.players[this.state.identity];
+    this.state.players.forEach((player) => {
+      if(player.is_active_player){
+        active = this.state.players[player.id];
+      }
+    })
+
+    let wanting = active.posted_trade.wanting;
+    let canAccept = true;
+    for(var prop in wanting){
+      if(player[prop] < wanting[prop]){
+        canAccept = false;
+      }
+    }
+
+    if(canAccept){
+      let obj = {
+        player: this.state.identity,
+        room: this.state.room
+      }
+      this.socket.emit('agreesToTrade', obj);
+    }
+  }
+
   buyingRoad(roadId) {
     if (this.verifyRoad(roadId)) {
       let obj = {
@@ -801,6 +880,8 @@ class Game extends React.Component {
 
   endTurn() {
     let nextPlayer;
+    let players = this.state.players;
+    
     if (this.state.identity !== 4) {
       nextPlayer = this.state.identity + 1;
     } else {
@@ -814,9 +895,43 @@ class Game extends React.Component {
     })
     let obj = {
       room: this.state.room,
+      ending: this.state.identity,
       player: nextPlayer
     }
-    this.socket.emit('endTurn', obj);
+    let player = this.state.players[this.state.identity];
+    let score = player.owns_settlement.length + player.card_victory + (player.owns_city.length * 2);
+    if(player.has_biggest_army){
+      score += 2;
+    }
+    if(player.has_longest_road){
+      score += 2;
+    }
+
+    if(score >= 10){
+      let win = {
+        room: this.state.room,
+        player: this.state.identity,
+        victory: player.card_victory,
+        score: score - player.card_victory
+      }
+      this.socket.emit('endGame', win);
+    } else {
+      this.socket.emit('endTurn', obj);
+    }
+  }
+
+  postTrade(){
+    console.log('client is posting trade');
+    let players = this.state.players;
+    let player = players[this.state.identity];
+    let active = player.active_trade;
+    let obj = {
+      room: this.state.room,
+      active: active,
+      player: this.state.identity
+    }
+    console.log('postTrade Object is', obj);
+    this.socket.emit('postTrade', obj);
   }
 
 
@@ -1085,11 +1200,6 @@ class Game extends React.Component {
       score = score + 2;
     }
 
-    if (score >= 10) {
-      // endGame(); // need to write this function
-    }
-
-    // return the score visible for others
     return score - this.state.players[playerId].card_victory;
   }
 
@@ -1383,6 +1493,49 @@ class Game extends React.Component {
 
 
     this.socket = io('/');
+    this.socket.on('cancelAgreement', obj => {
+      debugger;
+      let players = this.state.players;
+      let player = players[obj.player];
+      player.accepted_trade = false;
+      this.setState({players: players});
+    })
+
+    this.socket.on('finalizeTrade', obj => {
+      let players = this.state.players;
+      let active = players[obj.player];
+      let trader = players[obj.trader];
+      let activeGiving = obj.trade.offering;
+      let activeReceiving = obj.trade.wanting;
+      debugger;
+      for(let prop in activeGiving){
+        active[prop] -= activeGiving[prop];
+        trader[prop] += activeGiving[prop];
+        active.total_resources -= activeGiving[prop];
+      }
+
+      for(let prop in activeReceiving){
+        active[prop] += activeReceiving[prop];
+        trader[prop] -= activeReceiving[prop];
+        active.total_resources += activeGiving[prop];
+      }
+      active.posted_trade = null;
+      players.forEach(player => {
+        player.accepted_trade = false;
+      })
+      this.setState({players:players});
+    })
+
+    this.socket.on('agreesToTrade', obj => {
+      console.log('SOMEONE AGREED TO TRADE');
+      debugger;
+      let players = this.state.players;
+      let agree = this.state.players[obj.player];
+      agree.accepted_trade = true;
+      this.setState({players: players});
+    })
+
+
     this.socket.on('roadBuilding', obj => {
       let playerID = obj.player;
       let roadID = obj.road;
@@ -1401,10 +1554,37 @@ class Game extends React.Component {
       this.colorPiece('Road' + roadID, mat);
     })
 
+    this.socket.on('cancelTradePost', id => {
+      let players = this.state.players;
+      let player = players[id];
+      player.posted_trade = null;
+      players.forEach(player => {
+        player.accepted_trade = false;
+      })
+      this.setState({players: players});
+    })
+
     this.socket.on('playedDev', obj => {
       let players = this.state.players;
       let player = players[obj.player];
       player[obj.card]--
+      let largestArmy = 0;
+      let previousPlayer = null;
+      players.forEach(player => {
+        if(player.has_biggest_army){
+          largestArmy = player.played_card_knight;
+          previousPlayer = player;
+        }
+      })
+      if(obj.card === 'card_knight'){
+        player.played_card_knight ++;
+        if(player.played_card_knight > largestArmy && player.played_card_knight > 2){
+          player.has_biggest_army = true;
+          if(previousPlayer && previousPlayer.id !== player.id){
+            previousPlayer.has_biggest_army = false;
+          }
+        }
+      }
 
       this.setState({ players: players });
     })
@@ -1522,6 +1702,9 @@ class Game extends React.Component {
       })
     })
 
+    this.socket.on('endGame', ()=> {
+      this.setState({active: false});
+    })
     this.socket.on('diceRoll', total => {
       for (var i = 0; i < this.state.tiles.length; i++) {
         let tile = this.state.tiles[i];
@@ -1641,6 +1824,7 @@ class Game extends React.Component {
       let player = players[obj.player];
       let board = players[0];
 
+
       player.card_grain--;
       player.card_ore--;
       player.card_wool--;
@@ -1656,8 +1840,18 @@ class Game extends React.Component {
 
 
 
-    this.socket.on('endTurn', active => {
-      if (active === this.state.identity) {
+    this.socket.on('endTurn', obj => {
+      let players = this.state.players;
+      let ending = players[obj.ending];
+      let starting = players[obj.player];
+      ending.is_active_player = false;
+      starting.is_active_player = true;
+
+      this.setState({
+        players: players
+      })
+
+      if (obj.player === this.state.identity) {
         this.setState({
           active: true
         });
@@ -1729,17 +1923,14 @@ class Game extends React.Component {
       this.setState({ players: players });
     })
 
-
-    this.socket.on('playedCardVictory', obj => {
-      let allPlayers = this.state.players;
-      let player = allPlayers[obj.player];
-
-      player.played_card_victory++;
-      player.card_victory--;
-
-      this.setState({ players: allPlayers });
+    this.socket.on('postTrade', obj => {
+      let players = this.state.players;
+      let player = players[obj.player];
+      player.posted_trade = obj.active;
+      this.setState({players: players});
 
     })
+
 
     ///////////////////////////////////////
     this.socket.on('cheatSkipSetup', obj => {
@@ -1862,6 +2053,28 @@ class Game extends React.Component {
       <h3>Player Actions Menu</h3>
 
       {this.state.canRollForFirst ? <button onClick={this.rollForFirst}>Roll</button> : null}
+      {this.state.players[this.state.identity].posted_trade
+        ?  
+        <div>
+          <div>
+          <div>You Want</div>
+            {this.state.players[this.state.identity].posted_trade.wanting.card_brick > 0 && <div><span className="icon Brick"></span>{this.state.players[this.state.identity].posted_trade.wanting.card_brick}</div>}
+            {this.state.players[this.state.identity].posted_trade.wanting.card_grain > 0 && <div><span className="icon Wheat"></span>{this.state.players[this.state.identity].posted_trade.wanting.card_grain}</div>}
+            {this.state.players[this.state.identity].posted_trade.wanting.card_lumber > 0 && <div><span className="icon Wood"></span>{this.state.players[this.state.identity].posted_trade.wanting.card_lumber}</div>}
+            {this.state.players[this.state.identity].posted_trade.wanting.card_wool > 0 && <div><span className="icon Sheep"></span>{this.state.players[this.state.identity].posted_trade.wanting.card_wool}</div>}
+            {this.state.players[this.state.identity].posted_trade.wanting.card_ore > 0 && <div><span className="icon Rock"></span>{this.state.players[this.state.identity].posted_trade.wanting.card_ore}</div>}
+          </div>
+          <div>
+          <div>For</div>
+            {this.state.players[this.state.identity].posted_trade.offering.card_brick > 0 && <div><span className="icon Brick"></span>{this.state.players[this.state.identity].posted_trade.offering.card_brick}</div>}
+            {this.state.players[this.state.identity].posted_trade.offering.card_grain > 0 && <div><span className="icon Wheat"></span>{this.state.players[this.state.identity].posted_trade.offering.card_grain}</div>}
+            {this.state.players[this.state.identity].posted_trade.offering.card_lumber > 0 && <div><span className="icon Wood"></span>{this.state.players[this.state.identity].posted_trade.offering.card_lumber}</div>}
+            {this.state.players[this.state.identity].posted_trade.offering.card_wool > 0 && <div><span className="icon Sheep"></span>{this.state.players[this.state.identity].posted_trade.offering.card_wool}</div>}
+            {this.state.players[this.state.identity].posted_trade.offering.card_ore > 0 && <div><span className="icon Rock"></span>{this.state.players[this.state.identity].posted_trade.offering.card_ore}</div>}
+          </div>
+          <button onClick={this.cancelTradePost}>CANCEL TRADE</button>
+        </div> 
+        : null}
 
       {this.state.needResourceBar ?
         <div>
@@ -1890,7 +2103,7 @@ class Game extends React.Component {
             <span className="icon Sheep" id="card_wool" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_wool}</span>
             <span className="icon Rock" id="card_ore" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_ore}</span>
           </div>
-          <button>Offer Trade</button> <button onClick={this.tradeWithBank}>Trade With Bank</button> <button>CANCEL</button>
+          <button onClick={this.postTrade}>Offer Trade</button> <button onClick={this.tradeWithBank}>Trade With Bank</button> <button onClick={this.cancelTradeMenu}>CANCEL</button>
         </div>
 
         : null}
@@ -1946,8 +2159,29 @@ class Game extends React.Component {
               <div>
                 <span><strong>Points: </strong></span><span>{this.calculateScore(player.id)}</span>
               </div>
-
-
+              {player.posted_trade
+              ?  
+              <div>
+                <div>
+                <div>Player Wants</div>
+                  {player.posted_trade.wanting.card_brick > 0 && <div><span className="icon Brick"></span>{player.posted_trade.wanting.card_brick}</div>}
+                  {player.posted_trade.wanting.card_grain > 0 && <div><span className="icon Wheat"></span>{player.posted_trade.wanting.card_grain}</div>}
+                  {player.posted_trade.wanting.card_lumber > 0 && <div><span className="icon Wood"></span>{player.posted_trade.wanting.card_lumber}</div>}
+                  {player.posted_trade.wanting.card_wool > 0 && <div><span className="icon Sheep"></span>{player.posted_trade.wanting.card_wool}</div>}
+                  {player.posted_trade.wanting.card_ore > 0 && <div><span className="icon Rock"></span>{player.posted_trade.wanting.card_ore}</div>}
+                </div>
+                <div>
+                <div>For</div>
+                  {player.posted_trade.offering.card_brick > 0 && <div><span className="icon Brick"></span>{player.posted_trade.offering.card_brick}</div>}
+                  {player.posted_trade.offering.card_grain > 0 && <div><span className="icon Wheat"></span>{player.posted_trade.offering.card_grain}</div>}
+                  {player.posted_trade.offering.card_lumber > 0 && <div><span className="icon Wood"></span>{player.posted_trade.offering.card_lumber}</div>}
+                  {player.posted_trade.offering.card_wool > 0 && <div><span className="icon Sheep"></span>{player.posted_trade.offering.card_wool}</div>}
+                  {player.posted_trade.offering.card_ore > 0 && <div><span className="icon Rock"></span>{player.posted_trade.offering.card_ore}</div>}
+                </div>
+                {!this.state.players[this.state.identity].accepted_trade ? <button onClick={this.agreeToTrade}>Accept Trade</button> : <button onClick={this.cancelAgreement}>Cancel</button>}
+              </div> 
+              : null}
+              {this.state.active && player.accepted_trade && <button id={player.id} onClick={this.finalizeTrade}> Player Agrees To Trade </button>}
             </div>
           )
 
