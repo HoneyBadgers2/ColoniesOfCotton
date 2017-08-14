@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Form, Input, Button, Dropdown, Table, Divider } from 'semantic-ui-react';
 import data from '../../../data.json';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import io from 'socket.io-client';
 
 
 
@@ -11,7 +13,7 @@ class Lobby extends Component {
     this.state = {
       newRoomName: '',
       newRoomDescription: '',
-      joinRoomName: '',
+      joinRoom: '',
       roomsList: [],
     }
     this.addNewGameToState = this.addNewGameToState.bind(this);
@@ -67,7 +69,7 @@ createNewRoom(){
 }
 
 joinRoom(){
-  console.log('joining room', this.state.joinRoom);
+  this.props.history.push('/game/' + this.state.joinRoom);
 }
 
 changeJoinRoom(e, option){

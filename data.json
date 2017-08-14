@@ -1,6 +1,4 @@
-{
-    "game_session_id": null,
-    "players":[
+{   "players":[
         {
             "id": 0,
             "user_number_label": "BOARD_DEFAULT_PLAYER_ZERO",
