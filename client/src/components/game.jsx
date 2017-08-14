@@ -1061,6 +1061,11 @@ class Game extends React.Component {
           obj.resource = resource;
           obj.target = event.target.id;
           obj.player = this.state.identity;
+          
+          let allPlayers = this.state.players;
+          allPlayers[this.state.identity].robber = false;
+          this.setState({players: allPlayers});
+
           this.socket.emit('rob', obj);
           this.toggleUI();
         }
