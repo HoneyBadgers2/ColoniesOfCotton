@@ -139,6 +139,10 @@ io.on('connection', socket => {
         io.sockets.in(room).emit('message', message);
     })
 
+    socket.on('cancelTradePost', obj => {
+        io.sockets.in(obj.room).emit('cancelTradePost', obj.player)
+    })
+
     socket.on('firstRoll', obj => {
         let player = obj.player
         let total = obj.roll
@@ -203,7 +207,7 @@ io.on('connection', socket => {
             user: "COMPUTER" 
         }
         io.sockets.in(obj.room).emit('message', message);
-        io.sockets.in(obj.room).emit('endTurn', obj.player);
+        io.sockets.in(obj.room).emit('endTurn', obj);
     })
 
     socket.on('buyRoad', obj => {
@@ -301,6 +305,32 @@ io.on('connection', socket => {
       io.sockets.in(obj.room).emit('tradeWithBank', obj);
   })
 
+  socket.on('endGame', obj => {
+      let message = {
+          text: "Player" + obj.player + " wins the game with "  + obj.score + " Points and " + obj.victory + " Victory Points!",
+          user: "Computer"
+      }
+    io.sockets.in(obj.room).emit('message', message);
+    io.sockets.in(obj.room).emit('endGame');
+  })
+
+  socket.on('postTrade', obj => {
+      io.sockets.in(obj.room).emit('postTrade', obj);
+  })
+
+  socket.on('agreesToTrade', obj => {
+      io.sockets.in(obj.room).emit('agreesToTrade', obj);
+  })
+
+  socket.on('finalizeTrade', obj => {
+      io.sockets.in(obj.room).emit('message', {text: "Player" + obj.player + " trades with Player" + obj.trader, user: "COMPUTER"})
+      io.sockets.in(obj.room).emit('finalizeTrade', obj);
+  })
+
+  socket.on('cancelAgreement', obj => {
+      io.sockets.in(obj.room).emit('cancelAgreement', obj);
+  })
+
 //////////////////////////////////////////
     socket.on('cheatSkipSetup', obj => {
     let message = {
@@ -311,7 +341,6 @@ io.on('connection', socket => {
     io.sockets.in(obj.room).emit('message', message);
     io.sockets.in(obj.room).emit('cheatSkipSetup');
   })
-///////////////////////////////////////////
-
+//////////////////////////////////////////
 
 })

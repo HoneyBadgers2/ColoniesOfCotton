@@ -47,7 +47,9 @@
                     "card_ore": 0,
                     "card_lumber": 0
                 }
-            }
+            },
+            "posted_trade": null,
+            "accepted_trade": false
         },
         {
             "id": 1,
@@ -61,19 +63,19 @@
             "owns_road": [],
             "owns_settlement": [],
             "owns_city": [],
-            "played_card_knight": 0,
+            "played_card_knight": 2,
             "played_card_road": 0,
             "played_card_monopoly": 0,
             "played_card_plenty": 0,
             "played_card_victory": 0,
             "has_longest_road": false,
             "has_biggest_army": false,
-            "card_brick": 4,
-            "card_grain": 1,
-            "card_lumber": 1,
-            "card_ore": 1,
-            "card_wool": 1,
-            "total_resources": 0,
+            "card_brick": 50,
+            "card_grain": 50,
+            "card_lumber": 50,
+            "card_ore": 50,
+            "card_wool": 50,
+            "total_resources": 200,
             "card_knight": 1,
             "card_road": 1,
             "card_monopoly": 1,
@@ -95,7 +97,9 @@
                     "card_ore": 0,
                     "card_lumber": 0
                 }
-            }
+            },
+            "posted_trade": null,
+            "accepted_trade": false
         },
         {
             "id": 2,
@@ -109,19 +113,19 @@
             "owns_road": [],
             "owns_settlement": [],
             "owns_city": [],
-            "played_card_knight": 0,
+            "played_card_knight": 2,
             "played_card_road": 0,
             "played_card_monopoly": 0,
             "played_card_plenty": 0,
             "played_card_victory": 0,
             "has_longest_road": false,
             "has_biggest_army": false,
-            "card_brick": 3,
-            "card_grain": 3,
-            "card_lumber": 3,
-            "card_ore": 3,
-            "total_resources": 15,
-            "card_wool": 3,
+            "card_brick": 50,
+            "card_grain": 50,
+            "card_lumber": 50,
+            "card_ore": 50,
+            "total_resources": 200,
+            "card_wool": 50,
             "card_knight": 1,
             "card_road": 1,
             "card_monopoly": 1,
@@ -143,7 +147,9 @@
                     "card_ore": 0,
                     "card_lumber": 0
                 }
-            }
+            },
+            "posted_trade": null,
+            "accepted_trade": false
         },
         {
             "id": 3,
@@ -191,7 +197,9 @@
                     "card_ore": 0,
                     "card_lumber": 0
                 }
-            }
+            },
+            "posted_trade": null,
+            "accepted_trade": false
         },
         {
             "id": 4,
@@ -239,7 +247,9 @@
                     "card_ore": 0,
                     "card_lumber": 0
                 }
-            }
+            },
+            "posted_trade": null,
+            "accepted_trade": false
         }
     ],
     "tiles":[
