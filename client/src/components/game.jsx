@@ -219,6 +219,27 @@ class Game extends React.Component {
       let mat = this.createMat(this.state.identity);
       this.colorPiece('Road' + roadID, mat);
 
+      let longestRoad = 0;
+      let previousPlayer = null;
+
+      players.forEach(player => {
+        if(player.has_longest_road){
+          longestRoad = player.owns_road.length;
+          previousPlayer = player;
+        }
+      })
+     
+      if(player.owns_road.length > longestRoad && player.owns_road.length > 5){
+        player.has_longest_road = true;
+        if(previousPlayer && previousPlayer.id !== player.id){
+          previousPlayer.has_longest_road = false;
+        }
+      }
+
+
+
+
+
       this.setState({ isPlayingCardRoad: this.state.isPlayingCardRoad + 1, players: players, roads: roads }, () => {
         for (let i = 1; i < 73; i++) {
           let mesh = this.scene.getMeshByID('Road' + i);
@@ -1731,6 +1752,7 @@ class Game extends React.Component {
       this.checkPossibleActions();
     })
 
+
     this.socket.on('buyRoad', obj => {
       let players = this.state.players;
       let player = players[obj.player];
@@ -1742,6 +1764,23 @@ class Game extends React.Component {
 
       board.card_brick++;
       board.card_lumber++;
+
+      let longestRoad = null;
+      let previousPlayer = null;
+
+      players.forEach(player => {
+        if(player.has_longest_road){
+          longestRoad = player.owns_road.length;
+          previousPlayer = player;
+        }
+      })
+     
+      if(player.owns_road.length > longestRoad && player.owns_road.length > 5){
+        player.has_longest_road = true;
+        if(previousPlayer && previousPlayer.id !== player.id){
+          previousPlayer.has_longest_road = false;
+        }
+      }
 
 
       let roads = this.state.roads;
