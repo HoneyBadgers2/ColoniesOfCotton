@@ -24,65 +24,67 @@ server.listen(port, (err) => {
     }
 });
 
-function initiateGame(gamedata) {
 
-  // constants for board pieces
-  const letters = [5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11];
-  const terrain = ['grain', 'grain', 'grain', 'grain', 'brick', 'brick', 'brick', 'ore', 'ore', 'ore', 'lumber', 'lumber', 'lumber', 'lumber', 'wool', 'wool', 'wool', 'wool', 'desert'];
+// Pending update when Babylon can generate dynamic tiles: function to randomize board
+// function initiateGame(gamedata) {
 
-  const shuffle = function(array) {
-    let arr = array.slice();
-    let currentIndex = arr.length, temporaryValue, randomIndex;
+//   // constants for board pieces
+//   const letters = [5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11];
+//   const terrain = ['grain', 'grain', 'grain', 'grain', 'brick', 'brick', 'brick', 'ore', 'ore', 'ore', 'lumber', 'lumber', 'lumber', 'lumber', 'wool', 'wool', 'wool', 'wool', 'desert'];
 
-    while (0 !== currentIndex) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
+//   const shuffle = function(array) {
+//     let arr = array.slice();
+//     let currentIndex = arr.length, temporaryValue, randomIndex;
 
-      temporaryValue = arr[currentIndex];
-      arr[currentIndex] = arr[randomIndex];
-      arr[randomIndex] = temporaryValue;
-    }
-    return arr;
-  };
+//     while (0 !== currentIndex) {
+//       randomIndex = Math.floor(Math.random() * currentIndex);
+//       currentIndex -= 1;
+
+//       temporaryValue = arr[currentIndex];
+//       arr[currentIndex] = arr[randomIndex];
+//       arr[randomIndex] = temporaryValue;
+//     }
+//     return arr;
+//   };
 
 
-  const shuffled = shuffle(terrain);
-  let output = [];
-  shuffled.forEach((field) => {
-      let temp = {};
+//   const shuffled = shuffle(terrain);
+//   let output = [];
+//   shuffled.forEach((field) => {
+//       let temp = {};
       
-      temp.field = field;
-      if(field !== 'desert'){
-      temp.diceTrigger = letters.shift();
-      } else {
-          temp.diceTrigger = null;
-      }
+//       temp.field = field;
+//       if(field !== 'desert'){
+//       temp.diceTrigger = letters.shift();
+//       } else {
+//           temp.diceTrigger = null;
+//       }
       
-      output.push(temp);
-  });
+//       output.push(temp);
+//   });
 
-  // boardTiles is an array of objects denoting the tiles
-  const boardTiles = output;
+//   // boardTiles is an array of objects denoting the tiles
+//   const boardTiles = output;
 
-  // update gamestate object with tileset
-  for (let i = 0; i < 19;  i++) {
-    gamedata.tiles[i + 1].terrain = boardTiles[i].field;
-    gamedata.tiles[i + 1].dice_trigger_value = boardTiles[i].diceTrigger;
-  }
+//   // update gamestate object with tileset
+//   for (let i = 0; i < 19;  i++) {
+//     gamedata.tiles[i + 1].terrain = boardTiles[i].field;
+//     gamedata.tiles[i + 1].dice_trigger_value = boardTiles[i].diceTrigger;
+//   }
 
-  return gamedata;
+//   return gamedata;
 
-  // roll initial dice for each player // for starting purpose, turn order will be fixed at first
-  // update gamestate object with turnorder // for starting purpose, turn order will be fixed at first
+//   // roll initial dice for each player // for starting purpose, turn order will be fixed at first
+//   // update gamestate object with turnorder // for starting purpose, turn order will be fixed at first
 
-  // place settlement/road in order (wait between players)
-  // update gamestate object with placed settlements/roads (as they are placed)
+//   // place settlement/road in order (wait between players)
+//   // update gamestate object with placed settlements/roads (as they are placed)
 
-  // set first player to active player
-  // start turn
+//   // set first player to active player
+//   // start turn
 
 
-}
+// }
 
 
 // Post and retrieve games. 
@@ -118,8 +120,8 @@ io.on('connection', socket => {
     })
 
     socket.on('start', (roomName) => {
-        const game = initiateGame(initial);
-        
+        // const game = initiateGame(initial); // see note for function initiateGame
+        const game = initial;
         io.sockets.in(roomName).emit('start', game);
     })
 
@@ -142,7 +144,7 @@ io.on('connection', socket => {
         let total = obj.roll
         let message = {
             text: "Player" + player + " rolled a " + total,
-            user: "COMPUTER"
+            user: "Computer"
         }
         
         io.sockets.in(obj.room).emit('message', message);
@@ -151,7 +153,7 @@ io.on('connection', socket => {
 
 
     socket.on('first', obj => {
-        io.sockets.in(obj.room).emit('message', {user: "COMPUTER", text: "Player" + obj.first + " goes first."})
+        io.sockets.in(obj.room).emit('message', {user: "Computer", text: "Player" + obj.first + " goes first."})
         io.sockets.in(obj.room).emit('first', obj.first);
     })
 
@@ -161,7 +163,7 @@ io.on('connection', socket => {
         let room = obj.room;
         let message = {
                         text: 'player' + obj.player + ' rolled a ' + obj.total,
-                        user: "COMPUTER"
+                        user: "Computer"
                     }
 
         
@@ -177,17 +179,17 @@ io.on('connection', socket => {
     })
 
     socket.on('moveRobber', obj => {
-        io.sockets.in(obj.room).emit('message', {text: "Player" + obj.player + " moves the Robber!", user: "COMPUTER"})
+        io.sockets.in(obj.room).emit('message', {text: "Player" + obj.player + " moves the Robber!", user: "Computer"})
         io.sockets.in(obj.room).emit('moveRobber', obj.tile);
     })
 
     socket.on('rob', obj => {
         let message = {
             text: "Player" + obj.player + " takes a resource from Player" + obj.target + "!",
-            user: "COMPUTER"
+            user: "Computer"
         };
         socket.broadcast.to(obj.room).emit('message', message);
-        socket.emit('message', {user: "COMPUTER", text: "You stole a " + obj.resource.slice(5)})
+        socket.emit('message', {user: "Computer", text: "You stole a " + obj.resource.slice(5)})
         io.sockets.in(obj.room).emit('rob', obj);
     })
 
@@ -195,7 +197,7 @@ io.on('connection', socket => {
     socket.on('endTurn', obj => {
         let message = {
             text: "Player" + obj.player + "'s turn!",
-            user: "COMPUTER" 
+            user: "Computer" 
         }
         io.sockets.in(obj.room).emit('message', message);
         io.sockets.in(obj.room).emit('endTurn', obj);
@@ -204,7 +206,7 @@ io.on('connection', socket => {
     socket.on('buyRoad', obj => {
         let message = {
             text: 'Player' + obj.player + ' buys a road.',
-            user:'COMPUTER'
+            user:'Computer'
         }
 
         io.sockets.in(obj.room).emit('message', message);
@@ -214,7 +216,7 @@ io.on('connection', socket => {
     socket.on('buySettlement', obj => {
         let message = {
             text: 'Player' + obj.player + ' buys a settlement.',
-            user: 'COMPUTER'
+            user: 'Computer'
         }
 
         io.sockets.in(obj.room).emit('message', message);
@@ -224,7 +226,7 @@ io.on('connection', socket => {
     socket.on('buyCity', obj => {
         let message = {
             text:  'Player' + obj.player + ' buys a city.',
-            user: 'COMPUTER'
+            user: 'Computer'
         }
 
         io.sockets.in(obj.room).emit('message', message);
@@ -234,7 +236,7 @@ io.on('connection', socket => {
     socket.on('buyDev', obj => {
         let message = {
             text:  'Player' + obj.player + ' buys a development card.',
-            user: "COMPUTER"
+            user: "Computer"
         };
 
         io.sockets.in(obj.room).emit('message', message);
@@ -253,7 +255,7 @@ io.on('connection', socket => {
     socket.on('roadBuilding', obj => {
       let message = {
           text: 'Player' + obj.player + ' builds a road!',
-          user: 'COMPUTER'
+          user: 'Computer'
       }
         io.sockets.in(obj.room).emit('message', message);
         socket.broadcast.to(obj.room).emit('roadBuilding', obj);
@@ -264,7 +266,7 @@ io.on('connection', socket => {
       io.sockets.in(obj.room).emit('playedCardMonopoly', obj);
       let message = {
           text: "Player" + obj.player + " steals everyone's " + obj.resource.slice(5) + "!",
-          user: "COMPUTER"
+          user: "Computer"
       }
       io.sockets.in(obj.room).emit('message', message);
   })
@@ -272,7 +274,7 @@ io.on('connection', socket => {
   socket.on('playingDev', obj =>{
       let message = {
           text: "Player" + obj.player + " plays " + obj.dev + "!",
-          user: "COMPUTER"
+          user: "Computer"
       }
     io.sockets.in(obj.room).emit('message', message);
     io.sockets.in(obj.room).emit('playedDev', {player: obj.player, card: obj.card});
@@ -281,7 +283,7 @@ io.on('connection', socket => {
   socket.on('playedCardPlenty', obj => {
       let message = {
           text: 'Player' + obj.player + " takes a " + obj.resource.slice(5) + "!",
-          user: "COMPUTER"
+          user: "Computer"
       }
       io.sockets.in(obj.room).emit('message', message);
       io.sockets.in(obj.room).emit('playedCardPlenty', obj);
@@ -290,7 +292,7 @@ io.on('connection', socket => {
   socket.on('tradeWithBank', obj => {
       let message = {
           text: "Player" + obj.player + " trades " + obj.amount + " " + obj.giving.slice(5) + " for 1 " + obj.taking.slice(5),
-          user: "COMPUTER"
+          user: "Computer"
       }
       io.sockets.in(obj.room).emit('message', message);
       io.sockets.in(obj.room).emit('tradeWithBank', obj);
@@ -314,7 +316,7 @@ io.on('connection', socket => {
   })
 
   socket.on('finalizeTrade', obj => {
-      io.sockets.in(obj.room).emit('message', {text: "Player" + obj.player + " trades with Player" + obj.trader, user: "COMPUTER"})
+      io.sockets.in(obj.room).emit('message', {text: "Player" + obj.player + " trades with Player" + obj.trader, user: "Computer"})
       io.sockets.in(obj.room).emit('finalizeTrade', obj);
   })
 
@@ -326,7 +328,7 @@ io.on('connection', socket => {
     socket.on('cheatSkipSetup', obj => {
     let message = {
         text: 'Skipping Setup phase!',
-        user: "COMPUTER"
+        user: "Computer"
     };
 
     io.sockets.in(obj.room).emit('message', message);
