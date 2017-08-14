@@ -1,12 +1,7 @@
 import React from 'react';
 import io from 'socket.io-client';
-import Playerinterface from './playerinterface';
 import Messagelog from './messagelog';
-import Boardview from './boardview';
-import {
-  Scene
-}
-  from 'react-babylonjs';
+import {Scene} from 'react-babylonjs';
 import {
   SceneLoader,
   ShaderMaterial,
@@ -22,8 +17,8 @@ import {
   ArcRotateCamera,
   Texture,
   Engine
-}
-  from 'babylonjs';
+} from 'babylonjs';
+import {Button, Grid, Card, Icon, Image, Form, Menu, Popup} from 'semantic-ui-react';
 
 class Game extends React.Component {
   constructor(props) {
@@ -408,7 +403,7 @@ class Game extends React.Component {
   }
 
   openTradeMenu() {
-    this.setState({ tradeMenuOpen: !this.state.tradeMenuOpen })
+    this.setState({ tradeMenuOpen: !this.state.tradeMenuOpen, isBuying: false, isPlayingDevCard: false })
   }
 
   playCardPlenty() {
@@ -694,7 +689,6 @@ class Game extends React.Component {
   }
 
   rollForFirst() {
-    console.log('ROLLING FOR FIRST WTF!');
     let dice1 = Math.floor(Math.random() * 6 + 1);
     let dice2 = Math.floor(Math.random() * 6 + 1);
     let total = dice1 + dice2
@@ -713,6 +707,7 @@ class Game extends React.Component {
   agreeToTrade(){
     let active;
     let player = this.state.players[this.state.identity];
+    console.log('in agree to trade');
     this.state.players.forEach((player) => {
       if(player.is_active_player){
         active = this.state.players[player.id];
@@ -762,12 +757,18 @@ class Game extends React.Component {
     if (this.state.isPlayingDevCard) {
       this.setState({ isPlayingDevCard: false })
     }
+    if (this.state.tradeMenuOpen) {
+      this.setState({ tradeMenuOpen: false })
+    }
   }
 
   togglePlayingDev() {
     this.setState({ isPlayingDevCard: !this.state.isPlayingDevCard });
     if (this.state.isBuying) {
       this.setState({ isBuying: false })
+    }
+    if (this.state.tradeMenuOpen) {
+      this.setState({ tradeMenuOpen: false })
     }
   }
 
@@ -1523,7 +1524,6 @@ class Game extends React.Component {
 
 
     this.socket.on('cancelAgreement', obj => {
-      debugger;
       let players = this.state.players;
       let player = players[obj.player];
       player.accepted_trade = false;
@@ -1536,7 +1536,6 @@ class Game extends React.Component {
       let trader = players[obj.trader];
       let activeGiving = obj.trade.offering;
       let activeReceiving = obj.trade.wanting;
-      debugger;
       for(let prop in activeGiving){
         active[prop] -= activeGiving[prop];
         trader[prop] += activeGiving[prop];
@@ -1556,8 +1555,6 @@ class Game extends React.Component {
     })
 
     this.socket.on('agreesToTrade', obj => {
-      console.log('SOMEONE AGREED TO TRADE');
-      debugger;
       let players = this.state.players;
       let agree = this.state.players[obj.player];
       agree.accepted_trade = true;
@@ -2077,187 +2074,478 @@ class Game extends React.Component {
 
 
   render() {
-    return (<div>
-      <button id={1} onClick={this.robber}>Steal from Player 1</button>
-      <button onClick={() => { console.log(this.state) }}>SEE EVERYTHING!</button>
+
+    return ( <div>
+      
+      <button id={1} onClick={this.robber}>Steal from Player 1</button> 
+      <button onClick={()=> {console.log(this.state)}}>SEE EVERYTHING!</button>
       <button onClick={this.cheatSkipSetup}>Skip Setup Phase</button>
 
-      <h2> Now in-game (game.jsx Component) </h2>
-      <Scene onSceneMount={this.onSceneMount} onMeshPicked={this.onMeshPicked} visible={true} />
+      <Menu>
+        <Menu.Item onClick={() => {console.log('NavBar: Lobby clicked')}}>Lobby</Menu.Item>
+        <Menu.Item onClick={() => {console.log('NavBar: Game clicked')}}>Game</Menu.Item>
+        <Menu.Menu position='right'>
+          <Menu.Item className="menuTitle">Colonies of Cotton</Menu.Item>
+        </Menu.Menu>
+      </Menu>
 
-      <div>{'Player# ' + this.state.identity + ' , in room: ' + this.state.room}</div>
-      <div>My Total Resources: {this.state.players[this.state.identity].total_resources}</div>
-      <span className="resourceBar">
-        <span className="icon Brick" id="card_brick" disabled={true}></span><span className="value">{this.state.players[this.state.identity].card_brick}</span>
-        <span className="icon Wheat" id="card_grain"></span><span className="value">{this.state.players[this.state.identity].card_grain}</span>
-        <span className="icon Wood" id="card_lumber"></span><span className="value">{this.state.players[this.state.identity].card_lumber}</span>
-        <span className="icon Sheep" id="card_wool"></span><span className="value">{this.state.players[this.state.identity].card_wool}</span>
-        <span className="icon Rock" id="card_ore"></span><span className="value">{this.state.players[this.state.identity].card_ore}</span>
-      </span>
+      <Card style={{width: "24%", display: "inline-block"}}>
+      <Card.Content>
+      <Card.Header>{'Player ' + this.state.identity + ', in room: ' + this.state.room}</Card.Header>
 
-
+        <Card.Description className="playerInfoCard">
       {(this.state.roads.length > 0) ?
-        <div>
-          <span>My Score: </span><span>{this.calculateScore(this.state.identity) + this.state.players[this.state.identity].card_victory}</span>
-        </div> : null
+        <span>
+          <Image size='mini' src={'../../PNGs/resources.png'}/>
+          <span>{this.state.players[this.state.identity].total_resources}</span>
+          <Image size='mini' src={'../../PNGs/development.png'}/>
+          <span>{this.state.players[this.state.identity].card_knight + this.state.players[this.state.identity].card_road + this.state.players[this.state.identity].card_monopoly + this.state.players[this.state.identity].card_plenty + this.state.players[this.state.identity].card_victory}</span>
+          <Image size='mini' src={'../../PNGs/knight.png'}/>
+          <span>{this.state.players[this.state.identity].played_card_knight}</span>
+          <Image size='mini' src={'../../PNGs/victory.png'}/>
+          <span>{this.calculateScore(this.state.identity) + this.state.players[this.state.identity].card_victory}</span>
+          <Image size='mini' src={'../../PNGs/road.png'}/>
+          <span>{this.state.players[this.state.identity].owns_road.length}</span>
+        </span> : <div>Waiting for other players...</div>
+
+        
       }
 
-      {(this.state.roads.length > 0) ?
-        <div>
-          <span>My Dev Cards: </span><span>{'Knight: ' + this.state.players[this.state.identity].card_knight + ', Road Building: ' + this.state.players[this.state.identity].card_road + ', Monopoly: ' + this.state.players[this.state.identity].card_monopoly + ', Year of Plenty: ' + this.state.players[this.state.identity].card_plenty + ', Victory Point: ' + this.state.players[this.state.identity].card_victory}</span>
-        </div> : null
-      }
+        </Card.Description>
+      </Card.Content>
+      </Card>
+
+      
 
 
-      <div>{'Property: Road: ' + this.state.players[this.state.identity].owns_road + ', Sett: ' + this.state.players[this.state.identity].owns_settlement + ', City: ' + this.state.players[this.state.identity].owns_city}</div>
-
-
-      <br></br>
-
-
-
-
-
-      <h3>Player Actions Menu</h3>
-
-      {this.state.canRollForFirst ? <button onClick={this.rollForFirst}>Roll</button> : null}
-      {this.state.players[this.state.identity].posted_trade
-        ?  
-        <div>
-          <div>
-          <div>You Want</div>
-            {this.state.players[this.state.identity].posted_trade.wanting.card_brick > 0 && <div><span className="icon Brick"></span>{this.state.players[this.state.identity].posted_trade.wanting.card_brick}</div>}
-            {this.state.players[this.state.identity].posted_trade.wanting.card_grain > 0 && <div><span className="icon Wheat"></span>{this.state.players[this.state.identity].posted_trade.wanting.card_grain}</div>}
-            {this.state.players[this.state.identity].posted_trade.wanting.card_lumber > 0 && <div><span className="icon Wood"></span>{this.state.players[this.state.identity].posted_trade.wanting.card_lumber}</div>}
-            {this.state.players[this.state.identity].posted_trade.wanting.card_wool > 0 && <div><span className="icon Sheep"></span>{this.state.players[this.state.identity].posted_trade.wanting.card_wool}</div>}
-            {this.state.players[this.state.identity].posted_trade.wanting.card_ore > 0 && <div><span className="icon Rock"></span>{this.state.players[this.state.identity].posted_trade.wanting.card_ore}</div>}
-          </div>
-          <div>
-          <div>For</div>
-            {this.state.players[this.state.identity].posted_trade.offering.card_brick > 0 && <div><span className="icon Brick"></span>{this.state.players[this.state.identity].posted_trade.offering.card_brick}</div>}
-            {this.state.players[this.state.identity].posted_trade.offering.card_grain > 0 && <div><span className="icon Wheat"></span>{this.state.players[this.state.identity].posted_trade.offering.card_grain}</div>}
-            {this.state.players[this.state.identity].posted_trade.offering.card_lumber > 0 && <div><span className="icon Wood"></span>{this.state.players[this.state.identity].posted_trade.offering.card_lumber}</div>}
-            {this.state.players[this.state.identity].posted_trade.offering.card_wool > 0 && <div><span className="icon Sheep"></span>{this.state.players[this.state.identity].posted_trade.offering.card_wool}</div>}
-            {this.state.players[this.state.identity].posted_trade.offering.card_ore > 0 && <div><span className="icon Rock"></span>{this.state.players[this.state.identity].posted_trade.offering.card_ore}</div>}
-          </div>
-          <button onClick={this.cancelTradePost}>CANCEL TRADE</button>
-        </div> 
-        : null}
-
-      {this.state.needResourceBar ?
-        <div>
-          <h3>{this.state.instruction}</h3>
-          <span className="icon Brick" id="card_brick" onClick={this.handleResourceClick}></span>
-          <span className="icon Wheat" id="card_grain" onClick={this.handleResourceClick}></span>
-          <span className="icon Wood" id="card_lumber" onClick={this.handleResourceClick}></span>
-          <span className="icon Sheep" id="card_wool" onClick={this.handleResourceClick}></span>
-          <span className="icon Rock" id="card_ore" onClick={this.handleResourceClick}></span>
-        </div> : null
-      }
-
-      {this.state.tradeMenuOpen ?
-        <div>
-          <div>
-            <div>Offering</div>
-            <span className="icon Brick" id="card_brick" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_brick}</span>
-            <span className="icon Wheat" id="card_grain" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_grain}</span>
-            <span className="icon Wood" id="card_lumber" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_lumber}</span>
-            <span className="icon Sheep" id="card_wool" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_wool}</span>
-            <span className="icon Rock" id="card_ore" onMouseDown={this.changeOffering}></span><span>{this.state.players[this.state.identity].active_trade.offering.card_ore}</span>
-            <div>Wanting</div>
-            <span className="icon Brick" id="card_brick" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_brick}</span>
-            <span className="icon Wheat" id="card_grain" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_grain}</span>
-            <span className="icon Wood" id="card_lumber" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_lumber}</span>
-            <span className="icon Sheep" id="card_wool" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_wool}</span>
-            <span className="icon Rock" id="card_ore" onMouseDown={this.changeWanting}></span><span>{this.state.players[this.state.identity].active_trade.wanting.card_ore}</span>
-          </div>
-          <button onClick={this.postTrade}>Offer Trade</button> <button onClick={this.tradeWithBank}>Trade With Bank</button> <button onClick={this.cancelTradeMenu}>CANCEL</button>
-        </div>
-
-        : null}
-
-      {this.state.isPlayingDevCard ?
-        <div>
-          <span className="resourceBar">
-            {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardknight" onClick={this.playingCardKnight} disabled={!this.state.ableToPlayCardKnight}>Play Card: Knight</button><span className="value">{this.state.players[this.state.identity].card_knight}</span></span> : null}
-            {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardroad" onClick={this.playingCardRoad} disabled={!this.state.ableToPlayCardRoad}>Play Card: Road Building</button><span className="value">{this.state.players[this.state.identity].card_road}</span></span> : null}
-            {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardmonopoly" onClick={this.playingCardMonopoly} disabled={!this.state.ableToPlayCardMonopoly}>Play Card: Monopoly</button><span className="value">{this.state.players[this.state.identity].card_monopoly}</span></span> : null}
-            {(!this.state.interfaceToggled) ? <span><button className="icon" type="button" id="playcardplenty" onClick={this.playCardPlenty} disabled={!this.state.ableToPlayCardPlenty}>Play Card: Plenty</button><span className="value">{this.state.players[this.state.identity].card_plenty}</span></span> : null}
-          </span></div> : null
-      }
-
-      {this.state.isBuying ?
-        <div>
-          <span className="resourceBar">
-            {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buysettlement" onClick={this.toggleBuyRoad} disabled={!this.state.ableToBuyRoad}>Buy Road</button> : null}
-            {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buysettlement" onClick={this.toggleBuySettlement} disabled={!this.state.ableToBuySettlement}>Buy Settlement</button> : null}
-            {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buycity" onClick={this.toggleBuyCity} disabled={!this.state.ableToBuyCity}>Buy City</button> : null}
-            {(!this.state.interfaceToggled) ? <button className="icon" type="button" id="buydevcard" onClick={this.buyingDevelopmentCard} disabled={!this.state.ableToBuyDevelopmentCard}>Buy Development Card</button> : null}
-          </span></div> : null}
-
-
-      {(!this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button type="button" onClick={this.diceRoll}>Roll Dice</button> : null}
-      {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button type="button" onClick={this.openTradeMenu}>Trade</button> : null}
-      {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.endTurn}>End Turn</button> : null}
-      {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.toggleBuying}>Buy</button> : null}
-      {(!this.state.players[this.state.identity].has_played_development_card && this.state.active && !this.state.interfaceToggled) ? <button onClick={this.togglePlayingDev}>Play Dev Card</button> : null}
-
-      <Messagelog messages={this.state.messages} handleSubmitMessage={this.handleSubmitMessage} />
       {this.state.players.map((player, index) => {
         if (this.state.roads.length > 0 && this.state.players[player.id].id !== this.state.identity && player.id !== 0) {
+        
+          function getColor(player) {
+            let color = '';
+            if (player === 1) {
+              color = 'red';
+              {/* color = 'hsl(0.569, 0, 0)';  */}
+            } else if (player === 2) {
+              color = 'yellow';
+              {/* color = 'hsl(0.875, 0.620, 0.106)';  */}
+            } else if (player === 3) {
+              color = 'blue';
+              {/* color = 'hsl(0.063, 0.145, 0.259)';  */}
+            } else if (player === 4) {
+              color = 'green';
+              {/* color = 'hsl(0.071, 0.337, 0.047)';  */}
+            }
+
+            return color;
+          }
+
+          function styleIfActive(player) {
+            let style = {width: "22%", display: "inline-block"};
+            if (player.is_active_player) {
+              style = {width: "22%", display: "inline-block", "box-shadow": "-0px -0px 3px 3px red"};
+            }
+            return style;
+          }
+
           return (
-            <div>
-              <div><strong>{player.user_number_label}</strong></div>
 
-              <div><span><strong>Resource Cards: </strong></span><span>{player.card_brick + player.card_grain + player.card_lumber + player.card_ore + player.card_wool}</span>
-              </div>
+            <Card key={index} className="playerInfoCard" color={getColor(player.id)} style={styleIfActive(player)}>
+              <Card.Content onClick={this.robber} id={player.id}>
+              
+              <Card.Header onClick={this.robber} id={player.id} style={{backgroundColor: getColor(player.id)}}>
+              <strong>{player.user_number_label}</strong>
+              {player.is_active_player ? <span>'s turn.</span> : null}
+              
+              <Popup
+              trigger={(player.has_biggest_army) ?
+              <Image className="bonusPointIcon" floated='right' src={'../../PNGs/knight.png'}/>
+              : null}
+              content={<span><strong>Largest Army:</strong> <br></br>2 Victory Points!<br></br>
+              The first player to play 3 Knight cards gets this card. Another player who plays more Knight cards takes this card.</span>}
+              hideOnScroll
+              />
 
-              <div>
-                <span><strong>Dev Cards: </strong></span><span>{player.card_knight + player.card_road + player.card_monopoly + player.card_plenty + player.card_victory}</span>
-              </div>
+              <Popup
+              trigger={(player.has_longest_road) ?
+              <Image className="bonusPointIcon" floated='right' src={'../../PNGs/road.png'}/>
+              : null}
+              content={<span><strong>Longest Road:</strong> <br></br>2 Victory Points!<br></br>
+              This card goes to the player with the longest unbroken road of at least 5 segments. Another player who builds a longer road takes this card.</span>}
+              hideOnScroll
+              />
+              </Card.Header>
 
-              <div>
-                <span><strong>Property Owned: </strong></span><span>{'Roads: ' + player.owns_road.length + ', Settlements: ' + player.owns_settlement.length + ', Cities: ' + player.owns_city.length}</span>
-              </div>
+              <Card.Description>
+                  
+                  <Popup
+                  trigger={<span><Image size='mini' src={'../../PNGs/resources.png'}/>
+                  <span>{player.card_brick + player.card_grain + player.card_lumber + player.card_ore + player.card_wool}</span></span>}
+                  content={<span>Resource cards in hand</span>}
+                  hideOnScroll
+                  />
 
-              <div>
-                <span><strong>Knights Played: </strong></span><span>{player.played_card_knight}</span>
-              </div>
+                  <Popup
+                  trigger={<span><Image size='mini' src={'../../PNGs/development.png'}/>
+                  <span>{player.card_knight + player.card_road + player.card_monopoly + player.card_plenty + player.card_victory}</span></span>}
+                  content={<span>Development cards in hand</span>}
+                  hideOnScroll
+                  />
 
+                  <Popup
+                  trigger={<span><Image size='mini' src={'../../PNGs/knight.png'}/>
+                  <span>{player.played_card_knight}</span></span>}
+                  content={<span>Knight cards played</span>}
+                  hideOnScroll
+                  />
+
+                  <Popup
+                  trigger={<span><Image size='mini' src={'../../PNGs/victory.png'}/>
+                  <span>{this.calculateScore(player.id)}</span></span>}
+                  content={<span>Victory points</span>}
+                  hideOnScroll
+                  />
+
+                  <Popup
+                  trigger={<span><Image size='mini' src={'../../PNGs/road.png'}/>
+                  <span>{player.owns_road.length}</span></span>}
+                  content={<span>Roads built</span>}
+                  hideOnScroll
+                  />
+
+            {player.posted_trade ?  
               <div>
-                <span><strong>Points: </strong></span><span>{this.calculateScore(player.id)}</span>
-              </div>
-              {player.posted_trade
-              ?  
-              <div>
-                <div>
-                <div>Player Wants</div>
-                  {player.posted_trade.wanting.card_brick > 0 && <div><span className="icon Brick"></span>{player.posted_trade.wanting.card_brick}</div>}
-                  {player.posted_trade.wanting.card_grain > 0 && <div><span className="icon Wheat"></span>{player.posted_trade.wanting.card_grain}</div>}
-                  {player.posted_trade.wanting.card_lumber > 0 && <div><span className="icon Wood"></span>{player.posted_trade.wanting.card_lumber}</div>}
-                  {player.posted_trade.wanting.card_wool > 0 && <div><span className="icon Sheep"></span>{player.posted_trade.wanting.card_wool}</div>}
-                  {player.posted_trade.wanting.card_ore > 0 && <div><span className="icon Rock"></span>{player.posted_trade.wanting.card_ore}</div>}
-                </div>
-                <div>
-                <div>For</div>
-                  {player.posted_trade.offering.card_brick > 0 && <div><span className="icon Brick"></span>{player.posted_trade.offering.card_brick}</div>}
-                  {player.posted_trade.offering.card_grain > 0 && <div><span className="icon Wheat"></span>{player.posted_trade.offering.card_grain}</div>}
-                  {player.posted_trade.offering.card_lumber > 0 && <div><span className="icon Wood"></span>{player.posted_trade.offering.card_lumber}</div>}
-                  {player.posted_trade.offering.card_wool > 0 && <div><span className="icon Sheep"></span>{player.posted_trade.offering.card_wool}</div>}
-                  {player.posted_trade.offering.card_ore > 0 && <div><span className="icon Rock"></span>{player.posted_trade.offering.card_ore}</div>}
-                </div>
-                {!this.state.players[this.state.identity].accepted_trade ? <button onClick={this.agreeToTrade}>Accept Trade</button> : <button onClick={this.cancelAgreement}>Cancel</button>}
+                <span>
+                <span>Player Wants</span>
+                  {player.posted_trade.wanting.card_brick > 0 && <span><Image size='mini' src={'../../PNGs/brick.png'} style={{display: "inline-block"}}/>{player.posted_trade.wanting.card_brick}</span>}
+                  {player.posted_trade.wanting.card_grain > 0 && <span><Image size='mini' src={'../../PNGs/grain.png'} style={{display: "inline-block"}}/>{player.posted_trade.wanting.card_grain}</span>}
+                  {player.posted_trade.wanting.card_lumber > 0 && <span><Image size='mini' src={'../../PNGs/lumber.png'} style={{display: "inline-block"}}/>{player.posted_trade.wanting.card_lumber}</span>}
+                  {player.posted_trade.wanting.card_wool > 0 && <span><Image size='mini' src={'../../PNGs/wool.png'} style={{display: "inline-block"}}/>{player.posted_trade.wanting.card_wool}</span>}
+                  {player.posted_trade.wanting.card_ore > 0 && <span><Image size='mini' src={'../../PNGs/ore.png'} style={{display: "inline-block"}}/>{player.posted_trade.wanting.card_ore}</span>}
+                </span>
+                <span>
+                <span>For</span>
+                  {player.posted_trade.offering.card_brick > 0 && <span><Image size='mini' src={'../../PNGs/brick.png'} style={{display: "inline-block"}}/>{player.posted_trade.offering.card_brick}</span>}
+                  {player.posted_trade.offering.card_grain > 0 && <span><Image size='mini' src={'../../PNGs/grain.png'} style={{display: "inline-block"}}/>{player.posted_trade.offering.card_grain}</span>}
+                  {player.posted_trade.offering.card_lumber > 0 && <span><Image size='mini' src={'../../PNGs/lumber.png'} style={{display: "inline-block"}}/>{player.posted_trade.offering.card_lumber}</span>}
+                  {player.posted_trade.offering.card_wool > 0 && <span><Image size='mini' src={'../../PNGs/wool.png'} style={{display: "inline-block"}}/>{player.posted_trade.offering.card_wool}</span>}
+                  {player.posted_trade.offering.card_ore > 0 && <span><Image size='mini' src={'../../PNGs/ore.png'} style={{display: "inline-block"}}/>{player.posted_trade.offering.card_ore}</span>}
+                </span>
+                {!this.state.players[this.state.identity].accepted_trade ? <Button positive size="small" onClick={this.agreeToTrade}>Accept Trade</Button> : <Button negative size="small" onClick={this.cancelAgreement}>Cancel</Button>}
               </div> 
               : null}
-              {this.state.active && player.accepted_trade && <button id={player.id} onClick={this.finalizeTrade}> Player Agrees To Trade </button>}
-            </div>
+
+              {this.state.active && player.accepted_trade && <Button positive size="small" id={player.id} onClick={this.finalizeTrade}>Agrees To Trade</Button>}
+
+              </Card.Description>
+              </Card.Content>
+            </Card>
+
           )
 
         }
       })}
 
-      <div>By: Team HoneyBadgers</div>
-    </div>)
+
+      <Grid>
+
+
+
+
+
+
+      <Grid.Column width={4} className="compStatusActions">
+
+
+      {(this.state.roads.length > 0) ?
+        <span>
+    
+
+      {/* START MY STATS */}
+
+      <strong>My Resources: </strong>
+      <br></br>
+      <div className="resourceBar">
+      
+      <Popup
+      trigger={<span><Image size='mini' src={'../../PNGs/brick.png'} style={{display: "inline-block"}}/>
+      <span id="card_brick" style={{display: "inline-block"}}></span><span style={{display: "inline-block"}}>{this.state.players[this.state.identity].card_brick}</span></span>} 
+      content={<span><strong>Resource:</strong> Brick</span>}
+      hideOnScroll
+      />
+
+      <Popup
+      trigger={<span><Image size='mini' src={'../../PNGs/grain.png'} style={{display: "inline-block"}}/>
+      <span id="card_grain" style={{display: "inline-block"}}></span><span style={{display: "inline-block"}}>{this.state.players[this.state.identity].card_grain}</span></span>} 
+      content={<span><strong>Resource:</strong> Grain</span>}
+      hideOnScroll
+      />
+
+      <Popup
+      trigger={<span><Image size='mini' src={'../../PNGs/lumber.png'} style={{display: "inline-block"}}/>
+      <span id="card_lumber" style={{display: "inline-block"}}></span><span style={{display: "inline-block"}}>{this.state.players[this.state.identity].card_lumber}</span></span>} 
+      content={<span><strong>Resource:</strong> Lumber</span>}
+      hideOnScroll
+      />
+
+      <Popup
+      trigger={<span><Image size='mini' src={'../../PNGs/wool.png'} style={{display: "inline-block"}}/>
+      <span id="card_wool" style={{display: "inline-block"}}></span><span style={{display: "inline-block"}}>{this.state.players[this.state.identity].card_wool}</span></span>} 
+      content={<span><strong>Resource:</strong> Wool</span>}
+      hideOnScroll
+      />
+
+      <Popup
+      trigger={<span><Image size='mini' src={'../../PNGs/ore.png'} style={{display: "inline-block"}}/>
+      <span id="card_ore" style={{display: "inline-block"}}></span><span style={{display: "inline-block"}}>{this.state.players[this.state.identity].card_ore}</span></span>} 
+      content={<span><strong>Resource:</strong> Ore</span>}
+      hideOnScroll
+      />
+
+      </div>
+
+    <br></br>
+    <strong>My Dev Cards: </strong>
+    <br></br>
+
+      <div className="devCardBar">
+
+      <Popup
+      trigger={<span><Image size='mini' src={'../../PNGs/knight.png'} style={{display: "inline-block"}}/>
+      <span id="card_knight" disabled={true} style={{display: "inline-block"}}></span><span style={{display: "inline-block"}}>{this.state.players[this.state.identity].card_knight}</span></span>}
+      content={<span><strong>Knight:</strong> Move the robber. Steal 1 resource from the owner of a settlement or city adjacent to the robber's new hex.</span>}
+      hideOnScroll
+      />
+
+      <Popup
+      trigger={<span><Image size='mini' src={'../../PNGs/road.png'} style={{display: "inline-block"}}/>
+      <span id="card_road" style={{display: "inline-block"}}></span><span style={{display: "inline-block"}}>{this.state.players[this.state.identity].card_road}</span></span>}
+      content={<span><strong>Road Building:</strong> Place (up to) 2 new roads as if you had just built them.</span>}
+      hideOnScroll
+      />
+
+      <Popup
+      trigger={<span><Image size='mini' src={'../../PNGs/monopoly.png'} style={{display: "inline-block"}}/>
+      <span id="card_monopoly" style={{display: "inline-block"}}></span><span style={{display: "inline-block"}}>{this.state.players[this.state.identity].card_monopoly}</span></span>}
+      content={<span><strong>Monopoly:</strong> When you play this card, announce 1 type of resource. All other players must give you <strong>all</strong> of their resources of that type.</span>}
+      hideOnScroll
+      />
+
+      <Popup
+      trigger={<span><Image size='mini' src={'../../PNGs/plenty.png'} style={{display: "inline-block"}}/>
+      <span id="card_plenty" style={{display: "inline-block"}}></span><span style={{display: "inline-block"}}>{this.state.players[this.state.identity].card_plenty}</span></span>}
+      content={<span><strong>Year of Plenty:</strong> Take any 2 resources from the bank. They can be 2 of the same resource or 2 different resources.</span>}
+      hideOnScroll
+      />
+
+      <Popup
+      trigger={<span><Image size='mini' src={'../../PNGs/victory.png'} style={{display: "inline-block"}}/>
+      <span id="card_victory" style={{display: "inline-block"}}></span><span style={{display: "inline-block"}}>{this.state.players[this.state.identity].card_victory}</span></span>}
+      content={<span><strong>Victory Point:</strong> 1 Victory Point!</span>}
+      hideOnScroll
+      />
+
+      </div>
+
+    <br></br>
+    <strong>My Properties: </strong>
+    <br></br>
+
+      <div className="buildingsBar">
+
+      <Popup
+      trigger={<span><Image size='mini' src={'../../PNGs/piece_road.png'} style={{display: "inline-block"}}/>
+      <span id="owns_road" disabled={true} style={{display: "inline-block"}}></span><span style={{display: "inline-block"}}>{this.state.players[this.state.identity].owns_road.length}</span></span>}
+      content={<span><strong>Roads Owned</strong></span>}
+      hideOnScroll
+      />
+
+      <Popup
+      trigger={<span><Image size='mini' src={'../../PNGs/piece_settlement.png'} style={{display: "inline-block"}}/>
+      <span id="owns_settlement" style={{display: "inline-block"}}></span><span style={{display: "inline-block"}}>{this.state.players[this.state.identity].owns_settlement.length}</span></span>}
+      content={<span><strong>Settlements Owned</strong></span>}
+      hideOnScroll
+      />
+
+      <Popup
+      trigger={<span><Image size='mini' src={'../../PNGs/piece_city.png'} style={{display: "inline-block"}}/>
+      <span id="owns_city" style={{display: "inline-block"}}></span><span style={{display: "inline-block"}}>{this.state.players[this.state.identity].owns_city.length}</span></span>}
+      content={<span><strong>Cities Owned</strong></span>}
+      hideOnScroll
+      />
+
+      </div>
+
+
+    <br></br>
+    <br></br>
+
+      {/* END MY STATS */}
+
+
+      {/* START PLAYER ACTIONS */}
+
+    <strong>Actions: </strong>
+
+
+    {this.state.players[this.state.identity].posted_trade
+        ?  
+        <div className="resourceBar">
+          <span>
+          <span>You Want</span>
+            {this.state.players[this.state.identity].posted_trade.wanting.card_brick > 0 && <span><Image size='mini' src={'../../PNGs/brick.png'} style={{display: "inline-block"}}/>{this.state.players[this.state.identity].posted_trade.wanting.card_brick}</span>}
+            {this.state.players[this.state.identity].posted_trade.wanting.card_grain > 0 && <span><Image size='mini' src={'../../PNGs/grain.png'} style={{display: "inline-block"}}/>{this.state.players[this.state.identity].posted_trade.wanting.card_grain}</span>}
+            {this.state.players[this.state.identity].posted_trade.wanting.card_lumber > 0 && <span><Image size='mini' src={'../../PNGs/lumber.png'} style={{display: "inline-block"}}/>{this.state.players[this.state.identity].posted_trade.wanting.card_lumber}</span>}
+            {this.state.players[this.state.identity].posted_trade.wanting.card_wool > 0 && <span><Image size='mini' src={'../../PNGs/wool.png'} style={{display: "inline-block"}}/>{this.state.players[this.state.identity].posted_trade.wanting.card_wool}</span>}
+            {this.state.players[this.state.identity].posted_trade.wanting.card_ore > 0 && <span><Image size='mini' src={'../../PNGs/ore.png'} style={{display: "inline-block"}}/>{this.state.players[this.state.identity].posted_trade.wanting.card_ore}</span>}
+          </span>
+          <span>
+          <span>For</span>
+            {this.state.players[this.state.identity].posted_trade.offering.card_brick > 0 && <span><Image size='mini' src={'../../PNGs/brick.png'} style={{display: "inline-block"}}/>{this.state.players[this.state.identity].posted_trade.offering.card_brick}</span>}
+            {this.state.players[this.state.identity].posted_trade.offering.card_grain > 0 && <span><Image size='mini' src={'../../PNGs/grain.png'} style={{display: "inline-block"}}/>{this.state.players[this.state.identity].posted_trade.offering.card_grain}</span>}
+            {this.state.players[this.state.identity].posted_trade.offering.card_lumber > 0 && <span><Image size='mini' src={'../../PNGs/lumber.png'} style={{display: "inline-block"}}/>{this.state.players[this.state.identity].posted_trade.offering.card_lumber}</span>}
+            {this.state.players[this.state.identity].posted_trade.offering.card_wool > 0 && <span><Image size='mini' src={'../../PNGs/wool.png'} style={{display: "inline-block"}}/>{this.state.players[this.state.identity].posted_trade.offering.card_wool}</span>}
+            {this.state.players[this.state.identity].posted_trade.offering.card_ore > 0 && <span><Image size='mini' src={'../../PNGs/ore.png'} style={{display: "inline-block"}}/>{this.state.players[this.state.identity].posted_trade.offering.card_ore}</span>}
+          </span>
+          <Button negative size='small' onClick={this.cancelTradePost}>Remove Trade Offer</Button>
+        </div> 
+        : null}
+        
+
+
+
+      {this.state.tradeMenuOpen ?
+        <div className="resourceBar">
+          <div>
+            <div><strong>Offering:</strong></div>
+            <span className="resourceBar">
+            <Image size='mini' src={'../../PNGs/brick.png'} style={{display: "inline-block"}} id="card_brick" onMouseDown={this.changeOffering}/>
+            <span>{this.state.players[this.state.identity].active_trade.offering.card_brick}</span>
+            <Image size='mini' src={'../../PNGs/grain.png'} style={{display: "inline-block"}} id="card_grain" onMouseDown={this.changeOffering}/>
+            <span>{this.state.players[this.state.identity].active_trade.offering.card_grain}</span>
+            <Image size='mini' src={'../../PNGs/lumber.png'} style={{display: "inline-block"}} id="card_lumber" onMouseDown={this.changeOffering}/>
+            <span>{this.state.players[this.state.identity].active_trade.offering.card_lumber}</span>
+            <Image size='mini' src={'../../PNGs/wool.png'} style={{display: "inline-block"}} id="card_wool" onMouseDown={this.changeOffering}/>
+            <span>{this.state.players[this.state.identity].active_trade.offering.card_wool}</span>
+            <Image size='mini' src={'../../PNGs/ore.png'} style={{display: "inline-block"}} id="card_ore" onMouseDown={this.changeOffering}/>
+            <span>{this.state.players[this.state.identity].active_trade.offering.card_ore}</span>
+            </span>
+            <div><strong>Wanting:</strong></div>
+            <span className="resourceBar">
+            <Image size='mini' src={'../../PNGs/brick.png'} style={{display: "inline-block"}} id="card_brick" onMouseDown={this.changeWanting}/>
+            <span>{this.state.players[this.state.identity].active_trade.wanting.card_brick}</span>
+            <Image size='mini' src={'../../PNGs/grain.png'} style={{display: "inline-block"}} id="card_grain" onMouseDown={this.changeWanting}/>
+            <span>{this.state.players[this.state.identity].active_trade.wanting.card_grain}</span>
+            <Image size='mini' src={'../../PNGs/lumber.png'} style={{display: "inline-block"}} id="card_lumber" onMouseDown={this.changeWanting}/>
+            <span>{this.state.players[this.state.identity].active_trade.wanting.card_lumber}</span>
+            <Image size='mini' src={'../../PNGs/wool.png'} style={{display: "inline-block"}} id="card_wool" onMouseDown={this.changeWanting}/>
+            <span>{this.state.players[this.state.identity].active_trade.wanting.card_wool}</span>
+            <Image size='mini' src={'../../PNGs/ore.png'} style={{display: "inline-block"}} id="card_ore" onMouseDown={this.changeWanting}/>
+            <span>{this.state.players[this.state.identity].active_trade.wanting.card_ore}</span>
+            </span>
+          </div>
+          <Button size="small" onClick={this.postTrade}>Offer Trade</Button>
+          <Button size="small" onClick={this.tradeWithBank}>Trade With Bank</Button>
+          <Button negative size="small" onClick={this.cancelTradeMenu}>Cancel Trading</Button>
+        </div>
+
+        : null}
+
+
+
+
+
+    {/* END TRADE */}
+
+
+
+
+      {/* START vertical action buttons */}
+     <div class="ui vertical buttons">
+
+    {this.state.canRollForFirst ? <Button onClick={this.rollForFirst}>Roll to determine turn order</Button> : null}
+
+    {this.state.needResourceBar ?
+      <div>
+        <strong>{this.state.instruction}</strong>
+        <div className="resourceBar">
+        <Image size='mini' src={'../../PNGs/brick.png'} id="card_brick" onClick={this.handleResourceClick} style={{display: "inline-block"}}/>
+        <Image size='mini' src={'../../PNGs/grain.png'} id="card_grain" onClick={this.handleResourceClick} style={{display: "inline-block"}}/>
+        <Image size='mini' src={'../../PNGs/lumber.png'} id="card_lumber" onClick={this.handleResourceClick} style={{display: "inline-block"}}/>
+        <Image size='mini' src={'../../PNGs/wool.png'} id="card_wool" onClick={this.handleResourceClick} style={{display: "inline-block"}}/>
+        <Image size='mini' src={'../../PNGs/ore.png'} id="card_ore" onClick={this.handleResourceClick} style={{display: "inline-block"}}/>
+        </div>
+      </div> : null
+    }
+
+    {this.state.isPlayingDevCard ?
+      <div>
+      <span className="resourceBar">
+          {(!this.state.interfaceToggled) ? <span><Button type="button" id="playcardknight" onClick={this.playingCardKnight} disabled={!this.state.ableToPlayCardKnight}>Play Card: Knight</Button><span>{this.state.players[this.state.identity].card_knight}</span></span> : null}
+          {(!this.state.interfaceToggled) ? <span><Button type="button" id="playcardroad" onClick={this.playingCardRoad} disabled={!this.state.ableToPlayCardRoad}>Play Card: Road Building</Button><span>{this.state.players[this.state.identity].card_road}</span></span> : null}
+          {(!this.state.interfaceToggled) ? <span><Button type="button" id="playcardmonopoly" onClick={this.playingCardMonopoly} disabled={!this.state.ableToPlayCardMonopoly}>Play Card: Monopoly</Button><span>{this.state.players[this.state.identity].card_monopoly}</span></span>: null}
+          {(!this.state.interfaceToggled) ? <span><Button type="button" id="playcardplenty" onClick={this.playCardPlenty} disabled={!this.state.ableToPlayCardPlenty}>Play Card: Plenty</Button><span>{this.state.players[this.state.identity].card_plenty}</span></span> : null}
+      </span>
+      </div> : null
+    }
+
+    {this.state.isBuying ?
+    <div>
+    <span className="resourceBar">
+    <Button.Group vertical>
+      {(!this.state.interfaceToggled) ? <Button type="button" id="buysettlement" onClick={this.toggleBuyRoad} disabled={!this.state.ableToBuyRoad}>Buy Road</Button> : null}
+      {(!this.state.interfaceToggled) ? <Button type="button" id="buysettlement" onClick={this.toggleBuySettlement} disabled={!this.state.ableToBuySettlement}>Buy Settlement</Button> : null}
+      {(!this.state.interfaceToggled) ? <Button type="button" id="buycity" onClick={this.toggleBuyCity} disabled={!this.state.ableToBuyCity}>Buy City</Button> : null}
+      {(!this.state.interfaceToggled) ? <Button type="button" id="buydevcard" onClick={this.buyingDevelopmentCard} disabled={!this.state.ableToBuyDevelopmentCard}>Buy Development Card</Button> : null}
+    </Button.Group>
+    </span>
+    </div>:null}
+    
+    <Button.Group vertical>
+      {(!this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <Button type="button" onClick={this.diceRoll}>Roll Dice</Button> : null}
+      {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <Button type="button" onClick={this.openTradeMenu}>Trade</Button> : null}
+      {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <Button onClick={this.toggleBuying}>Buy</Button> : null}
+      {(!this.state.players[this.state.identity].has_played_development_card && this.state.active && !this.state.interfaceToggled) ? <Button onClick={this.togglePlayingDev}>Play Dev Card</Button> : null}
+      {(this.state.hasRolled && this.state.active && !this.state.interfaceToggled) ? <Button negative onClick={this.endTurn}>End Turn</Button> : null}
+    </Button.Group>
+
+    {/* END vertical action buttons */}
+
+    {/* END PLAYER ACTIONS */}
+    <br></br>
+    <br></br>
+
+
+
+    </div>
+    </span> : null }
+      </Grid.Column>
+
+
+
+
+
+
+        <Grid.Column width={8}>
+          <Scene className="compBoard" onSceneMount={this.onSceneMount} onMeshPicked={this.onMeshPicked} visible={true}/>  
+        </Grid.Column>
+
+
+
+        <Grid.Column width={4} className="gridMessageLogColumn">
+          <Messagelog messages={this.state.messages} handleSubmitMessage={this.handleSubmitMessage}/>  
+        </Grid.Column>
+
+
+
+      </Grid>
+
+    <br></br>
+
+
+
+          <div>By: Team HoneyBadgers</div>
+     </div>)
   }
 
 
