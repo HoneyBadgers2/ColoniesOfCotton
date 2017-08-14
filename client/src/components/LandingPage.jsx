@@ -16,19 +16,21 @@ class LandingPage extends Component {
         auth.login();
     }
 
-    render() {
+    componentWillMount(){
         if(localStorage.getItem('email')) {
-            return (<div><Lobby/></div>)
+            this.props.history.push('/lobby')
         } 
-        return (
-            <div className='LandingPage'> 
-                <div className='Position'>                
-                    <img src='../../PNGs/ColoniesFestival!.png' />
-                    <button onClick={ this.handleLogin } className='Login'>Login</button>
-                </div>
-            </div>
+    }
 
-        )
+    render() {
+            return (
+                <div className='LandingPage'> 
+                    <div className='Position'>                
+                        <img src='../../PNGs/ColoniesFestival!.png' />
+                        <button onClick={ this.handleLogin } className='Login'>Login</button>
+                    </div>
+                </div>
+            )
     }
 }
 

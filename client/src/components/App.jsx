@@ -3,6 +3,7 @@ import Game from './game.jsx';
 import LandingPage from './LandingPage.jsx';
 import { Redirect } from 'react-router';
 import { HashRouter, Route } from 'react-router-dom';
+import Lobby from './Lobby';
 
 
 export default class App extends Component {
