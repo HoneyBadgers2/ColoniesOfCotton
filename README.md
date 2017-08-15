@@ -25,11 +25,8 @@
 > To run on localhost:
 > 
 > under client/src/components/Auth.js:
-> update the AuthLock section to represent localhost at the specified port (or whatever url to deploy). redirectUrl: 'http://localhost:3000/'
-> In the browser, navigate to localhost
-> login through auth0
-> select a lobby to join
-> once 4 players join the same lobby (you can open 4 tabs for 4 player instances), game will start
+> update the AuthLock section for localhost port (or whatever url to deploy).
+> In the browser, navigate to localhost. Landing page will open first. Login through auth0 to proceed to the Lobby page. Select a lobby to join, and once 4 players join the same lobby (you can open 4 tabs for 4 player instances), game will start.
 
 ## Requirements
 
@@ -81,12 +78,15 @@ View the project roadmap [here](LINK_TO_PROJECT_ISSUES)
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
-## Ideas for Going Forward
+## Ideas for Contributions
 - Complete the missing functionalities of the game (discard on roll = 7, longest road)
-- Debug game functionality
+- Debug game functionality (overall needs more playtesting)
 - Implement working Auth0 or other authentication
 - Player stats in database
 - Saved instances of games to database
 - Tracking of additional data in game (turn order)
 - Additional game features (dynamic board (unlikely), variable players (instead of being fixed at 4 players), turn timers)
 
+
+## Known Bugs
+- Robber Steal: state is not updated correctly when stealing. It's possible to continuously steal by clicking on that player.
