@@ -4,7 +4,7 @@
 
 ## Team
 
-  - __Product Owner__: Tim Yoon
+  - __Product Owner__: Timothy Yoon
   - __Scrum Master__: Jeffrey Lee
   - __Development Team Members__: Aren Rostamian, Michael Nguyen
 
@@ -83,9 +83,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
 ## Ideas for Going Forward
 - Complete the missing functionalities of the game (discard on roll = 7, longest road)
-- Debug game
+- Debug game functionality
 - Implement working Auth0 or other authentication
-- Tracking of game sessions
 - Player stats in database
 - Saved instances of games to database
 - Tracking of additional data in game (turn order)
