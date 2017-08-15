@@ -25,8 +25,7 @@
 > To run on localhost:
 > 
 > under client/src/components/Auth.js:
-> update the AuthLock section to represent the 
-> change the redirectUrl to accept localhost at the specified port. redirectUrl: 'http://localhost:3000/'
+> update the AuthLock section to represent localhost at the specified port (or whatever url to deploy). redirectUrl: 'http://localhost:3000/'
 > In the browser, navigate to localhost
 > login through auth0
 > select a lobby to join
@@ -83,12 +82,12 @@ View the project roadmap [here](LINK_TO_PROJECT_ISSUES)
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
 ## Ideas for Going Forward
--Complete the missing functionalities of the game (discard on roll = 7, longest road)
--Debug game
--Implement working Auth0 or other authentication
--Tracking of game sessions
--Player stats in database
--Saved instances of games to database
--Tracking of additional data in game (turn order)
--Additional game features (dynamic board (unlikely), variable players (instead of being fixed at 4 players), turn timers)
+- Complete the missing functionalities of the game (discard on roll = 7, longest road)
+- Debug game
+- Implement working Auth0 or other authentication
+- Tracking of game sessions
+- Player stats in database
+- Saved instances of games to database
+- Tracking of additional data in game (turn order)
+- Additional game features (dynamic board (unlikely), variable players (instead of being fixed at 4 players), turn timers)
 
