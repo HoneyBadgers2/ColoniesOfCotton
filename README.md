@@ -81,3 +81,14 @@ View the project roadmap [here](LINK_TO_PROJECT_ISSUES)
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
+
+## Ideas for Going Forward
+-Complete the missing functionalities of the game (discard on roll = 7, longest road)
+-Debug game
+-Implement working Auth0 or other authentication
+-Tracking of game sessions
+-Player stats in database
+-Saved instances of games to database
+-Tracking of additional data in game (turn order)
+-Additional game features (dynamic board (unlikely), variable players (instead of being fixed at 4 players), turn timers)
+
