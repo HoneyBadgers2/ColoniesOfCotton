@@ -2,6 +2,11 @@
 
 > A clone of the Settlers of Catan board game
 
+Database hosted on mlab. Room names are stored in database.
+New game instance is stored on server (data.json)
+Clients update their copy of the gamestate using socket.io
+
+
 ## Team
 
   - __Product Owner__: Timothy Yoon
@@ -26,7 +31,7 @@
 > 
 > under client/src/components/Auth.js:
 > update the AuthLock section for localhost port (or whatever url to deploy).
-> In the browser, navigate to localhost. Landing page will open first. Login through auth0 to proceed to the Lobby page. Select a lobby to join, and once 4 players join the same lobby (you can open 4 tabs for 4 player instances), game will start.
+> In the browser, navigate to localhost. Landing page will open first. Login (or sign up) through auth0 to proceed to the Lobby page. Select a lobby to join, and once 4 players join the same lobby (you can open 4 tabs for 4 player instances), game will start.
 
 ## Requirements
 
